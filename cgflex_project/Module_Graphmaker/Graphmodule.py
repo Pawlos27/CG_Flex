@@ -144,19 +144,3 @@ class Graph_controller:
 
 
     
-
-
-if __name__ == "__main__":
-    from cgflex_project.Shared_Classes.config_objects import blueprint_test
-    newgraph= Graph_controller(config=blueprint_test)
-
-    initilaization = True
-    if initilaization == True:
-        newgraph.make_graph()
-        newgraph.print_nodelist()
-        newgraph.showgraph()
-        newgraph.safe_nodelist_pikle(file_name="pikle1",file_path=None)
-    elif initilaization == False:
-        newgraph.load_nodelist_pikle(file_name="pikle1", file_path=None)
-        newgraph.showgraph()
-

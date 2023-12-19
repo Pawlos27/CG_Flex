@@ -10,15 +10,9 @@ import os
 import networkx as nx
 from pgmpy.readwrite import BIFReader
 import matplotlib.pyplot as plt  # Import Matplotlib
-file_name= "alarm.bif"
-data_folder = os.path.join(os.path.dirname(__file__), 'data')
-file_path = os.path.join(data_folder, file_name)
 
 
-Modus = "random"
-
-
-def generate_random_dag(num_nodes, edge_probability, counter):
+def generate_random_dag(num_nodes, edge_probability, counter, Modus):
     if Modus == "random":
         G = nx.DiGraph()
         G.add_nodes_from(range(num_nodes))
@@ -26,22 +20,44 @@ def generate_random_dag(num_nodes, edge_probability, counter):
             for potential_child in range(node+1, num_nodes):
                 if random.random() < edge_probability:
                     G.add_edge(node, potential_child)
-    if Modus == "fix":
+    elif Modus == "fix":
         if counter == 1:
+            file_name= "alarm.bif"
+            data_folder = os.path.join(os.path.dirname(__file__), 'data')
+            file_path = os.path.join(data_folder, file_name)
             reader = BIFReader(file_path)
         if counter == 2:
+            file_name= "barley.bif"
+            data_folder = os.path.join(os.path.dirname(__file__), 'data')
+            file_path = os.path.join(data_folder, file_name)
             reader = BIFReader(file_path)
         if counter == 3:
+            file_name= "child.bif"
+            data_folder = os.path.join(os.path.dirname(__file__), 'data')
+            file_path = os.path.join(data_folder, file_name)
             reader = BIFReader(file_path)
         if counter == 4:
+            file_name= "insurance.bif"
+            data_folder = os.path.join(os.path.dirname(__file__), 'data')
+            file_path = os.path.join(data_folder, file_name)
             reader = BIFReader(file_path)
         if counter == 5:
+            file_name= "alarm.bif"
+            data_folder = os.path.join(os.path.dirname(__file__), 'data')
+            file_path = os.path.join(data_folder, file_name)
             reader = BIFReader(file_path)
         model = reader.get_model()
         nodes = model.nodes()
         edges = model.edges()
         G = nx.DiGraph()
         G.add_nodes_from(nodes)
+        G.add_edges_from(edges)
+    
+    else :
+        Graph_generator = Graph_controller(config=blueprint_test)
+        Graph_generator.make_graph()
+        edges = Graph_generator.get_edgelist()
+        G = nx.DiGraph()
         G.add_edges_from(edges)
 
     return G
@@ -73,17 +89,22 @@ def average_metrics(metrics_list):
     return avg_metrics
 
 
-
 # Parameters
+Modus = "cg_flex"
+
+
 num_graphs = 5  # Number of random DAGs to generate
+if Modus == "fix":
+   num_graphs = 5  
 num_nodes = 10   # Number of nodes in each DAG
 edge_probability = 0.2  # Probability of edge creation
 counter = 1
+
 # Generate graphs and calculate metrics
 all_metrics = []
 for _ in range(num_graphs):
     
-    G = generate_random_dag(num_nodes, edge_probability, counter=counter)
+    G = generate_random_dag(num_nodes, edge_probability, counter=counter, Modus=Modus)
     metrics = calculate_metrics(G)
     all_metrics.append(metrics)
     counter =+1

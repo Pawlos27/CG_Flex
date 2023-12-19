@@ -32,7 +32,7 @@ class IGraph_processor(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def make_verticelist(self):
+    def make_edgelist(self):
      """creates a list of vertices used for reprecenting the edges"""
 
     @abstractmethod
@@ -51,7 +51,7 @@ class Graph_processor_networx_solo(IGraph_processor):
         if self.nodelist == None:
             raise ValueError("there is no graph yet, please make a graph")
         else:
-            self.verticelist = self.make_verticelist()
+            self.verticelist = self.make_edgelist()
         
     def show_graph(self, plot_title="DAG_Graph"):
         positions_f= self._make_positions_dictionary_top_down()
@@ -114,7 +114,7 @@ class Graph_processor_networx_solo(IGraph_processor):
             positions[node.id]=[node.coord_l,node.coord_t[0]]
         return positions
     
-    def make_verticelist(self):
+    def make_edgelist(self):
         verticelist=[]
         for node in self.nodelist:
             for j in node.children:
