@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graphmodule &mdash; CG_Flex 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CG_Flex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../nodemaker.html">nodemaker module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">cgflex_project</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CG_Flex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Graphmodule</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Graphmodule</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;this Module contains the controll class for Graphs &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">blueprints</span> <span class="kn">import</span> <span class="n">Blueprint_graph</span>
+<span class="kn">from</span> <span class="nn">nodemaker</span> <span class="kn">import</span> <span class="n">Nodeobject</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">dill</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+
+
+
+
+<div class="viewcode-block" id="Graph_controller"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller">[docs]</a><span class="k">class</span> <span class="nc">Graph_controller</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;_summary_</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (Blueprint_graph): _description_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Blueprint_graph</span> <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;_summary_</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            inputs (Blueprint_graph): holds the config object, which holds all the necessary sub classs instances the controller works with</span>
+<span class="sd">            nodelist(): contains the nodelist after it is created, updated after every manipulation on graph level</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">config</span>
+
+
+<div class="viewcode-block" id="Graph_controller.make_graph"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.make_graph">[docs]</a>    <span class="k">def</span> <span class="nf">make_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;this method uses the functionality of the class objects contained in the config object to create the graph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nodelist_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">nodemaker</span><span class="o">.</span><span class="n">make_nodelist</span><span class="p">()</span>
+        <span class="n">nodelist_layered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">layermaker</span><span class="o">.</span><span class="n">make_layer</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span> <span class="n">nodelist_raw</span><span class="p">)</span>
+        <span class="n">nodelist_sourced</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">sourcemaker</span><span class="o">.</span><span class="n">make_sources</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span> <span class="n">nodelist_layered</span> <span class="p">)</span>
+        <span class="n">nodelist_sinked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">sinkmaker</span><span class="o">.</span><span class="n">make_sinks</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span> <span class="n">nodelist_sourced</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edgemaker</span><span class="o">.</span><span class="n">make_edges</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="n">nodelist_sinked</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph_controller.reset_config"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.reset_config">[docs]</a>    <span class="k">def</span> <span class="nf">reset_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Blueprint_graph</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;replaces the config object for a new one</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (Blueprint_graph): new config</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">=</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="Graph_controller.reset_layers"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.reset_layers">[docs]</a>    <span class="k">def</span> <span class="nf">reset_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;resets the layers of the graph, after replacing config , otherwise layers would stay the same&quot;&quot;&quot;</span>
+        <span class="n">nodelist_layered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">layermaker</span><span class="o">.</span><span class="n">make_layer</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edgemaker</span><span class="o">.</span><span class="n">make_edges</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="n">nodelist_layered</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph_controller.new_sources"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.new_sources">[docs]</a>    <span class="k">def</span> <span class="nf">new_sources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;resets sources and generates new, implies also new edges</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nodelist_sourced</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">sourcemaker</span><span class="o">.</span><span class="n">make_sources</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edgemaker</span><span class="o">.</span><span class="n">make_edges</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="n">nodelist_sourced</span><span class="p">)</span></div>
+       
+<div class="viewcode-block" id="Graph_controller.new_sinks"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.new_sinks">[docs]</a>    <span class="k">def</span> <span class="nf">new_sinks</span><span class="p">(</span><span class="bp">self</span> <span class="p">):</span>
+        <span class="n">nodelist_sinked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">sinkmaker</span><span class="o">.</span><span class="n">make_sinks</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edgemaker</span><span class="o">.</span><span class="n">make_edges</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="n">nodelist_sinked</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph_controller.new_sinks_and_sources"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.new_sinks_and_sources">[docs]</a>    <span class="k">def</span> <span class="nf">new_sinks_and_sources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nodelist_sourced</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">sourcemaker</span><span class="o">.</span><span class="n">make_sources</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="n">nodelist_sinked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">sourcemaker</span><span class="o">.</span><span class="n">make_sources</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="n">nodelist_sourced</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edgemaker</span><span class="o">.</span><span class="n">make_edges</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="n">nodelist_sinked</span><span class="p">)</span></div>
+     
+<div class="viewcode-block" id="Graph_controller.new__edges"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.new__edges">[docs]</a>    <span class="k">def</span> <span class="nf">new__edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">edgemaker</span><span class="o">.</span><span class="n">make_edges</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph_controller.safe_nodelist_pikle"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.safe_nodelist_pikle">[docs]</a>    <span class="k">def</span> <span class="nf">safe_nodelist_pikle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">file_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_path</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_folder</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No data to save. Please set data using set_data method first.&quot;</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="Graph_controller.load_nodelist_pikle"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.load_nodelist_pikle">[docs]</a>    <span class="k">def</span> <span class="nf">load_nodelist_pikle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">file_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span><span class="n">file_path</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">file_path</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_folder</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Graph_controller.showgraph"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.showgraph">[docs]</a>    <span class="k">def</span> <span class="nf">showgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_title</span><span class="o">=</span><span class="s2">&quot;DAG_Graph&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">graphprocessor</span><span class="o">.</span><span class="n">load_graph</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">graphprocessor</span><span class="o">.</span><span class="n">show_graph</span><span class="p">()</span></div>
+        
+
+<div class="viewcode-block" id="Graph_controller.print_nodelist"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.print_nodelist">[docs]</a>    <span class="k">def</span> <span class="nf">print_nodelist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">graphprocessor</span><span class="o">.</span><span class="n">load_graph</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">graphprocessor</span><span class="o">.</span><span class="n">print_nodelist</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="Graph_controller.get_edgelist"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.get_edgelist">[docs]</a>    <span class="k">def</span> <span class="nf">get_edgelist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">graphprocessor</span><span class="o">.</span><span class="n">load_graph</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="n">edgelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">graphprocessor</span><span class="o">.</span><span class="n">make_edgelist</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">edgelist</span></div>
+    
+        
+<div class="viewcode-block" id="Graph_controller.get_list_of_sources"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.get_list_of_sources">[docs]</a>    <span class="k">def</span> <span class="nf">get_list_of_sources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;there is no graph yet, please make a graph&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">list_of_sources</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">list_of_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">list_of_sources</span></div>
+
+<div class="viewcode-block" id="Graph_controller.get_list_of_sinks"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.get_list_of_sinks">[docs]</a>    <span class="k">def</span> <span class="nf">get_list_of_sinks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;there is no graph yet, please make a graph&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">list_of_sinks</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">sink</span><span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">list_of_sinks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">list_of_sinks</span></div>
+
+<div class="viewcode-block" id="Graph_controller.get_nodelist_graph"><a class="viewcode-back" href="../Graphmodule.html#Graphmodule.Graph_controller.get_nodelist_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_nodelist_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Nodeobject</span><span class="p">]]:</span> 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;there is no graph yet, please make a graph&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span></div></div>
+
+
+
+
+
+    
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">config_objects</span> <span class="kn">import</span> <span class="n">blueprint_test</span>
+    <span class="n">newgraph</span><span class="o">=</span> <span class="n">Graph_controller</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">blueprint_test</span><span class="p">)</span>
+
+    <span class="n">initilaization</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">initilaization</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">newgraph</span><span class="o">.</span><span class="n">make_graph</span><span class="p">()</span>
+        <span class="n">newgraph</span><span class="o">.</span><span class="n">print_nodelist</span><span class="p">()</span>
+        <span class="n">newgraph</span><span class="o">.</span><span class="n">showgraph</span><span class="p">()</span>
+        <span class="n">newgraph</span><span class="o">.</span><span class="n">safe_nodelist_pikle</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="s2">&quot;pikle1&quot;</span><span class="p">,</span><span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">initilaization</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">newgraph</span><span class="o">.</span><span class="n">load_nodelist_pikle</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="s2">&quot;pikle1&quot;</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">newgraph</span><span class="o">.</span><span class="n">showgraph</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Paul Giza.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

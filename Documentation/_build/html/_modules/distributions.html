@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>distributions &mdash; CG_Flex 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CG_Flex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../nodemaker.html">nodemaker module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CG_Flex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">distributions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for distributions</h1><div class="highlight"><pre>
+<span></span>
+
+
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+
+<div class="viewcode-block" id="IDistributions"><a class="viewcode-back" href="../distributions.html#distributions.IDistributions">[docs]</a><span class="k">class</span> <span class="nc">IDistributions</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span> <span class="c1"># used in 1: Nodemaker 2:IErrordistribution #i   # while plotting the truncated distributions should be shifted up by the truncated quota</span>
+<div class="viewcode-block" id="IDistributions.get_value_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.IDistributions.get_value_from_distribution">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_value_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">     </span><span class="sd">&quot;&quot;&quot;Interface Method&quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="IDistributions.get_array_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.IDistributions.get_array_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+<span class="w">     </span><span class="sd">&quot;&quot;&quot;Interface Method&quot;&quot;&quot;</span></div>
+    
+<div class="viewcode-block" id="IDistributions.plot_distribution"><a class="viewcode-back" href="../distributions.html#distributions.IDistributions.plot_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+
+
+<div class="viewcode-block" id="Distribution_uniform"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_uniform">[docs]</a><span class="k">class</span> <span class="nc">Distribution_uniform</span><span class="p">(</span><span class="n">IDistributions</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="nb">min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="nb">max</span>
+<div class="viewcode-block" id="Distribution_uniform.get_value_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_uniform.get_value_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+<div class="viewcode-block" id="Distribution_uniform.get_array_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_uniform.get_array_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+<div class="viewcode-block" id="Distribution_uniform.plot_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_uniform.plot_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+                    
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">pass</span>   </div></div>
+
+<div class="viewcode-block" id="Distribution_normal"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_normal">[docs]</a><span class="k">class</span> <span class="nc">Distribution_normal</span><span class="p">(</span><span class="n">IDistributions</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+<div class="viewcode-block" id="Distribution_normal.get_value_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_normal.get_value_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+<div class="viewcode-block" id="Distribution_normal.get_array_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_normal.get_array_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Distribution_normal.plot_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_normal.plot_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span>
+        <span class="n">mu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mu</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="n">mu</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
+
+<div class="viewcode-block" id="Distribution_normal_truncated_at_3sigma"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_normal_truncated_at_3sigma">[docs]</a><span class="k">class</span> <span class="nc">Distribution_normal_truncated_at_3sigma</span><span class="p">(</span><span class="n">IDistributions</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+<div class="viewcode-block" id="Distribution_normal_truncated_at_3sigma.get_value_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_normal_truncated_at_3sigma.get_value_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">lower_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="o">-</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">upper_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="o">+</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">x</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">x</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+<div class="viewcode-block" id="Distribution_normal_truncated_at_3sigma.get_array_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_normal_truncated_at_3sigma.get_array_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">lower_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="o">-</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">upper_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="o">+</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">x</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">x</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">y</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">y</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">x</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+<div class="viewcode-block" id="Distribution_normal_truncated_at_3sigma.plot_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_normal_truncated_at_3sigma.plot_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span>
+        <span class="n">mu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mu</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="n">mu</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
+
+<div class="viewcode-block" id="Distribution_mixture_of_normals_truncated_at_3sigma"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_mixture_of_normals_truncated_at_3sigma">[docs]</a><span class="k">class</span> <span class="nc">Distribution_mixture_of_normals_truncated_at_3sigma</span><span class="p">(</span><span class="n">IDistributions</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of_mus</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">sigma</span><span class="p">:</span><span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span> <span class="o">=</span> <span class="n">list_of_mus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+<div class="viewcode-block" id="Distribution_mixture_of_normals_truncated_at_3sigma.get_value_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_mixture_of_normals_truncated_at_3sigma.get_value_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mu</span><span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">lower_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">upper_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">x</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">x</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+    
+<div class="viewcode-block" id="Distribution_mixture_of_normals_truncated_at_3sigma.get_array_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_mixture_of_normals_truncated_at_3sigma.get_array_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">mu</span><span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">lower_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">upper_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">x</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">x</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">mu</span><span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">y</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">y</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">x</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="Distribution_mixture_of_normals_truncated_at_3sigma.plot_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_mixture_of_normals_truncated_at_3sigma.plot_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">number_distributions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">)</span>
+        <span class="n">sum_distribuitons</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span><span class="o">/</span><span class="n">number_distributions</span>
+            <span class="n">sum_distribuitons</span> <span class="o">=</span> <span class="n">sum_distribuitons</span>  <span class="o">+</span> <span class="n">y</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sum_distribuitons</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
+
+<div class="viewcode-block" id="Distribution_mixture_of_normals_truncated_custom"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_mixture_of_normals_truncated_custom">[docs]</a><span class="k">class</span> <span class="nc">Distribution_mixture_of_normals_truncated_custom</span><span class="p">(</span><span class="n">IDistributions</span><span class="p">):</span> <span class="c1"># mus of mixture need to be within the borders</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of_mus</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">sigma</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">lower_border</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">upper_border</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower_border</span> <span class="o">=</span> <span class="n">lower_border</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upper_border</span> <span class="o">=</span> <span class="n">upper_border</span>
+        <span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="n">list_of_mus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">lower_border</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span> <span class="o">&lt;=</span> <span class="n">mu</span> <span class="o">&lt;=</span> <span class="n">upper_border</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All values in list_of_mus must be between lower_border and upper_border&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span> <span class="o">=</span> <span class="n">list_of_mus</span>
+<div class="viewcode-block" id="Distribution_mixture_of_normals_truncated_custom.get_value_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_mixture_of_normals_truncated_custom.get_value_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mu</span><span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">lower_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_border</span>
+        <span class="n">upper_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_border</span>
+        <span class="k">while</span> <span class="n">x</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">x</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+    
+<div class="viewcode-block" id="Distribution_mixture_of_normals_truncated_custom.get_array_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_mixture_of_normals_truncated_custom.get_array_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">mu</span><span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">lower_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_border</span>
+        <span class="n">upper_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_border</span>
+        <span class="k">while</span> <span class="n">x</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">x</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">mu</span><span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">y</span><span class="o">&lt;</span> <span class="n">lower_border</span> <span class="ow">or</span> <span class="n">y</span><span class="o">&gt;</span> <span class="n">upper_border</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">x</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+    
+<div class="viewcode-block" id="Distribution_mixture_of_normals_truncated_custom.plot_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distribution_mixture_of_normals_truncated_custom.plot_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lower_border</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_border</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">number_distributions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">)</span>
+        <span class="n">sum_distribuitons</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_mus</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span><span class="o">/</span><span class="n">number_distributions</span>
+            <span class="n">sum_distribuitons</span> <span class="o">=</span> <span class="n">sum_distribuitons</span>  <span class="o">+</span> <span class="n">y</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sum_distribuitons</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
+
+<div class="viewcode-block" id="Distrib_left_sided"><a class="viewcode-back" href="../distributions.html#distributions.Distrib_left_sided">[docs]</a><span class="k">class</span> <span class="nc">Distrib_left_sided</span><span class="p">(</span><span class="n">IDistributions</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+<div class="viewcode-block" id="Distrib_left_sided.get_value_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distrib_left_sided.get_value_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="Distrib_left_sided.get_array_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distrib_left_sided.get_array_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="Distrib_left_sided.plot_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distrib_left_sided.plot_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>    </div></div>
+
+<div class="viewcode-block" id="Distrib_custom_with_valuelist"><a class="viewcode-back" href="../distributions.html#distributions.Distrib_custom_with_valuelist">[docs]</a><span class="k">class</span> <span class="nc">Distrib_custom_with_valuelist</span><span class="p">(</span><span class="n">IDistributions</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valuelist</span><span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valuelist</span> <span class="o">=</span> <span class="n">valuelist</span>
+<div class="viewcode-block" id="Distrib_custom_with_valuelist.get_value_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distrib_custom_with_valuelist.get_value_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_value_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valuelist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+<div class="viewcode-block" id="Distrib_custom_with_valuelist.get_array_from_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distrib_custom_with_valuelist.get_array_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="Distrib_custom_with_valuelist.plot_distribution"><a class="viewcode-back" href="../distributions.html#distributions.Distrib_custom_with_valuelist.plot_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+
+
+
+
+
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">x</span><span class="o">=</span> <span class="n">Distribution_mixture_of_normals_truncated_custom</span><span class="p">(</span><span class="n">sigma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">list_of_mus</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.8</span><span class="p">])</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">plot_distribution</span><span class="p">()</span>
+   
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Paul Giza.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

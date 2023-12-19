@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "cgflex-project"
+version = "0.1.0"
+description = ""
+authors = ["Paul Giza <paul.giza@web.de>"]
+readme = "README.md"
+packages = [
+    { include = "cgflex_project", from = "." }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9.6, <=3.9.16"
+numpy = "1.24.3"
+scipy = ">1.3.1"
+pandas = "1.5.3"
+networkx = "2.8.4"
+matplotlib = "3.7.1"
+dill = "^0.3.7"
+paramz = {git = "https://github.com/bela127/paramz.git"}
+gpy = "^1.12.0"
+pgmpy = "^0.1.24"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

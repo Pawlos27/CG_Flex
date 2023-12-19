@@ -1,0 +1,7 @@
+Demo\_script module
+===================
+
+.. automodule:: Demo_script
+   :members:
+   :undoc-members:
+   :show-inheritance:

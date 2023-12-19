@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blueprint_main_controller module &mdash; CG_Flex 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="blueprints module" href="blueprints.html" />
+    <link rel="prev" title="Samplingmodule_old module" href="Samplingmodule_old.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CG_Flex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="nodemaker.html">nodemaker module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cgflex_project</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Controllermodule.html">Controllermodule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Controllermodule_extensions.html">Controllermodule_extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Demo_analyse_skalierung_kurven.html">Demo_analyse_skalierung_kurven module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Demo_script_test_v2_%20pickle_method.html">Demo_script_test_v2_ pickle_method module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dependencymodule.html">Dependencymodule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Graphmodule.html">Graphmodule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Graphmodule_extensions.html">Graphmodule_extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Samplingmodule.html">Samplingmodule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Samplingmodule_extensions.html">Samplingmodule_extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Samplingmodule_old.html">Samplingmodule_old module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">blueprint_main_controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blueprints.html">blueprints module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_objects.html">config_objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributions.html">distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="first_attempt.html">first_attempt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layermaker.html">layermaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nodemaker.html">nodemaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampling_tsd.html">sampling_tsd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sinkmaker.html">sinkmaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sourcemaker.html">sourcemaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="verticemaker.html">verticemaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="verticemaker_backup.html">verticemaker_backup module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CG_Flex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">cgflex_project</a></li>
+      <li class="breadcrumb-item active">blueprint_main_controller module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/blueprint_main_controller.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-blueprint_main_controller">
+<span id="blueprint-main-controller-module"></span><h1>blueprint_main_controller module<a class="headerlink" href="#module-blueprint_main_controller" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="blueprint_main_controller.Blueprint_main_controller">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blueprint_main_controller.</span></span><span class="sig-name descname"><span class="pre">Blueprint_main_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_serializer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="Controllermodule_extensions.html#Controllermodule_extensions.IObject_serializer" title="Controllermodule_extensions.IObject_serializer"><span class="pre">Controllermodule_extensions.IObject_serializer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller_coordinator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="Controllermodule_extensions.html#Controllermodule_extensions.IController_coordinator" title="Controllermodule_extensions.IController_coordinator"><span class="pre">Controllermodule_extensions.IController_coordinator</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_controller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="Samplingmodule.html#Samplingmodule.Sampling_controller" title="Samplingmodule.Sampling_controller"><span class="pre">Samplingmodule.Sampling_controller</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blueprint_main_controller.html#Blueprint_main_controller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blueprint_main_controller.Blueprint_main_controller" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blueprint_main_controller.Blueprint_main_controller.object_serializer">
+<span class="sig-name descname"><span class="pre">object_serializer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="Controllermodule_extensions.html#Controllermodule_extensions.IObject_serializer" title="Controllermodule_extensions.IObject_serializer"><span class="pre">IObject_serializer</span></a></em><a class="headerlink" href="#blueprint_main_controller.Blueprint_main_controller.object_serializer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blueprint_main_controller.Blueprint_main_controller.controller_coordinator">
+<span class="sig-name descname"><span class="pre">controller_coordinator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="Controllermodule_extensions.html#Controllermodule_extensions.IController_coordinator" title="Controllermodule_extensions.IController_coordinator"><span class="pre">IController_coordinator</span></a></em><a class="headerlink" href="#blueprint_main_controller.Blueprint_main_controller.controller_coordinator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blueprint_main_controller.Blueprint_main_controller.sampling_controller">
+<span class="sig-name descname"><span class="pre">sampling_controller</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="Samplingmodule.html#Samplingmodule.Sampling_controller" title="Samplingmodule.Sampling_controller"><span class="pre">Sampling_controller</span></a></em><a class="headerlink" href="#blueprint_main_controller.Blueprint_main_controller.sampling_controller" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Samplingmodule_old.html" class="btn btn-neutral float-left" title="Samplingmodule_old module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blueprints.html" class="btn btn-neutral float-right" title="blueprints module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Paul Giza.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

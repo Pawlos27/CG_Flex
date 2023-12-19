@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nodemaker module &mdash; CG_Flex 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cgflex_project" href="modules.html" />
+    <link rel="prev" title="Welcome to CG_Flex’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CG_Flex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">nodemaker module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">cgflex_project</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Controllermodule.html">Controllermodule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Controllermodule_extensions.html">Controllermodule_extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Demo_analyse_skalierung_kurven.html">Demo_analyse_skalierung_kurven module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Demo_script_test_v2_%20pickle_method.html">Demo_script_test_v2_ pickle_method module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dependencymodule.html">Dependencymodule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Graphmodule.html">Graphmodule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Graphmodule_extensions.html">Graphmodule_extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Samplingmodule.html">Samplingmodule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Samplingmodule_extensions.html">Samplingmodule_extensions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Samplingmodule_old.html">Samplingmodule_old module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blueprint_main_controller.html">blueprint_main_controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blueprints.html">blueprints module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_objects.html">config_objects module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributions.html">distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="first_attempt.html">first_attempt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layermaker.html">layermaker module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">nodemaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampling_tsd.html">sampling_tsd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sinkmaker.html">sinkmaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sourcemaker.html">sourcemaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="verticemaker.html">verticemaker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="verticemaker_backup.html">verticemaker_backup module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CG_Flex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">nodemaker module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/nodemaker.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-nodemaker">
+<span id="nodemaker-module"></span><h1>nodemaker module<a class="headerlink" href="#module-nodemaker" title="Permalink to this heading"></a></h1>
+<p>This module is the first of a couple of modules providing classes and functionality for managing node objects. It creates an initial list of Nodeobjects and focuses on defining various implementable collections on distributions, and the Nodemaker, which generates a list of Nodes using these distributions. Nodes are distributed over space, and the module includes abstract base classes and their implementations for the distributions as well as the Nodemaker.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This module requires external dependencies such as the ‘distributions’ module, as the distribution_collections instantiate distribution classes from this module.</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="nodemaker.INodemaker_distribution_collection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nodemaker.</span></span><span class="sig-name descname"><span class="pre">INodemaker_distribution_collection</span></span><a class="reference internal" href="_modules/nodemaker.html#INodemaker_distribution_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.INodemaker_distribution_collection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base class to represent a collection of distributions used in nodemaker.
+This class serves as an interface for different nodemaker distribution collections,
+ensuring they implement the required method to get a distribution.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nodemaker.INodemaker_distribution_collection.get_distribution">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_distribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="distributions.html#distributions.IDistributions" title="distributions.IDistributions"><span class="pre">IDistributions</span></a></span></span><a class="reference internal" href="_modules/nodemaker.html#INodemaker_distribution_collection.get_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.INodemaker_distribution_collection.get_distribution" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>an instance of a distribution class</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="distributions.html#distributions.IDistributions" title="distributions.IDistributions">IDistributions</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker_distribution_random_full">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nodemaker.</span></span><span class="sig-name descname"><span class="pre">Nodemaker_distribution_random_full</span></span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker_distribution_random_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker_distribution_random_full" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nodemaker.INodemaker_distribution_collection" title="nodemaker.INodemaker_distribution_collection"><code class="xref py py-class docutils literal notranslate"><span class="pre">INodemaker_distribution_collection</span></code></a></p>
+<p>Implements a random full distribution for nodemaker.</p>
+<p>This class provides a way to randomly select a distribution from the predefined full list of  instaciated distributions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker_distribution_random_full.get_distribution">
+<span class="sig-name descname"><span class="pre">get_distribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker_distribution_random_full.get_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker_distribution_random_full.get_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>Randomly selects and returns a distribution from the distribution list.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker_distribuiton_bottleneck">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nodemaker.</span></span><span class="sig-name descname"><span class="pre">Nodemaker_distribuiton_bottleneck</span></span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker_distribuiton_bottleneck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker_distribuiton_bottleneck" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nodemaker.INodemaker_distribution_collection" title="nodemaker.INodemaker_distribution_collection"><code class="xref py py-class docutils literal notranslate"><span class="pre">INodemaker_distribution_collection</span></code></a></p>
+<p>Implements a bottleneck distribution for nodemaker.
+This class provides a specific customized distribution of  mixture of truncated_normals, which together form a distribution with a single bottleneck</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker_distribuiton_bottleneck.get_distribution">
+<span class="sig-name descname"><span class="pre">get_distribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="distributions.html#distributions.IDistributions" title="distributions.IDistributions"><span class="pre">IDistributions</span></a></span></span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker_distribuiton_bottleneck.get_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker_distribuiton_bottleneck.get_distribution" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>an instance of a distribution class</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="distributions.html#distributions.IDistributions" title="distributions.IDistributions">IDistributions</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker_distribution_uniform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nodemaker.</span></span><span class="sig-name descname"><span class="pre">Nodemaker_distribution_uniform</span></span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker_distribution_uniform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker_distribution_uniform" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nodemaker.INodemaker_distribution_collection" title="nodemaker.INodemaker_distribution_collection"><code class="xref py py-class docutils literal notranslate"><span class="pre">INodemaker_distribution_collection</span></code></a></p>
+<p>Implements and returns a single uniform distribution</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker_distribution_uniform.get_distribution">
+<span class="sig-name descname"><span class="pre">get_distribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="distributions.html#distributions.IDistributions" title="distributions.IDistributions"><span class="pre">IDistributions</span></a></span></span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker_distribution_uniform.get_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker_distribution_uniform.get_distribution" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>an instance of a distribution class</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="distributions.html#distributions.IDistributions" title="distributions.IDistributions">IDistributions</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker_distribution_normal_truncated">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nodemaker.</span></span><span class="sig-name descname"><span class="pre">Nodemaker_distribution_normal_truncated</span></span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker_distribution_normal_truncated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker_distribution_normal_truncated" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nodemaker.INodemaker_distribution_collection" title="nodemaker.INodemaker_distribution_collection"><code class="xref py py-class docutils literal notranslate"><span class="pre">INodemaker_distribution_collection</span></code></a></p>
+<p>Implements and returns a single normal distribution</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker_distribution_normal_truncated.get_distribution">
+<span class="sig-name descname"><span class="pre">get_distribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="distributions.html#distributions.IDistributions" title="distributions.IDistributions"><span class="pre">IDistributions</span></a></span></span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker_distribution_normal_truncated.get_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker_distribution_normal_truncated.get_distribution" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>an instance of a distribution class</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="distributions.html#distributions.IDistributions" title="distributions.IDistributions">IDistributions</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nodemaker.</span></span><span class="sig-name descname"><span class="pre">Nodeobject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_t:</span> <span class="pre">list</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_l:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sink:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parents:</span> <span class="pre">list</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">children:</span> <span class="pre">list</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_val:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nodemaker.html#Nodeobject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodeobject" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Data class representing a node object with attributes used to represent graphs and dependencies in all stages of the framework.
+This class is crucial for representing individual nodes. Its dependencies are gathered in a list to represent graph structures and can be populated with dependencies for use in later stages of data sampling.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.sort_index">
+<span class="sig-name descname"><span class="pre">sort_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nodemaker.Nodeobject.sort_index" title="Permalink to this definition"></a></dt>
+<dd><p>A derived value used for sorting nodes, typically based on ‘coord_l’.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#nodemaker.Nodeobject.id" title="Permalink to this definition"></a></dt>
+<dd><p>A unique identifier for the node, related to the coord_l value for which it is assigned in ascending order.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.coord_t">
+<span class="sig-name descname"><span class="pre">coord_t</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#nodemaker.Nodeobject.coord_t" title="Permalink to this definition"></a></dt>
+<dd><p>Coordinates in the ‘thorus’ dimensions, representing the node’s position, is a list because the thorus can have arbitrary dimensions .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.coord_l">
+<span class="sig-name descname"><span class="pre">coord_l</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nodemaker.Nodeobject.coord_l" title="Permalink to this definition"></a></dt>
+<dd><p>Linear coordinate, used for layer-based positioning in the network.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.layer">
+<span class="sig-name descname"><span class="pre">layer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#nodemaker.Nodeobject.layer" title="Permalink to this definition"></a></dt>
+<dd><p>Represents the layer or level in which the node resides within the network and along the coord_L.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.sink">
+<span class="sig-name descname"><span class="pre">sink</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#nodemaker.Nodeobject.sink" title="Permalink to this definition"></a></dt>
+<dd><p>Marks the node as a ‘sink’ in the network topology.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.source">
+<span class="sig-name descname"><span class="pre">source</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#nodemaker.Nodeobject.source" title="Permalink to this definition"></a></dt>
+<dd><p>Marks the node as a ‘source’ or origin point within the network.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nodemaker.Nodeobject.value" title="Permalink to this definition"></a></dt>
+<dd><p>A continuous value associated with the node, used for sampling data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.dependency">
+<span class="sig-name descname"><span class="pre">dependency</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#nodemaker.Nodeobject.dependency" title="Permalink to this definition"></a></dt>
+<dd><p>An attribute to represent a node’s dependency on other elements, can also be a value or a distribution.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.parents">
+<span class="sig-name descname"><span class="pre">parents</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#nodemaker.Nodeobject.parents" title="Permalink to this definition"></a></dt>
+<dd><p>A list of parent nodes, denoting the ids of the node’s immediate predecessors.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.children">
+<span class="sig-name descname"><span class="pre">children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#nodemaker.Nodeobject.children" title="Permalink to this definition"></a></dt>
+<dd><p>A list of child nodes, indicating the ids of the node’s immediate successors.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nodemaker.Nodeobject.scale_val">
+<span class="sig-name descname"><span class="pre">scale_val</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#nodemaker.Nodeobject.scale_val" title="Permalink to this definition"></a></dt>
+<dd><p>A scaling factor, representing by which factor the space the node lies in is scaled.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nodemaker.INodemaker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nodemaker.</span></span><span class="sig-name descname"><span class="pre">INodemaker</span></span><a class="reference internal" href="_modules/nodemaker.html#INodemaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.INodemaker" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base class for creating nodelists.
+This class serves as an interface for different nodemaker implementations,
+ensuring they implement the required method to make a nodelist.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nodemaker.INodemaker.make_nodelist">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">make_nodelist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#nodemaker.Nodeobject" title="nodemaker.Nodeobject"><span class="pre">Nodeobject</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/nodemaker.html#INodemaker.make_nodelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.INodemaker.make_nodelist" title="Permalink to this definition"></a></dt>
+<dd><p>Creates and returns a list of Nodeobject instances</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nodemaker.</span></span><span class="sig-name descname"><span class="pre">Nodemaker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number_of_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_of_dimensions_thorus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_per_n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_distribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nodemaker.INodemaker_distribution_collection" title="nodemaker.INodemaker_distribution_collection"><span class="pre">INodemaker_distribution_collection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_distribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nodemaker.INodemaker_distribution_collection" title="nodemaker.INodemaker_distribution_collection"><span class="pre">INodemaker_distribution_collection</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nodemaker.INodemaker" title="nodemaker.INodemaker"><code class="xref py py-class docutils literal notranslate"><span class="pre">INodemaker</span></code></a></p>
+<p>Implementation of INodemaker for creating a list of node objects.
+This class is oour main Nodemaker and  provides functionality to create a list of node objects based on
+given distributions for both layer and thorus dimensions.
+this object will be part of a config file and is resposible for the size and form of the graph by  defining the number of the nodes and their distribution in the space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>number_of_nodes</strong> (<em>int</em>) – The number of nodes to create.</p></li>
+<li><p><strong>number_of_dimensions_thorus</strong> (<em>int</em>) – The number of dimensions for thorus coordinates.</p></li>
+<li><p><strong>l_distribution</strong> (<a class="reference internal" href="#nodemaker.INodemaker_distribution_collection" title="nodemaker.INodemaker_distribution_collection"><em>INodemaker_distribution_collection</em></a>) – The distribution collection used for layer coordinates.</p></li>
+<li><p><strong>t_distribution</strong> (<a class="reference internal" href="#nodemaker.INodemaker_distribution_collection" title="nodemaker.INodemaker_distribution_collection"><em>INodemaker_distribution_collection</em></a>) – The distribution collection used for thorus coordinates.</p></li>
+<li><p><strong>scale_per_n</strong> (<em>float</em>) – The scale factor applied to the nodes’ space, dependent on the number of nodes.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="nodemaker.Nodemaker.make_nodelist">
+<span class="sig-name descname"><span class="pre">make_nodelist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#nodemaker.Nodeobject" title="nodemaker.Nodeobject"><span class="pre">Nodeobject</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/nodemaker.html#Nodemaker.make_nodelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nodemaker.Nodemaker.make_nodelist" title="Permalink to this definition"></a></dt>
+<dd><p>Creates and returns a list of Nodeobject instances based on the coordinates retrieved from  predefined distributions.
+This method utilizes the provided layer and thorus distributions to generate a list
+of nodes, each with its own unique ccoordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of Nodeobject instances, each representing a node in the network.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[Type[<a class="reference internal" href="#nodemaker.Nodeobject" title="nodemaker.Nodeobject">Nodeobject</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to CG_Flex’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="cgflex_project" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Paul Giza.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

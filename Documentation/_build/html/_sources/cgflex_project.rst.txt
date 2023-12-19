@@ -1,0 +1,229 @@
+cgflex\_project package
+=======================
+
+Submodules
+----------
+
+cgflex\_project.Controllermodule module
+---------------------------------------
+
+.. automodule:: cgflex_project.Controllermodule
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Controllermodule\_extensions module
+---------------------------------------------------
+
+.. automodule:: cgflex_project.Controllermodule_extensions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Demo\_analyse\_skalierung\_kurven module
+--------------------------------------------------------
+
+.. automodule:: cgflex_project.Demo_analyse_skalierung_kurven
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Demo\_script module
+-----------------------------------
+
+.. automodule:: cgflex_project.Demo_script
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Demo\_script\_test\_v1\_pickle\_external module
+---------------------------------------------------------------
+
+.. automodule:: cgflex_project.Demo_script_test_v1_pickle_external
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Demo\_script\_test\_v2\_ pickle\_method module
+--------------------------------------------------------------
+
+.. automodule:: cgflex_project.Demo_script_test_v2_ pickle_method
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Dependencymodule module
+---------------------------------------
+
+.. automodule:: cgflex_project.Dependencymodule
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Graphmodule module
+----------------------------------
+
+.. automodule:: cgflex_project.Graphmodule
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Graphmodule\_extensions module
+----------------------------------------------
+
+.. automodule:: cgflex_project.Graphmodule_extensions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Samplingmodule module
+-------------------------------------
+
+.. automodule:: cgflex_project.Samplingmodule
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Samplingmodule\_extensions module
+-------------------------------------------------
+
+.. automodule:: cgflex_project.Samplingmodule_extensions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.Samplingmodule\_old module
+------------------------------------------
+
+.. automodule:: cgflex_project.Samplingmodule_old
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.blueprint\_main\_controller module
+--------------------------------------------------
+
+.. automodule:: cgflex_project.blueprint_main_controller
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.blueprints module
+---------------------------------
+
+.. automodule:: cgflex_project.blueprints
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.conf module
+---------------------------
+
+.. automodule:: cgflex_project.conf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.config\_objects module
+--------------------------------------
+
+.. automodule:: cgflex_project.config_objects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.distributions module
+------------------------------------
+
+.. automodule:: cgflex_project.distributions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.experiment module
+---------------------------------
+
+.. automodule:: cgflex_project.experiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.first\_attempt module
+-------------------------------------
+
+.. automodule:: cgflex_project.first_attempt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.graphmaker module
+---------------------------------
+
+.. automodule:: cgflex_project.graphmaker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.layermaker module
+---------------------------------
+
+.. automodule:: cgflex_project.layermaker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.nodemaker module
+--------------------------------
+
+.. automodule:: cgflex_project.nodemaker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.sampling\_tsd module
+------------------------------------
+
+.. automodule:: cgflex_project.sampling_tsd
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.sinkmaker module
+--------------------------------
+
+.. automodule:: cgflex_project.sinkmaker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.sourcemaker module
+----------------------------------
+
+.. automodule:: cgflex_project.sourcemaker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.verticemaker module
+-----------------------------------
+
+.. automodule:: cgflex_project.verticemaker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cgflex\_project.verticemaker\_backup module
+-------------------------------------------
+
+.. automodule:: cgflex_project.verticemaker_backup
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cgflex_project
+   :members:
+   :undoc-members:
+   :show-inheritance:

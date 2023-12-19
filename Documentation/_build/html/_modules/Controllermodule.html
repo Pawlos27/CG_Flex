@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controllermodule &mdash; CG_Flex 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CG_Flex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../nodemaker.html">nodemaker module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CG_Flex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">Controllermodule</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for Controllermodule</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">Controllermodule_extensions</span> <span class="kn">import</span> <span class="n">IObject_serializer</span><span class="p">,</span> <span class="n">IController_coordinator</span>
+<span class="kn">from</span> <span class="nn">Dependencymodule</span> <span class="kn">import</span> <span class="n">Dependency_controller</span>
+<span class="kn">from</span> <span class="nn">Samplingmodule</span> <span class="kn">import</span> <span class="n">Sampling_controller</span>
+<span class="kn">from</span> <span class="nn">Graphmodule</span> <span class="kn">import</span> <span class="n">Graph_controller</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">blueprints</span> <span class="kn">import</span> <span class="n">Blueprint_graph</span><span class="p">,</span> <span class="n">Blueprint_dependency</span><span class="p">,</span> <span class="n">Blueprint_sampling</span>
+<span class="kn">from</span> <span class="nn">blueprint_main_controller</span> <span class="kn">import</span> <span class="n">Blueprint_main_controller</span>
+
+ 
+
+<div class="viewcode-block" id="Cg_flex_controller"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller">[docs]</a><span class="k">class</span> <span class="nc">Cg_flex_controller</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="o">=</span> <span class="n">Blueprint_main_controller</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;_summary_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config (_type_, optional): _description_. Defaults to Blueprint_main_controller.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_value_arrays</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_raw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_abstracted_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_accumulated_per_id_raw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_shuffle_index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+
+
+
+
+<span class="c1"># methods graph controller </span>
+<div class="viewcode-block" id="Cg_flex_controller.reset_controller"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_controller">[docs]</a>    <span class="k">def</span> <span class="nf">reset_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">list_of_graph_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">controller_coordinator</span><span class="o">.</span><span class="n">make_list_graph_controller</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span> <span class="o">=</span> <span class="n">list_of_graph_controller</span>
+        <span class="n">list_of_dependency_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">controller_coordinator</span><span class="o">.</span><span class="n">make_list_dependency_controller</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span> <span class="o">=</span> <span class="n">list_of_dependency_controller</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sampling_controller</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.get_number_of_graph_components"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.get_number_of_graph_components">[docs]</a>    <span class="k">def</span> <span class="nf">get_number_of_graph_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">components</span></div>
+    
+<div class="viewcode-block" id="Cg_flex_controller.make_graphs"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.make_graphs">[docs]</a>    <span class="k">def</span> <span class="nf">make_graphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number_of_decoupled_elements</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_controller</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">number_of_decoupled_elements</span><span class="p">)</span> 
+        <span class="k">for</span> <span class="n">graph_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+            <span class="n">graph_controller</span><span class="o">.</span><span class="n">make_graph</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.reset_configs_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_configs_graph">[docs]</a>    <span class="k">def</span> <span class="nf">reset_configs_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Blueprint_graph</span><span class="p">,</span> <span class="n">graph_id</span><span class="p">:</span><span class="nb">int</span><span class="p">,):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">reset_config</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.reset_layers_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_layers_graph">[docs]</a>    <span class="k">def</span> <span class="nf">reset_layers_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">reset_layers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.set_new_sources_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.set_new_sources_graph">[docs]</a>    <span class="k">def</span> <span class="nf">set_new_sources_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">new_sources</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.set_new_sinks_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.set_new_sinks_graph">[docs]</a>    <span class="k">def</span> <span class="nf">set_new_sinks_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">new_sinks</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.set_new_sinks_and_sources_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.set_new_sinks_and_sources_graph">[docs]</a>    <span class="k">def</span> <span class="nf">set_new_sinks_and_sources_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">new_sinks_and_sources</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.set_new__vertices_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.set_new__vertices_graph">[docs]</a>    <span class="k">def</span> <span class="nf">set_new__vertices_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">new__vertices</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.print_nodelists_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.print_nodelists_graph">[docs]</a>    <span class="k">def</span> <span class="nf">print_nodelists_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">graph_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span> <span class="c1"># can print nodelists of selected graphs</span>
+        <span class="k">if</span> <span class="n">graph_ids</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">graph_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+                <span class="n">graph_controller</span><span class="o">.</span><span class="n">print_nodelist</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">graph_id</span> <span class="ow">in</span> <span class="n">graph_ids</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">print_nodelist</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.get_verticelist_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.get_verticelist_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_verticelist_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># returns nested verticelist for all graphs</span>
+        <span class="n">nested_verticelist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">graph_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+            <span class="n">verticelist</span> <span class="o">=</span> <span class="n">graph_controller</span><span class="o">.</span><span class="n">get_verticelist</span><span class="p">()</span>
+            <span class="n">nested_verticelist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">verticelist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nested_verticelist</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.get_sourcelist_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.get_sourcelist_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_sourcelist_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># returns nested sourcelist for all graphs</span>
+        <span class="n">nested_sourcelist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">graph_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+            <span class="n">sourcelist</span> <span class="o">=</span> <span class="n">graph_controller</span><span class="o">.</span><span class="n">get_list_of_sources</span><span class="p">()</span>
+            <span class="n">nested_sourcelist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sourcelist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nested_sourcelist</span></div>
+    
+<div class="viewcode-block" id="Cg_flex_controller.get_sinklist_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.get_sinklist_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_sinklist_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">graph_id</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span> <span class="c1">#returns nested sinklist for all graphs</span>
+        <span class="n">nested_sinklist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">graph_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+            <span class="n">sinklist</span> <span class="o">=</span> <span class="n">graph_controller</span><span class="o">.</span><span class="n">get_list_of_sinks</span><span class="p">()</span>
+            <span class="n">nested_sinklist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sinklist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nested_sinklist</span></div>
+    
+    <span class="k">def</span> <span class="nf">get_nodelists_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">graph_id</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span> <span class="c1"># returns nested nodelists of al lgraphs</span>
+        <span class="n">nested_nodelists</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">graph_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+            <span class="n">nodelist</span> <span class="o">=</span> <span class="n">graph_controller</span><span class="o">.</span><span class="n">get_nodelist_graph</span><span class="p">()</span>
+            <span class="n">nested_nodelists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nested_nodelists</span>
+
+<div class="viewcode-block" id="Cg_flex_controller.plot_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.plot_graph">[docs]</a>    <span class="k">def</span> <span class="nf">plot_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span> <span class="c1"># plots all graphs or graphs with listed id´s</span>
+        <span class="k">if</span> <span class="n">graph_ids</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">graph</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+                <span class="n">graph</span><span class="o">.</span><span class="n">showgraph</span><span class="p">(</span><span class="n">plot_title</span><span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;DAG_Graph Nr:</span><span class="si">{</span><span class="n">counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">graph_id</span> <span class="ow">in</span> <span class="n">graph_ids</span><span class="p">:</span>
+                    <span class="n">graph_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;DAG_Graph Nr:</span><span class="si">{</span><span class="n">graph_id</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">showgraph</span><span class="p">(</span><span class="n">plot_title</span><span class="o">=</span><span class="n">graph_title</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.get_nodelists_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.get_nodelists_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_nodelists_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nested_nodelist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+           <span class="n">nodelist</span> <span class="o">=</span>  <span class="n">controller</span><span class="o">.</span><span class="n">get_nodelist_graph</span><span class="p">()</span>
+           <span class="n">nested_nodelist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nested_nodelist</span></div>
+
+
+
+<span class="c1"># Methods dependencycontroller </span>
+<div class="viewcode-block" id="Cg_flex_controller.load_graph_nodelists_into_dependency_controller"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.load_graph_nodelists_into_dependency_controller">[docs]</a>    <span class="k">def</span> <span class="nf">load_graph_nodelists_into_dependency_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># first adjust the lenght of dependency_controlers, then load the nodelists from the graph_controller</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">load_nodelist_graph</span><span class="p">(</span><span class="n">nodelist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_nodelist_graph</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.make_dependencies"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.make_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">make_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_graph_nodelists_into_dependency_controller</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">dependency_controller</span><span class="o">.</span><span class="n">make_dependencies</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="Cg_flex_controller.reset_dependencies"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">reset_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">dependency_controller</span><span class="o">.</span><span class="n">make_dependencies</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.reset_configs_dependency"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_configs_dependency">[docs]</a>    <span class="k">def</span> <span class="nf">reset_configs_dependency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Blueprint_dependency</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">reset_config</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.reset_dependencies_specific"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_dependencies_specific">[docs]</a>    <span class="k">def</span> <span class="nf">reset_dependencies_specific</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">reset_dependencies_specific</span><span class="p">(</span><span class="n">node_id</span><span class="o">=</span><span class="n">node_ids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.replace_dependencies_by_initial_distributions"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.replace_dependencies_by_initial_distributions">[docs]</a>    <span class="k">def</span> <span class="nf">replace_dependencies_by_initial_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_dependencies_by_initial_distributions</span><span class="p">(</span><span class="n">node_ids</span><span class="o">=</span><span class="n">node_ids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.replace_all_dependencies_by_initial_distributions"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.replace_all_dependencies_by_initial_distributions">[docs]</a>    <span class="k">def</span> <span class="nf">replace_all_dependencies_by_initial_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">dependency_controller</span><span class="o">.</span><span class="n">replace_all_dependencies_by_initial_distributions</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.replace_dependencies_by_single_values"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.replace_dependencies_by_single_values">[docs]</a>    <span class="k">def</span> <span class="nf">replace_dependencies_by_single_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_ids_and_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="p">,</span><span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_dependencies_by_single_values</span><span class="p">(</span><span class="n">node_ids_and_values</span><span class="o">=</span><span class="n">node_ids_and_values</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.replace_dependencies_by_single_values_from_random_distribution"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.replace_dependencies_by_single_values_from_random_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">replace_dependencies_by_single_values_from_random_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">node_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span><span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">replace_dependencies_by_single_values_from_random_distribution</span><span class="p">(</span><span class="n">node_ids</span><span class="o">=</span><span class="n">node_ids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.replace_dependencies_by_single_values_abstract_id"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.replace_dependencies_by_single_values_abstract_id">[docs]</a>    <span class="k">def</span> <span class="nf">replace_dependencies_by_single_values_abstract_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abstract_ids_and_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]):</span>
+        <span class="k">for</span> <span class="nb">tuple</span> <span class="ow">in</span> <span class="n">abstract_ids_and_values</span><span class="p">:</span>
+            <span class="n">ids</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">find_graph_id_and_node_id_from_shuffle_index</span><span class="p">(</span><span class="n">id_abstract</span><span class="o">=</span><span class="nb">tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">graph_id</span><span class="p">,</span> <span class="n">node_id</span> <span class="o">=</span> <span class="n">ids</span> 
+            <span class="n">node_id_and_value</span> <span class="o">=</span>   <span class="p">[[</span><span class="n">node_id</span><span class="p">,</span><span class="nb">tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">replace_dependencies_by_single_values</span><span class="p">(</span><span class="n">graph_id</span><span class="o">=</span><span class="n">graph_id</span><span class="p">,</span> <span class="n">node_ids_and_values</span><span class="o">=</span><span class="n">node_id_and_value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.reset_dependencies_abstract_id"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_dependencies_abstract_id">[docs]</a>    <span class="k">def</span> <span class="nf">reset_dependencies_abstract_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids_abstract</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids_abstract</span><span class="p">:</span>
+            <span class="n">ids</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">find_graph_id_and_node_id_from_shuffle_index</span><span class="p">(</span><span class="n">id_abstract</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+            <span class="n">graph_id</span><span class="p">,</span> <span class="n">node_id</span> <span class="o">=</span> <span class="n">ids</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">reset_dependencies_specific</span><span class="p">(</span><span class="n">node_id</span><span class="o">=</span><span class="p">[</span><span class="n">node_id</span><span class="p">])</span></div>
+        
+<div class="viewcode-block" id="Cg_flex_controller.replace_dependencies_by_initial_distributions_abstract_id"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.replace_dependencies_by_initial_distributions_abstract_id">[docs]</a>    <span class="k">def</span> <span class="nf">replace_dependencies_by_initial_distributions_abstract_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids_abstract</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids_abstract</span><span class="p">:</span>
+            <span class="n">ids</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">find_graph_id_and_node_id_from_shuffle_index</span><span class="p">(</span><span class="n">id_abstract</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+            <span class="n">graph_id</span><span class="p">,</span> <span class="n">node_id</span> <span class="o">=</span> <span class="n">ids</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">replace_dependencies_by_initial_distributions_abstract_id</span><span class="p">(</span><span class="n">node_id</span><span class="o">=</span><span class="p">[</span><span class="n">node_id</span><span class="p">],</span><span class="n">graph_id</span><span class="o">=</span><span class="n">graph_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.replace_dependencies_by_single_random_values_abstract_id"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.replace_dependencies_by_single_random_values_abstract_id">[docs]</a>    <span class="k">def</span> <span class="nf">replace_dependencies_by_single_random_values_abstract_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids_abstract</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span> <span class="c1"># hier prüfen!!!!!</span>
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids_abstract</span><span class="p">:</span>
+            <span class="n">ids</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">find_graph_id_and_node_id_from_shuffle_index</span><span class="p">(</span><span class="n">id_abstract</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+            <span class="n">graph_id</span><span class="p">,</span> <span class="n">node_id</span> <span class="o">=</span> <span class="n">ids</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">replace_dependencies_by_single_values_from_random_distribution</span><span class="p">(</span><span class="n">node_id</span><span class="o">=</span><span class="p">[</span><span class="n">node_id</span><span class="p">],</span><span class="n">graph_id</span><span class="o">=</span><span class="n">graph_id</span><span class="p">)</span>
+            
+            <span class="n">distribution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">inputs_dependency</span><span class="o">.</span><span class="n">initial_value_distributions</span><span class="o">.</span><span class="n">get_distribution</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">se</span>
+        <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_sources</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodelist</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="o">.</span><span class="n">dependency</span> <span class="o">=</span> <span class="n">distribution</span><span class="o">.</span><span class="n">get_value_from_distribution</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.get_sourcelist_dependencymaker"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.get_sourcelist_dependencymaker">[docs]</a>    <span class="k">def</span> <span class="nf">get_sourcelist_dependencymaker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nested_lists_of_sources</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">list_of_sources</span> <span class="o">=</span> <span class="n">dependency_controller</span><span class="o">.</span><span class="n">get_sources</span><span class="p">()</span>
+            <span class="n">nested_lists_of_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_of_sources</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nested_lists_of_sources</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.set_sources_as_dependencies"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.set_sources_as_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">set_sources_as_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">dependency_controller</span><span class="o">.</span><span class="n">set_sources_as_dependencies</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.set_sources_as_distributions"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.set_sources_as_distributions">[docs]</a>    <span class="k">def</span> <span class="nf">set_sources_as_distributions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">dependency_controller</span><span class="o">.</span><span class="n">set_sources_as_distributions</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.set_sources_to_fixed_values"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.set_sources_to_fixed_values">[docs]</a>    <span class="k">def</span> <span class="nf">set_sources_to_fixed_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">dependency_controller</span><span class="o">.</span><span class="n">set_sources_to_fixed_values</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.get_nodelist_with_dependencies"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.get_nodelist_with_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">get_nodelist_with_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nested_nodelist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+           <span class="n">nodelist</span> <span class="o">=</span>  <span class="n">dependency_controller</span><span class="o">.</span><span class="n">get_nodelist_with_dependencies</span><span class="p">()</span>
+           <span class="n">nested_nodelist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodelist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nested_nodelist</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.show_dependencies"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.show_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">show_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ids</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span><span class="n">resolution</span> <span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span> <span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">show_dependencies</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.show_dependencies_enforced_3d_visualisation"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.show_dependencies_enforced_3d_visualisation">[docs]</a>    <span class="k">def</span> <span class="nf">show_dependencies_enforced_3d_visualisation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ids</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span><span class="n">resolution</span> <span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span> <span class="c1"># only 2 dimensions shown with rest set to 0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">show_dependencies_enforce_3d_plot</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.show_dependency_functions_only"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.show_dependency_functions_only">[docs]</a>    <span class="k">def</span> <span class="nf">show_dependency_functions_only</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ids</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span><span class="n">resolution</span> <span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span> <span class="p">):</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">show_dependency_function</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.show_dependency_errorterm_only"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.show_dependency_errorterm_only">[docs]</a>    <span class="k">def</span> <span class="nf">show_dependency_errorterm_only</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ids</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span><span class="n">resolution</span> <span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span> <span class="p">):</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="n">graph_id</span><span class="p">]</span><span class="o">.</span><span class="n">show_dependency_errorterm</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># methods samling controller</span>
+<div class="viewcode-block" id="Cg_flex_controller.load_full_nodelists_into_sampling_controller"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.load_full_nodelists_into_sampling_controller">[docs]</a>    <span class="k">def</span> <span class="nf">load_full_nodelists_into_sampling_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># first adjust the lenght of dependency_controlers, then load the nodelists</span>
+        <span class="n">full_nodelist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">single_nodelist</span> <span class="o">=</span> <span class="n">dependency_controller</span><span class="o">.</span><span class="n">get_nodelist_with_dependencies</span><span class="p">()</span>
+            <span class="n">full_nodelist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">single_nodelist</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">load_nodelist_dependencies</span><span class="p">(</span><span class="n">nodelist_nested</span><span class="o">=</span><span class="n">full_nodelist</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.reset_config_sampler"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_config_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">reset_config_sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span><span class="n">Blueprint_sampling</span><span class="p">):</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">reset_config</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.replace_id_shuffle_index"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.replace_id_shuffle_index">[docs]</a>    <span class="k">def</span> <span class="nf">replace_id_shuffle_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">replace_id_shuffle_index</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="Cg_flex_controller.find_graph_id_and_node_id_from_shuffle_index"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.find_graph_id_and_node_id_from_shuffle_index">[docs]</a>    <span class="k">def</span> <span class="nf">find_graph_id_and_node_id_from_shuffle_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">id_abstract</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+        <span class="n">graph_id</span><span class="p">,</span> <span class="n">node_id</span>  <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">find_graph_id_and_node_id_from_shuffle_index</span><span class="p">(</span><span class="n">id_abstract</span><span class="o">=</span><span class="n">id_abstract</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">graph_id</span><span class="p">,</span> <span class="n">node_id</span> </div>
+
+<div class="viewcode-block" id="Cg_flex_controller.sample_values_raw"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.sample_values_raw">[docs]</a>    <span class="k">def</span> <span class="nf">sample_values_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">number_of_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_full_nodelists_into_sampling_controller</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">sample_value_id_pairs</span><span class="p">(</span><span class="n">number_of_samples</span><span class="o">=</span><span class="n">number_of_samples</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">make_accumulated_samples</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">return_id_value_list_of_arrays</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_accumulated_per_id_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">return_samples_accumulated_per_id</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.sample_values_full"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.sample_values_full">[docs]</a>    <span class="k">def</span> <span class="nf">sample_values_full</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">number_of_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_values_raw</span><span class="p">(</span><span class="n">number_of_samples</span><span class="o">=</span><span class="n">number_of_samples</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">make_abstracted_samples</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_abstracted_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">return_samples_abstracted_id</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.show_values_histogramm_abstracted"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.show_values_histogramm_abstracted">[docs]</a>    <span class="k">def</span> <span class="nf">show_values_histogramm_abstracted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_abstract</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">graph_id</span><span class="p">,</span> <span class="n">node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_graph_id_and_node_id_from_shuffle_index</span><span class="p">(</span><span class="n">id_abstract</span><span class="o">=</span><span class="n">id_abstract</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">show_values_histogramm</span><span class="p">(</span><span class="n">graph_id</span><span class="o">=</span> <span class="n">graph_id</span><span class="p">,</span> <span class="n">node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.show_values_histogramm_raw"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.show_values_histogramm_raw">[docs]</a>    <span class="k">def</span> <span class="nf">show_values_histogramm_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">graph_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">show_values_histogramm</span><span class="p">(</span><span class="n">graph_id</span><span class="o">=</span><span class="n">graph_id</span><span class="p">,</span><span class="n">node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="Cg_flex_controller.export_value_id_samples_abstract"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.export_value_id_samples_abstract">[docs]</a>    <span class="k">def</span> <span class="nf">export_value_id_samples_abstract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;last export&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampling_controller</span><span class="o">.</span><span class="n">export_value_id_samples_abstract</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span></div>
+    
+
+
+<span class="c1">#serialization methods</span>
+
+<div class="viewcode-block" id="Cg_flex_controller.reset_config_main"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.reset_config_main">[docs]</a>    <span class="k">def</span> <span class="nf">reset_config_main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span><span class="n">Blueprint_main_controller</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.safe_dataset"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.safe_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">safe_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s2">&quot;last_dataset&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">object_serializer</span><span class="o">.</span><span class="n">set_object</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_value_arrays</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">object_serializer</span><span class="o">.</span><span class="n">safe_object</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.load_dataset"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.load_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s2">&quot;last_dataset&quot;</span><span class="p">)</span> <span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">object_serializer</span><span class="o">.</span><span class="n">load_object</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_value_arrays</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.safe_controller_state"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.safe_controller_state">[docs]</a>    <span class="k">def</span> <span class="nf">safe_controller_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">object_serializer</span><span class="o">.</span><span class="n">set_object</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">object_serializer</span><span class="o">.</span><span class="n">safe_object</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Cg_flex_controller.load_controller_state"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.load_controller_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_controller_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">config</span><span class="p">:</span><span class="n">Blueprint_main_controller</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Cg_flex_controller&quot;</span><span class="p">:</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">object_serializer</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">load_object</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="nb">object</span> <span class="o">=</span> <span class="n">serializer</span><span class="o">.</span><span class="n">return_object</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">object</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.safe_nodelists_dependencies_to_dict"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.safe_nodelists_dependencies_to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">safe_nodelists_dependencies_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># is saving the nodelist within the dependency_controller including its nested dependencyobject</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">dependency_controller</span><span class="o">.</span><span class="n">safe_nodelist_with_dependencies_pikle_gpy_models_to_dict</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;default_dependencysafe_graphcomponent_nr</span><span class="si">{</span><span class="n">counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.load_nodelists_dependencies_from_dict"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.load_nodelists_dependencies_from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">load_nodelists_dependencies_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span><span class="c1"># loading the nodelist within the dependency_controller including its nested dependencyobject</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">dependency_controller</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">:</span>
+            <span class="n">dependency_controller</span><span class="o">.</span><span class="n">load_nodelist_with_dependencies_pikle_gpy_models_from_dict</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;default_dependencysafe_graphcomponent_nr</span><span class="si">{</span><span class="n">counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Cg_flex_controller.safe_nodelists_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.safe_nodelists_graph">[docs]</a>    <span class="k">def</span> <span class="nf">safe_nodelists_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># lets user to safe nodelists for graphs individually</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">graph</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">safe_nodelist_pikle</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;default_grahphsafe_graphcomponent_nr</span><span class="si">{</span><span class="n">counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span></div>
+    
+<div class="viewcode-block" id="Cg_flex_controller.load_nodelists_graph"><a class="viewcode-back" href="../Controllermodule.html#Controllermodule.Cg_flex_controller.load_nodelists_graph">[docs]</a>    <span class="k">def</span> <span class="nf">load_nodelists_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># lets user load nodelists for graphs individually</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">graph</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_controller</span><span class="p">:</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">load_nodelist_pikle</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;default_grahphsafe_graphcomponent_nr</span><span class="si">{</span><span class="n">counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span></div></div>
+
+  
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">config_objects</span> <span class="kn">import</span>  <span class="n">blueprint_controller_test</span>
+
+    <span class="n">Stage</span> <span class="o">=</span> <span class="mi">10</span>
+
+
+    <span class="n">dag_controll</span> <span class="o">=</span> <span class="n">Cg_flex_controller</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">blueprint_controller_test</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Stage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">make_graphs</span><span class="p">()</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">plot_graphs_all</span><span class="p">()</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">safe_graphs</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">Stage</span> <span class="o">==</span> <span class="mf">1.5</span> <span class="ow">or</span> <span class="n">Stage</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">Stage</span> <span class="o">==</span><span class="mf">2.5</span> <span class="p">:</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">load_graphs</span><span class="p">()</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">plot_graph</span><span class="p">(</span><span class="n">graph_index</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">Stage</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">load_graph_nodelists_into_dependency_controller</span><span class="p">()</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">make_dependencies</span><span class="p">()</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">safe_dependencies_simple_pickle</span><span class="p">()</span>
+
+
+    <span class="k">if</span> <span class="n">Stage</span> <span class="o">==</span> <span class="mf">2.5</span><span class="p">:</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">load_dependencies_simple_pickle</span><span class="p">()</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">dependency_controller</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">show_dependencies_enforce_3d_plot</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+    
+    <span class="k">if</span> <span class="n">Stage</span> <span class="o">==</span> <span class="mf">3.0</span><span class="p">:</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">load_dependencies</span><span class="p">()</span>
+        <span class="n">dag_controll</span><span class="o">.</span><span class="n">load_full_nodelists_into_sampling_controller</span><span class="p">()</span>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Paul Giza.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
