@@ -98,7 +98,7 @@ class Graph_controller:
 
     def showgraph_layer_perspective(self, plot_title="DAG_Graph_by layer"):
         self.config.graphprocessor.load_graph(nodelist=self.nodelist)
-        self.config.graphprocessor.show_graph()
+        self.config.graphprocessor.show_graph_layered()
         
 
     def print_nodelist(self):

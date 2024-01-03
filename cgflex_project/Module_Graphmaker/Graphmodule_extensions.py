@@ -30,6 +30,12 @@ class IGraph_processor(metaclass=ABCMeta):
         Args:
             plot_title (str, optional): Is giving the plot a title, defaults to "DAG_Graph".
         """
+    def show_graph_layered(self, plot_title="DAG_Graph"):
+        """plotting the graph in a layer perspective
+
+        Args:
+            plot_title (str, optional): Is giving the plot a title, defaults to "DAG_Graph".
+        """
 
     @abstractmethod
     def make_edgelist(self):
@@ -68,12 +74,19 @@ class Graph_processor_networx_solo(IGraph_processor):
             nodesize = 100
         else: 
             nodesize = 300
+        print("yes")
         plt.figure(figsize=(12, 10))
         nx.draw_networkx(G, positions_f ,with_labels=True, node_color=node_colors, edge_color='lightblue', node_size=300)
         plt.ylabel("Layer-Axis")
         plt.xlabel("Thorus-Axis  (first dimension)")
         plt.title(plot_title)
         plt.show()
+
+        metrics = self._calculate_metrics(G=G)
+        print(metrics)
+        print("yes")
+
+
 
     def show_graph_layered(self, plot_title="DAG_Graph"):
         positions_f= self._make_positions_dictionary_top_down_layer_focus()
@@ -90,6 +103,30 @@ class Graph_processor_networx_solo(IGraph_processor):
         plt.xlabel("Thorus-Axis  (first dimension)")
         plt.title(plot_title)
         plt.show()
+
+    @staticmethod
+    def _calculate_metrics(G):
+  
+        sources = [node for node, deg in G.in_degree() if deg == 0]
+        sinks = [node for node, deg in G.out_degree() if deg == 0]
+        metrics = {
+            "number_of_nodes": G.number_of_nodes(),
+            "number_of_edges": G.number_of_edges(),
+            #"average_shortest_path_length": nx.average_shortest_path_length(G),
+            "density": nx.density(G),
+            "longest_path_length": len(nx.dag_longest_path(G)),
+            "max_degree": max(G.degree(), key=lambda item: item[1])[1],
+            "average_in_degree": sum(dict(G.in_degree()).values()) / G.number_of_nodes(),
+            "average_out_degree": sum(dict(G.out_degree()).values()) / G.number_of_nodes(),
+            "average_degree": sum(dict(G.degree()).values()) / G.number_of_nodes(),
+            "max_closeness": max(nx.closeness_centrality(G).items(), key=lambda x: x[1])[1],
+            "max_betweenness": max(nx.betweenness_centrality(G).items(), key=lambda x: x[1])[1],
+            "number_of_sources": len(sources),
+            "number_of_sinks": len(sinks)
+        }
+        return metrics
+        
+
 
     def _make_positions_dictionary_top_down_layer_focus(self):
         nodelist = self.nodelist

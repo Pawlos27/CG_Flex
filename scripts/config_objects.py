@@ -29,6 +29,7 @@ import cgflex_project.Module_Dependencymaker._inputloader as _inputloader
 import cgflex_project.Module_Dependencymaker._dependencymaker_tsd_functions as _dependencymaker_tsd_functions
 
 
+#Graphcontroller configurations
 
 
 blueprint_test=Blueprint_graph( nodemaker= nodemaker.Nodemaker(number_of_nodes=50, number_of_dimensions_thorus=1 ,scale_per_n=0.1, 
@@ -40,14 +41,25 @@ blueprint_test=Blueprint_graph( nodemaker= nodemaker.Nodemaker(number_of_nodes=5
                                                                  edgeprobability_thorus= verticemaker.Edge_probability_by_distance_decreasing_exponentially(), edge_outdegree_max= 10, edge_indegree_max= 30 ),
                                graphprocessor= Graphmodule_extensions.Graph_processor_networx_solo())
 
-config_graph_test=Blueprint_graph( nodemaker= nodemaker.Nodemaker(number_of_nodes=17, number_of_dimensions_thorus=1 ,scale_per_n=0.1,  l_distribution=nodemaker.Nodemaker_distribution_uniform(),
+config_graph_test=Blueprint_graph( nodemaker= nodemaker.Nodemaker(number_of_nodes=40, number_of_dimensions_thorus=1 ,scale_per_n=0.1,  l_distribution=nodemaker.Nodemaker_distribution_uniform(),
                                                                    t_distribution=nodemaker.Nodemaker_distribution_uniform()),
-                               layermaker= layermaker.Layer_setter_equinumber(4),
-                               sourcemaker= sourcemaker.Source_setter_by_probability (number_of_sources=2, shift_parameter=2),
-                               sinkmaker= sinkmaker.Sink_setter_by_probability(number_of_sinks=2, shift_parameter=2),
-                               edgemaker= verticemaker.edgemaker(layerlimit=8, number_of_edges=30, edgeprobability_layer= verticemaker.Edge_probability_by_distance_decreasing_inverse(),
-                                                                  edgeprobability_thorus= verticemaker.Edge_probability_by_distance_decreasing_exponentially(), edge_outdegree_max= 10, edge_indegree_max= 30 ),
+                               layermaker= layermaker.Layer_setter_equinumber(15),
+                               sourcemaker= sourcemaker.Source_setter_by_probability (number_of_sources=4, shift_parameter=2),
+                               sinkmaker= sinkmaker.Sink_setter_by_probability(number_of_sinks=4, shift_parameter=2),
+                               edgemaker= verticemaker.edgemaker(layerlimit=15, number_of_edges=55, edgeprobability_layer= verticemaker.Edge_probability_by_distance_decreasing_inverse(exponential_factor=1),
+                                                                  edgeprobability_thorus= verticemaker.Edge_probability_by_distance_decreasing_exponentially(exponential_factor=1), edge_outdegree_max= 4, edge_indegree_max= 5 ),
                                graphprocessor= Graphmodule_extensions.Graph_processor_networx_solo())
+
+config_graph_random =Blueprint_graph( nodemaker= nodemaker.Nodemaker(number_of_nodes=40, number_of_dimensions_thorus=1 ,scale_per_n=0.1,  l_distribution=nodemaker.Nodemaker_distribution_uniform(),
+                                                                   t_distribution=nodemaker.Nodemaker_distribution_uniform()),
+                               layermaker= layermaker.Layer_setter_continuous(),
+                               sourcemaker= sourcemaker.Source_setter_by_probability (number_of_sources=4, shift_parameter=2),
+                               sinkmaker= sinkmaker.Sink_setter_by_probability(number_of_sinks=4, shift_parameter=2),
+                               edgemaker= verticemaker.edgemaker(layerlimit=15, number_of_edges=50, edgeprobability_layer= verticemaker.Edge_probability_by_distance_decreasing_exponentially(exponential_factor=0.001),
+                                                                  edgeprobability_thorus= verticemaker.Edge_probability_by_distance_decreasing_inverse(exponential_factor=0.01), edge_outdegree_max= 10, edge_indegree_max= 10 ),
+                               graphprocessor= Graphmodule_extensions.Graph_processor_networx_solo())
+
+
 
 
 
@@ -62,7 +74,7 @@ blueprint_graph_linear_test=Blueprint_graph( nodemaker= nodemaker.Nodemaker(numb
 # graph different configs for tests, andere verteilungen, handgemachte sources und sinks
 
 
-    
+#Dependencycontroller configurations
 
 blueprint_dependency_test_3_different_range = Blueprint_dependency( dependency_setter=_dependencymaker.Dependency_setter_default( kernel_combination_maker= _kernelcombinator.Kernelcombinator_random_picking( kernel_operator_collection=_kernel_collection.Kernel__operator_collection_default(),
                                                                                                                                                                                                                kernel_selector= _kernelcombinator.Kernel_selector_random(max_dimensions_per_kernel= 1,
@@ -74,8 +86,9 @@ blueprint_dependency_test_3_different_range = Blueprint_dependency( dependency_s
                                                  tsd_collection= _dependencymaker_tsd_functions.Tsd_function_collection_full())
 
 
+#Samplingcontroller configurations
 blueprint_sampling= Blueprint_sampling(data_exporter=Samplingmodule_extensions.Csv_exporter_for_id_value_pairs())
 
-
+#Maincontroller configurations
 
 blueprint_controller_test = Blueprint_main_controller(object_serializer=Controllermodule_extensions.Object_serializer_pickle(), controller_coordinator= Controllermodule_extensions.Controller_coordinator_exact_order(list_of_dependency_configs=[blueprint_dependency_test_3_different_range],list_of_graph_configs=[blueprint_test]), sampling_controller=Sampling_controller(config=blueprint_sampling))
