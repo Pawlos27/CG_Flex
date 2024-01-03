@@ -8,8 +8,7 @@ from cgflex_project.Module_Sampler.Samplingmodule import Sampling_controller
 from cgflex_project.Module_Graphmaker.Graphmodule import Graph_controller
 import pandas as pd
 import numpy as np
-import pickle
-import os
+import matplotlib.pyplot as plt
 from cgflex_project.Shared_Classes.blueprints import Blueprint_graph, Blueprint_dependency, Blueprint_sampling
 from cgflex_project.Shared_Classes.blueprint_main_controller import Blueprint_main_controller
 
@@ -334,7 +333,41 @@ class Cg_flex_controller:
     def export_value_id_samples_abstract(self, filename="last export"):
         self.sampling_controller.export_value_id_samples_abstract(filename=filename)
 
+    def calculate_value_up_to_certain_node(self,node_id:int , graph_id=0 ):
+        value = self.sampling_controller.calculate_value_up_to_certain_node(node_id=node_id, graph_id=graph_id)
+        print(f"weitergeleiteter wert {value}")
+        return value
+
     
+    def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int, graph_id=0 , resolution = 100):
+
+        # Check if node_id_target is greater than node_id_dependency_
+        if node_id_target <= node_id_dependency:
+            raise ValueError("node_id_target must be greater than node_id_dependency_")
+        
+        # calculate values
+        range = self.dependency_controller[graph_id].inputs_dependency.range_of_output
+        input_values = np.linspace(range[0], range[1], resolution)
+        output_values = []
+        for input in input_values:
+            # set node to input value
+            self.replace_dependencies_by_single_values( node_ids_and_values = [(node_id_dependency, input)] ,graph_id=graph_id)
+            self.load_full_nodelists_into_sampling_controller()
+            value = self.calculate_value_up_to_certain_node(node_id=node_id_target, graph_id=graph_id)
+            output_values.append(value)
+
+        print(input_values)
+        print(output_values)
+        plt.scatter(input_values, output_values)
+        plt.xlabel('Input Values')
+        plt.ylabel('Output Values')
+        plt.title(f'Scatter Plot of dependency  of Node: {node_id_target} from Node: {node_id_dependency}')
+        plt.grid(True)
+        plt.show()
+            
+    
+    def show_dependency_from_2_nodes(self):
+        pass
 
 
 #serialization methods

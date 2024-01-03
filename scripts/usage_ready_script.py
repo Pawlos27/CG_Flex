@@ -1,4 +1,4 @@
-from config_objects import blueprint_controller_test
+from config_objects import blueprint_controller_test, config_main_controller_no_errorterm
 from cgflex_project.Main_Controller.Controllermodule import Cg_flex_controller
 
 

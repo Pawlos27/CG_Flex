@@ -35,6 +35,21 @@ class IErrordistribution(metaclass=ABCMeta): # all distributions are designed so
         pass
 
 
+class Error_distribution_no_error(IErrordistribution):
+
+    def __init__(self):
+        pass
+
+    def make_distribution(self,dimensionality:int, maximum_total_deviation:float ):
+        pass
+
+    def calc_from_distribution(self, x_inputs):
+        error_value = 0
+        return error_value
+    def show_error_distribution(self, label="errorterm"):
+        print(f" No Errorterm")
+
+
 class Error_distribution_normal(IErrordistribution):
 
     def __init__(self):
@@ -162,6 +177,13 @@ class IError_term_collection(metaclass=ABCMeta):
     def get_errorterm_list(self) -> List[IErrordistribution]:
      """Interface Method"""
 
+class Error_term_collection_solo_no_errorterm(IError_term_collection):
+
+    def __init__(self):
+        self.error_term_list = [ Error_distribution_no_error() ]   
+    def get_errorterm_list(self) -> List[IErrordistribution]:
+        list = self.error_term_list
+        return list                 
 
 class Error_term_collection_solo_normal_variable_variance(IError_term_collection):
 

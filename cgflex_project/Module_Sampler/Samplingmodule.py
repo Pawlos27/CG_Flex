@@ -57,7 +57,6 @@ class Sampling_controller:
             value_list.append(value)
         return value_list
 
-
     def get_value_from_node(self,graph_id:int, node_id: int ):
         value = self.nodelist_nested_list[graph_id][node_id].value
         return value
@@ -84,6 +83,27 @@ class Sampling_controller:
         graph_number = len(self.nodelist_nested_list)
         for i in range(graph_number):
             self._calculate_values_per_graph(graph_id=i)
+
+    def calculate_value_up_to_certain_node(self,node_id:int , graph_id=0 ):
+        target_value = None
+        for node in self.nodelist_nested_list[graph_id]:
+            if isinstance(node.dependency, (float, int)):
+                node.value = node.dependency
+            elif isinstance(node.dependency, distributions.IDistributions):
+                node.value = node.dependency.get_value_from_distribution()
+            elif isinstance(node.dependency, _dependencymaker.Dependencies):
+                node.value= node.dependency.calculate_normalized_value(x_values=self.get_values_from_nodelist(graph_id=graph_id,node_ids=node.parents))
+            elif isinstance(node.dependency, ITsd_functions):
+                node.value = node.dependency.calculate_value(x=self.tsd_counter)
+            
+            if node.id == node_id:
+                target_value = node.value
+                break
+        print(f"berechneter wert: {target_value}")
+        return target_value
+
+            
+
 
     def _make_value_id_samples_array(self): # makes list of id_value_pair arrays, each sub graph has an 2d array
         id_values_list_nested_one_sample = [] 
