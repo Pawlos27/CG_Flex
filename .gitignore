@@ -1,0 +1,6 @@
+# byte-compiled files in all directories
+**/__pycache__/
+**/*.pyc
+
+# generated data
+scripts/data/*
