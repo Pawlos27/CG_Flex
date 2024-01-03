@@ -3,4 +3,4 @@
 **/*.pyc
 
 # generated data
-scripts/data/*
+cgflex_project/Main_Controller/data/**

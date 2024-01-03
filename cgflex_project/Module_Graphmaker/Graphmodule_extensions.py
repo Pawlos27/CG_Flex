@@ -74,7 +74,6 @@ class Graph_processor_networx_solo(IGraph_processor):
             nodesize = 100
         else: 
             nodesize = 300
-        print("yes")
         plt.figure(figsize=(12, 10))
         nx.draw_networkx(G, positions_f ,with_labels=True, node_color=node_colors, edge_color='lightblue', node_size=300)
         plt.ylabel("Layer-Axis")
@@ -84,7 +83,7 @@ class Graph_processor_networx_solo(IGraph_processor):
 
         metrics = self._calculate_metrics(G=G)
         print(metrics)
-        print("yes")
+
 
 
 
