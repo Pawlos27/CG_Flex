@@ -386,36 +386,3 @@ class Cg_flex_controller:
             counter += 1
 
   
-
-if __name__ == "__main__":
-    from config_objects import  blueprint_controller_test
-
-    Stage = 10
-
-
-    dag_controll = Cg_flex_controller(config=blueprint_controller_test)
-    if Stage == 1:
-        dag_controll.make_graphs()
-        dag_controll.plot_graphs_all()
-        dag_controll.safe_graphs()
-    
-    if Stage == 1.5 or Stage == 2 or Stage ==2.5 :
-        dag_controll.load_graphs()
-        dag_controll.plot_graph(graph_index=1)
-
-    if Stage == 2:
-        dag_controll.load_graph_nodelists_into_dependency_controller()
-        dag_controll.make_dependencies()
-        dag_controll.safe_dependencies_simple_pickle()
-        dag_controll._get_total_output_range()
-
-
-    if Stage == 2.5:
-        dag_controll.load_dependencies_simple_pickle()
-        dag_controll.dependency_controller[0].show_dependencies_enforce_3d_plot(ids=[0,1,2])
-    
-    if Stage == 3.0:
-        dag_controll.load_dependencies()
-        dag_controll.load_full_nodelists_into_sampling_controller()
-
-

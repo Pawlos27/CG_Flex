@@ -2,7 +2,7 @@ from config_objects import blueprint_controller_test
 from cgflex_project.Main_Controller.Controllermodule import Cg_flex_controller
 
 
-Stage = 1.5
+Stage = 1
 
 if Stage == 1:
     dag_controll = Cg_flex_controller(config=blueprint_controller_test)
@@ -25,7 +25,7 @@ if Stage == 1:
 if Stage == 1.5 :
     dag_controll = Cg_flex_controller.load_controller_state(config=blueprint_controller_test,file_path=None, file_name="full_state_simple")
     dag_controll.show_dependencies_enforced_3d_visualisation(ids=[0,1,2,3,4])
-    dag_controll.show
+
 
 if Stage == 2 :
     dag_controll = Cg_flex_controller.load_controller_state(config=blueprint_controller_test,file_path=None, file_name="full_state_simple")
