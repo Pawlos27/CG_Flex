@@ -328,8 +328,6 @@ class Dependency_functions:   # the class containing the dependency functions ca
                     model = function.function_model
                     break                   
             if miss == True:
-                print(f"funktion nicht zugeordnet anpassung")
-                print( f" das sind die daten inputs:{inputs} ")
                 for function in functions:
                     miss = False
                     for dim in function.list_of_discontinuity_borders:
@@ -345,12 +343,10 @@ class Dependency_functions:   # the class containing the dependency functions ca
                             upper_border_check = dim.upper_border 
 
                         if inputs[dimensions_f] < lower_border_check or inputs[dimensions_f] > upper_border_check:
-                            print(f"{inputs[dimensions_f]} war kleiner als {lower_border_check} und größer als {upper_border_check} ")
                             miss = True
                             break
                     if miss == False:
                         model = function.function_model
-                        print(f"funktion im zweiten anlauf zugeordner")
                         break       
             if miss == True:
                 print(f"funktion immernoch nicht zugeordner")

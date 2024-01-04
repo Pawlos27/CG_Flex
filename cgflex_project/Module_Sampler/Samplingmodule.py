@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from  cgflex_project.Module_Dependencymaker._dependencymaker_tsd_functions import ITsd_functions
 
 
@@ -84,8 +85,9 @@ class Sampling_controller:
         for i in range(graph_number):
             self._calculate_values_per_graph(graph_id=i)
 
-    def calculate_value_up_to_certain_node(self,node_id:int , graph_id=0 ):
+    def _calculate_value_up_to_certain_node_and_replace_values(self,node_id:int, replaced_nodes:Tuple[int,float] , graph_id=0 ):
         target_value = None
+        print(f"replaced nodes : {replaced_nodes}")
         for node in self.nodelist_nested_list[graph_id]:
             if isinstance(node.dependency, (float, int)):
                 node.value = node.dependency
@@ -95,7 +97,16 @@ class Sampling_controller:
                 node.value= node.dependency.calculate_normalized_value(x_values=self.get_values_from_nodelist(graph_id=graph_id,node_ids=node.parents))
             elif isinstance(node.dependency, ITsd_functions):
                 node.value = node.dependency.calculate_value(x=self.tsd_counter)
-            
+            # replace values for specific nodes
+            for replaced_node in replaced_nodes:
+                print("node replace")
+                print(replaced_node)
+                print(f"replaced node id {replaced_node[0]}")
+                print(node.id)
+
+                if replaced_node[0] == node.id:
+                    node.value = replaced_node[1]
+                    print(f"node with id {node.id} replaced with {node.value}")
             if node.id == node_id:
                 target_value = node.value
                 break
@@ -103,6 +114,66 @@ class Sampling_controller:
         return target_value
 
             
+    def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int,range: Tuple[float,float], graph_id=0 , resolution = 100):
+        # Check if node_id_target is greater than node_id_dependency_
+        if node_id_target <= node_id_dependency:
+            raise ValueError("node_id_target must be greater than node_id_dependency_")
+    
+        # calculate values
+        input_values = np.linspace(range[0], range[1], resolution)
+        output_values = []
+        for input in input_values:
+            # set node to input value
+            value = self._calculate_value_up_to_certain_node_and_replace_values(node_id=node_id_target, graph_id=graph_id, replaced_nodes=[(node_id_dependency,input)] )
+            output_values.append(value)
+
+        print(input_values)
+        print(output_values)
+        plt.scatter(input_values, output_values)
+        plt.xlabel(f'Input Values - Node: {node_id_target}')
+        plt.ylabel(f'Output Values - Node: {node_id_dependency}')
+        plt.title(f'Scatter Plot of dependency  of Node: {node_id_target} from Node: {node_id_dependency}')
+        plt.grid(True)
+        plt.show()
+            
+    def show_dependency_from_2_nodes(self, node_id_target:int, node_id_dependency_x:int,node_id_dependency_y:int, range_f:Tuple[float,float], graph_id=0 , resolution = 10):
+        if node_id_target <= node_id_dependency_x:
+            raise ValueError("node_id_target must be greater than node_id_dependency_x")
+        if node_id_target <= node_id_dependency_y:
+            raise ValueError("node_id_target must be greater than node_id_dependency_y")
+
+        input_range = np.linspace(range_f[0], range_f[1], resolution)
+        # Generate meshgrid for input values
+        X, Y = np.meshgrid(input_range, input_range)
+
+        # Initialize an empty list to store output values
+        Z = []
+
+        # Calculate output for each pair in the meshgrid
+        for i in range(len(input_range)):
+            for j in range(len(input_range)):
+                x_val = X[i, j]
+                y_val = Y[i, j]
+                z_val = self._calculate_value_up_to_certain_node_and_replace_values(node_id=node_id_target, graph_id=graph_id, replaced_nodes=[(node_id_dependency_x,x_val),(node_id_dependency_y,y_val)] )
+                Z.append(z_val)
+
+        # Convert Z to a numpy array
+        Z = np.array(Z).reshape(X.shape)
+        # Create a 3D scatter plot
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.scatter(X, Y, Z)
+
+        ax.set_xlabel(f'Node_x: {node_id_dependency_x}' )
+        ax.set_ylabel(f'Node_y: {node_id_dependency_y}')
+        ax.set_zlabel(f'Output: Node {node_id_target} ')
+
+        plt.title(f'Scatter Plot of dependency  of Node: {node_id_target} from Node_x: {node_id_dependency_x} and from Node_y: {node_id_dependency_y}')
+        plt.show()
+
+
+
+
 
 
     def _make_value_id_samples_array(self): # makes list of id_value_pair arrays, each sub graph has an 2d array

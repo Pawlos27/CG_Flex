@@ -276,6 +276,7 @@ class Cg_flex_controller:
         full_nodelist = []
         for dependency_controller in self.dependency_controller:
             single_nodelist = dependency_controller.get_nodelist_with_dependencies()
+            single_nodelist.sort()
             full_nodelist.append(single_nodelist)
         self.sampling_controller.load_nodelist_dependencies(nodelist_nested=full_nodelist)
 
@@ -333,41 +334,20 @@ class Cg_flex_controller:
     def export_value_id_samples_abstract(self, filename="last export"):
         self.sampling_controller.export_value_id_samples_abstract(filename=filename)
 
-    def calculate_value_up_to_certain_node(self,node_id:int , graph_id=0 ):
-        value = self.sampling_controller.calculate_value_up_to_certain_node(node_id=node_id, graph_id=graph_id)
-        print(f"weitergeleiteter wert {value}")
-        return value
-
     
     def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int, graph_id=0 , resolution = 100):
 
-        # Check if node_id_target is greater than node_id_dependency_
-        if node_id_target <= node_id_dependency:
-            raise ValueError("node_id_target must be greater than node_id_dependency_")
-        
-        # calculate values
+        self.load_full_nodelists_into_sampling_controller()
         range = self.dependency_controller[graph_id].inputs_dependency.range_of_output
-        input_values = np.linspace(range[0], range[1], resolution)
-        output_values = []
-        for input in input_values:
-            # set node to input value
-            self.replace_dependencies_by_single_values( node_ids_and_values = [(node_id_dependency, input)] ,graph_id=graph_id)
-            self.load_full_nodelists_into_sampling_controller()
-            value = self.calculate_value_up_to_certain_node(node_id=node_id_target, graph_id=graph_id)
-            output_values.append(value)
+        self.sampling_controller.show_dependency_from_one_node(node_id_target=node_id_target, node_id_dependency=node_id_dependency, graph_id=graph_id,range=range , resolution=resolution)
 
-        print(input_values)
-        print(output_values)
-        plt.scatter(input_values, output_values)
-        plt.xlabel('Input Values')
-        plt.ylabel('Output Values')
-        plt.title(f'Scatter Plot of dependency  of Node: {node_id_target} from Node: {node_id_dependency}')
-        plt.grid(True)
-        plt.show()
-            
     
-    def show_dependency_from_2_nodes(self):
-        pass
+    def show_dependency_from_2_nodes(self, node_id_target:int, node_id_dependency_x:int,node_id_dependency_y:int,  graph_id=0 , resolution = 10):
+
+        self.load_full_nodelists_into_sampling_controller()
+        range_f = self.dependency_controller[graph_id].inputs_dependency.range_of_output
+        self.sampling_controller.show_dependency_from_2_nodes(node_id_target=node_id_target, node_id_dependency_x= node_id_dependency_x,node_id_dependency_y= node_id_dependency_y,  graph_id= graph_id , resolution = resolution, range_f=range_f)       
+
 
 
 #serialization methods
