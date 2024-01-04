@@ -26,12 +26,6 @@ class Cg_flex_controller:
         self.graph_controller = None
         self.dependency_controller = None
         self.sampling_controller = None
-        self.nodelist = None
-        self.id_value_arrays = None
-        self.samples_raw = None
-        self.samples_abstracted_id = None
-        self.samples_accumulated_per_id_raw = None
-        self.id_shuffle_index = None
         self.config = config
 
 
@@ -271,7 +265,23 @@ class Cg_flex_controller:
 
 
 
-# methods samling controller
+# methods sampling controller
+    
+    @property
+    def samples_raw(self):
+        samples = self.sampling_controller.return_samples_raw()
+        return samples
+
+    @property
+    def samples_abstracted_id(self):
+        samples = self.sampling_controller.return_samples_abstracted_id()
+        return samples
+
+    @property
+    def samples_accumulated_per_id(self):
+        samples = self.sampling_controller.return_samples_accumulated_per_id()
+        return samples
+
     def load_full_nodelists_into_sampling_controller(self): # first adjust the lenght of dependency_controlers, then load the nodelists
         full_nodelist = []
         for dependency_controller in self.dependency_controller:
@@ -282,6 +292,9 @@ class Cg_flex_controller:
 
     def reset_config_sampler(self, config:Blueprint_sampling):  
         self.sampling_controller.reset_config(config=config)
+
+    def reset_samples(self):
+        self.sampling_controller.reset_samples()
 
     def replace_id_shuffle_index(self):
         self.sampling_controller.replace_id_shuffle_index()
@@ -294,13 +307,10 @@ class Cg_flex_controller:
         self.load_full_nodelists_into_sampling_controller()
         self.sampling_controller.sample_value_id_pairs(number_of_samples=number_of_samples)
         self.sampling_controller.make_accumulated_samples()
-        self.samples_raw = self.sampling_controller.return_id_value_list_of_arrays()
-        self.samples_accumulated_per_id_raw = self.sampling_controller.return_samples_accumulated_per_id()
 
     def sample_values_full(self,number_of_samples=1):
         self.sample_values_raw(number_of_samples=number_of_samples)
         self.sampling_controller.make_abstracted_samples()
-        self.samples_abstracted_id = self.sampling_controller.return_samples_abstracted_id()
 
     def show_values_histogramm_abstracted(self, id_abstract:  Union[int, List[int]]):
         output_range = self._get_total_output_range()
@@ -356,12 +366,14 @@ class Cg_flex_controller:
         self.config = config
 
     def safe_dataset(self, file_path=None, file_name="last_dataset"):
-        self.config.object_serializer.set_object(object=self.id_value_arrays)
+        dataset = self.sampling_controller.return_samples_raw()
+        self.config.object_serializer.set_object(object=dataset)
         self.config.object_serializer.safe_object(file_path=file_path,file_name=file_name)
 
     def load_dataset(self, file_path=None, file_name="last_dataset") :
         self.config.object_serializer.load_object(file_path=file_path,file_name=file_name)
-        self.id_value_arrays
+        dataset = self.config.object_serializer.return_object()
+        self.sampling_controller.id_value_list_of_arrays = dataset
 
     def safe_controller_state(self, file_path=None, file_name="test"):
         self.config.object_serializer.set_object(object=self)

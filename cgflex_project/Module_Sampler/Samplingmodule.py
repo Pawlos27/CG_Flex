@@ -23,7 +23,6 @@ class Sampling_controller:
         self.samples_accumulated_per_id = None
         self.id_shuffle_index = None
         self.samples_abstracted_id = None
-        self.samples_accumulated_abstracted_id = None
         self.config = config
         self.tsd_counter = 0
 
@@ -36,10 +35,16 @@ class Sampling_controller:
     def reset_tsd_counter(self):
         self.tsd_counter = 0
 
+    def reset_samples(self):
+        self.id_value_list_of_arrays = None
+        self.samples_abstracted_id = None
+        self.samples_accumulated_per_id = None
+
+
     def return_nested_nodelist(self):
         return self.nodelist_nested_list
 
-    def return_id_value_list_of_arrays(self):
+    def return_samples_raw(self):
         return self.id_value_list_of_arrays
     
     def return_samples_accumulated_per_id(self):
@@ -48,8 +53,6 @@ class Sampling_controller:
     def return_samples_abstracted_id (self):
         return self.samples_abstracted_id 
     
-    def return_samples_accumulated_abstracted_id(self):
-        return self.samples_accumulated_abstracted_id 
     
     def get_values_from_nodelist(self,graph_id:int, node_ids:List[int]):
         value_list=[]
@@ -112,8 +115,7 @@ class Sampling_controller:
                 break
         print(f"berechneter wert: {target_value}")
         return target_value
-
-            
+           
     def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int,range: Tuple[float,float], graph_id=0 , resolution = 100):
         # Check if node_id_target is greater than node_id_dependency_
         if node_id_target <= node_id_dependency:
@@ -171,11 +173,6 @@ class Sampling_controller:
         plt.title(f'Scatter Plot of dependency  of Node: {node_id_target} from Node_x: {node_id_dependency_x} and from Node_y: {node_id_dependency_y}')
         plt.show()
 
-
-
-
-
-
     def _make_value_id_samples_array(self): # makes list of id_value_pair arrays, each sub graph has an 2d array
         id_values_list_nested_one_sample = [] 
         for nodelist in self.nodelist_nested_list:
@@ -204,9 +201,7 @@ class Sampling_controller:
     def reset_samples(self):
         self.id_value_list_of_arrays  = None 
         self.samples_accumulated_per_id = None
-        self.samples_abstracted_id = None
-        self.samples_accumulated_abstracted_id = None
-        
+        self.samples_abstracted_id = None 
 
     def make_accumulated_samples(self): # sorting all sampled values to the linked node_id, search algorhytm is matching structure of nested_id_pairs
         list_of_nested_accumulated_arrays = []
@@ -224,8 +219,7 @@ class Sampling_controller:
                 id_and_value = [id_node,samples_container_node]
                 list_of_nested_accumulated_arrays_per_graph.append(id_and_value)
             list_of_nested_accumulated_arrays.append(list_of_nested_accumulated_arrays_per_graph)
-        self.samples_accumulated_per_id = list_of_nested_accumulated_arrays 
-            
+        self.samples_accumulated_per_id = list_of_nested_accumulated_arrays           
 
     def print_values(self):
         data=[]
@@ -251,7 +245,6 @@ class Sampling_controller:
         plt.ylabel('Frequency')
         plt.title(f"Histogram of values for node {node_id} in graph {graph_id}")
         plt.show()
-
 
     def make_new_id_shuffle_index(self):
         id_index_dictionary_list = []
@@ -306,12 +299,10 @@ class Sampling_controller:
             one_sample_sorted = sorted(one_sample, key=lambda x: x[0])
             id_value_list_abstracted.append(one_sample_sorted)
         self.samples_abstracted_id = np.array(id_value_list_abstracted)
-        
-                
+                 
     def export_value_id_samples_abstract(self,  filename="last_export", filepath=None):
         data_list=self._make_data_for_export()
         self.config.data_exporter.export_data(data=data_list, filename=filename, filepath=filepath)
-
 
     def _make_data_for_export(self):
         data_list=[]

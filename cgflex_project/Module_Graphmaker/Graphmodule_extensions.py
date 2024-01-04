@@ -133,6 +133,7 @@ class Graph_processor_networx_solo(IGraph_processor):
         nodelist.reverse()
         for node in nodelist:
             positions[node.id]=[node.coord_t[0], -node.layer]
+        nodelist.sort()
         return positions 
 
     def _make_positions_dictionary_top_down(self):
@@ -141,6 +142,7 @@ class Graph_processor_networx_solo(IGraph_processor):
         nodelist.reverse()
         for node in nodelist:
             positions[node.id]=[node.coord_t[0], -node.coord_l]
+        nodelist.sort()
         return positions
     def _make_positions_dictionary_horizontal(self):
         nodelist = self.nodelist
@@ -148,6 +150,7 @@ class Graph_processor_networx_solo(IGraph_processor):
         nodelist.reverse()
         for node in nodelist:
             positions[node.id]=[node.coord_l,node.coord_t[0]]
+        nodelist.sort()
         return positions
     
     def make_edgelist(self):

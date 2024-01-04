@@ -2,12 +2,17 @@ from config_objects import blueprint_controller_test, config_main_controller_no_
 from cgflex_project.Main_Controller.Controllermodule import Cg_flex_controller
 
 
+# Stage setting for usage, methods and serialization is coded below
+
+Stage = 1 #Initiates Controller and Generates Graph
+#Stage = 1.5 # Checks Graph
+#Stage = 2
+#Stage = 2.5
+#Stage = 3
 
 
-Stage = 1
 
-
-
+# logic of stages
 
 if Stage == 1:
     dag_controll = Cg_flex_controller(config=blueprint_controller_test)
