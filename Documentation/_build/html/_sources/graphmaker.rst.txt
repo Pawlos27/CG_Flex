@@ -1,7 +1,0 @@
-graphmaker module
-=================
-
-.. automodule:: graphmaker
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -4,3 +4,6 @@
 
 # generated data
 cgflex_project/Main_Controller/data/**
+
+# generated Documentation
+Documentation/_build

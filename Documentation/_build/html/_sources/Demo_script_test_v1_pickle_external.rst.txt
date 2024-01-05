@@ -1,7 +1,0 @@
-Demo\_script\_test\_v1\_pickle\_external module
-===============================================
-
-.. automodule:: Demo_script_test_v1_pickle_external
-   :members:
-   :undoc-members:
-   :show-inheritance:

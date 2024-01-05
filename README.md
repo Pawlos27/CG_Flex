@@ -4,12 +4,13 @@
 ## Table of Contents
 1. [Description](#Description)
 2. [Installation](#Installation)
-3. [Feautures](#Feautures)
-4. [Usage_Steps](#Usage_Steps)
-5. [Usage_and_Scripts](#Usage_and_Scripts)
-6. [Demos](#Demos)
-7. [Extensions](#Extensions)
-8. [Remaining_Tasks](#Remaining_Tasks)
+3. [Generate Class and Parameter Documentation](#Generate_Class_and_Parameter_Documentation)
+4. [Feautures](#Feautures)
+5. [Usage_Steps](#Usage_Steps)
+6. [Usage_and_Scripts](#Usage_and_Scripts)
+7. [Demos](#Demos)
+8. [Extensions](#Extensions)
+9. [Remaining_Tasks](#Remaining_Tasks)
 
 
 ## Description
@@ -64,6 +65,20 @@ poetry install
 ```
 
 
+## Generate Class and Parameter Documentation
+
+Inside the Documentation directory you can generate the documentation
+
+simply run
+```bash
+make html
+```
+
+but when using powershell you might need to use 
+
+```bash
+.\make.bat html
+```
 
 ## Usage_and_Steps
 
