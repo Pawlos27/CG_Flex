@@ -68,7 +68,6 @@ class Sampling_controller:
     def _calculate_values_per_graph(self, graph_id): # calculate values only for targeted nodelist
             counter = 0
             for node in self.nodelist_nested_list[graph_id]:
-                print(f"element nr {counter} in calculation")
                 if isinstance(node.dependency, (float, int)):
                     node.value = node.dependency
                 elif isinstance(node.dependency, distributions.IDistributions):
@@ -90,7 +89,7 @@ class Sampling_controller:
 
     def _calculate_value_up_to_certain_node_and_replace_values(self,node_id:int, replaced_nodes:Tuple[int,float] , graph_id=0 ):
         target_value = None
-        print(f"replaced nodes : {replaced_nodes}")
+
         for node in self.nodelist_nested_list[graph_id]:
             if isinstance(node.dependency, (float, int)):
                 node.value = node.dependency
@@ -102,18 +101,11 @@ class Sampling_controller:
                 node.value = node.dependency.calculate_value(x=self.tsd_counter)
             # replace values for specific nodes
             for replaced_node in replaced_nodes:
-                print("node replace")
-                print(replaced_node)
-                print(f"replaced node id {replaced_node[0]}")
-                print(node.id)
-
                 if replaced_node[0] == node.id:
                     node.value = replaced_node[1]
-                    print(f"node with id {node.id} replaced with {node.value}")
             if node.id == node_id:
                 target_value = node.value
                 break
-        print(f"berechneter wert: {target_value}")
         return target_value
            
     def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int,range: Tuple[float,float], graph_id=0 , resolution = 100):
@@ -129,8 +121,6 @@ class Sampling_controller:
             value = self._calculate_value_up_to_certain_node_and_replace_values(node_id=node_id_target, graph_id=graph_id, replaced_nodes=[(node_id_dependency,input)] )
             output_values.append(value)
 
-        print(input_values)
-        print(output_values)
         plt.scatter(input_values, output_values)
         plt.xlabel(f'Input Values - Node: {node_id_target}')
         plt.ylabel(f'Output Values - Node: {node_id_dependency}')
@@ -192,7 +182,6 @@ class Sampling_controller:
         for i in range(number_of_samples):
             self.calculate_values_all_graphs()
             list_of_samples = self._make_value_id_samples_array()
-            print(list_of_samples)
             self.id_value_list_of_arrays.append(list_of_samples)
             #counter for tsd functions, resetable
             self.tsd_counter += 1
@@ -230,6 +219,8 @@ class Sampling_controller:
         df=pd.DataFrame(data)
         print (df)
         
+    
+
     def show_values_histogramm(self, graph_id:int ,node_id:int, output_range):
 
         data = self.samples_accumulated_per_id[graph_id][node_id][1]
@@ -275,11 +266,8 @@ class Sampling_controller:
             raise ValueError("there is no shuffle_id index yet, or the nodelists are not loaded into the sample controlelr yet")
         else:
             shuffle_index_sorted= sorted(shuffle_index, key=lambda x: x["abstract_id"])
-            print(shuffle_index_sorted)
             graph_id = shuffle_index_sorted[id_abstract]["graph_id"]
             node_id = shuffle_index_sorted[id_abstract]["node_id"]
-            print(graph_id)
-            print(f"and nodeid is {node_id}")
             return graph_id, node_id
 
     def make_abstracted_samples(self):

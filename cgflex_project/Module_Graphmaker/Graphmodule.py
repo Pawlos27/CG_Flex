@@ -94,12 +94,23 @@ class Graph_controller:
 
     def showgraph(self, plot_title="DAG_Graph"):
         self.config.graphprocessor.load_graph(nodelist=self.nodelist)
-        self.config.graphprocessor.show_graph()
+        self.config.graphprocessor.show_graph(plot_title=plot_title)
+
+
 
     def showgraph_layer_perspective(self, plot_title="DAG_Graph_by layer"):
         self.config.graphprocessor.load_graph(nodelist=self.nodelist)
         self.config.graphprocessor.show_graph_layered()
         
+    def print_graph_metrics(self, plot_title="DAG_Graph"):
+        self.config.graphprocessor.load_graph(nodelist=self.nodelist)
+        self.config.graphprocessor.print_graph_metrics()
+
+    def return_graph_metrics(self):
+        
+        self.config.graphprocessor.load_graph(nodelist=self.nodelist)
+        x = self.config.graphprocessor.return_graph_metrics()
+        return x
 
     def print_nodelist(self):
         self.config.graphprocessor.load_graph(nodelist=self.nodelist)
@@ -107,7 +118,7 @@ class Graph_controller:
 
 
 
-    def get_edgelist(self):
+    def get_verticelist(self):
         self.config.graphprocessor.load_graph(nodelist=self.nodelist)
         edgelist = self.config.graphprocessor.make_edgelist()
         return edgelist

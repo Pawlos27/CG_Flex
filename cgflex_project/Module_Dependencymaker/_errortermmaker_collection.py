@@ -78,7 +78,6 @@ class Error_distribution_normal_variable_variance(IErrordistribution):
         self.maxium_total_deviation = maximum_total_deviation
         kernel = self.kernel_maker.combinate_kernels(dimensions=dimensionality)
         maximum_sigma = maximum_total_deviation/6
-        print(maximum_sigma)
         self.function_model= self.function_maker.make_functions(kernel=kernel,errorterm_tolerance=0, range_of_output=(0,maximum_sigma))
     def calc_from_distribution(self, x_inputs:list):
         sigma_normalized = self.function_model.calculate_value(x_inputs=x_inputs)
@@ -145,7 +144,7 @@ class Error_distribution__mixture_model_interpolated(IErrordistribution):
         lists_of_mus_training = self.mixture_list_of_mus_maker.sample_lists_of_mus(size_of_samples=size_of_samples_mus,maximum_total_deviation=maximum_total_deviation)
         self.lists_of_mus_training = lists_of_mus_training
         number_of_components = len(lists_of_mus_training[0])
-        print(number_of_components)
+
         #we are training a model for each component of the interpolated mixture, the training points are from the representations of the component in the different sample mixtures
         for i in range(number_of_components):
             training_values_per_component = []
@@ -166,7 +165,6 @@ class Error_distribution__mixture_model_interpolated(IErrordistribution):
         distribution = distributions.Distribution_mixture_of_normals_truncated_at_3sigma_and_outlier_correction_for_interpolation(list_of_mus=list_of_mus_interpolated, sigma=self.sigma, upper_limit=self.maximum_total_deviation)
         error_value = distribution.get_value_from_distribution()
 
-        distribution.plot_distribution()
         if error_value > self.maximum_total_deviation:
             error_value = self.maximum_total_deviation
         return error_value
@@ -175,7 +173,6 @@ class Error_distribution__mixture_model_interpolated(IErrordistribution):
         self.list_of_mu_as_interpolation_models[0].plot_interpolator_model()
         distribution = distributions.Distribution_mixture_of_normals_truncated_at_3sigma_and_outlier_correction_for_interpolation(list_of_mus=self.lists_of_mus_training[0], sigma=self.sigma, upper_limit=self.maximum_total_deviation)
         distribution.plot_distribution( label= label + f" Distribution: {self.__class__.__name__}")
-        print("distribution plotted")
 
         """currently only showing one mixture, and interpolation mesh vor the possible positions of the first element of the mixture regarding to its training points"""
     def show_mixture_interpolated_for_certain_point(self, x_inputs):

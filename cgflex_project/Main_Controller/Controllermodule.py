@@ -73,6 +73,20 @@ class Cg_flex_controller:
         else:
             for graph_id in graph_ids:
                 self.graph_controller[graph_id].print_nodelist()
+    
+    def print_graph_metrics(self): 
+        df = self.return_graph_metrics()
+        print(df)
+
+
+    def return_graph_metrics(self): # can print nodelists of selected graphs
+        x = []
+        for graph_controller in self.graph_controller:
+            x_2 = graph_controller.return_graph_metrics()
+            x.append(x_2)
+        df = pd.concat(x, ignore_index=True)
+        return df
+    
 
     def get_verticelist_graph(self): # returns nested verticelist for all graphs
         nested_verticelist = []
@@ -112,6 +126,7 @@ class Cg_flex_controller:
             for graph_id in graph_ids:
                     graph_title = f"DAG_Graph Nr:{graph_id}"
                     self.graph_controller[graph_id].showgraph(plot_title=graph_title)
+                    
 
     def plot_graph_by_layer(self,graph_ids: Optional[List[int]] = None): # plots all graphs or graphs with listed id´s
         if graph_ids == None:

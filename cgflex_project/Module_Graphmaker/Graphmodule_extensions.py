@@ -39,12 +39,19 @@ class IGraph_processor(metaclass=ABCMeta):
 
     @abstractmethod
     def make_edgelist(self):
-     """creates a list of vertices used for reprecenting the edges"""
+        """creates a list of vertices used for reprecenting the edges"""
 
     @abstractmethod
     def print_nodelist(self):
-     """printing the list of nodes in tabular form"""
+        """printing the list of nodes in tabular form"""
 
+    @abstractmethod
+    def return_graph_metrics(self):
+        """returning metrics of graph"""
+    
+    @abstractmethod
+    def print_graph_metrics(self):
+        """returning metrics of graph"""
 
 class Graph_processor_networx_solo(IGraph_processor):
     """implementation using networkx library to provide the functionalities """
@@ -61,7 +68,6 @@ class Graph_processor_networx_solo(IGraph_processor):
         
     def show_graph(self, plot_title="DAG_Graph"):
         positions_f= self._make_positions_dictionary_top_down()
-        self.print_nodelist()
         # Create a color map as a dictionary
         color_map = {node.id: 'red' if node.source else ('yellow' if node.sink else 'grey') for node in self.nodelist}
         G = nx.DiGraph()
@@ -81,11 +87,17 @@ class Graph_processor_networx_solo(IGraph_processor):
         plt.title(plot_title)
         plt.show()
 
+
+    def print_graph_metrics(self):
+        x = self.return_graph_metrics
+        print (x)
+
+    def return_graph_metrics(self):
+        G = nx.DiGraph()
+        G.add_edges_from(self.verticelist)
         metrics = self._calculate_metrics(G=G)
-        print(metrics)
-
-
-
+        df=pd.DataFrame(metrics)
+        return df
 
     def show_graph_layered(self, plot_title="DAG_Graph"):
         positions_f= self._make_positions_dictionary_top_down_layer_focus()
@@ -109,20 +121,20 @@ class Graph_processor_networx_solo(IGraph_processor):
         sources = [node for node, deg in G.in_degree() if deg == 0]
         sinks = [node for node, deg in G.out_degree() if deg == 0]
         metrics = {
-            "number_of_nodes": G.number_of_nodes(),
-            "number_of_edges": G.number_of_edges(),
-            #"average_shortest_path_length": nx.average_shortest_path_length(G),
-            "density": nx.density(G),
-            "longest_path_length": len(nx.dag_longest_path(G)),
-            "max_degree": max(G.degree(), key=lambda item: item[1])[1],
-            "average_in_degree": sum(dict(G.in_degree()).values()) / G.number_of_nodes(),
-            "average_out_degree": sum(dict(G.out_degree()).values()) / G.number_of_nodes(),
-            "average_degree": sum(dict(G.degree()).values()) / G.number_of_nodes(),
-            "max_closeness": max(nx.closeness_centrality(G).items(), key=lambda x: x[1])[1],
-            "max_betweenness": max(nx.betweenness_centrality(G).items(), key=lambda x: x[1])[1],
-            "number_of_sources": len(sources),
-            "number_of_sinks": len(sinks)
-        }
+            "number_of_nodes": [G.number_of_nodes()],
+            "number_of_edges": [G.number_of_edges()],
+            #"average_shortest_path_length": [nx.average_shortest_path_length(G)],
+            "density": [nx.density(G)],
+            "longest_path_length": [len(nx.dag_longest_path(G))],
+            "max_degree": [max(G.degree(), key=lambda item: item[1])[1]],
+            "average_in_degree": [sum(dict(G.in_degree()).values()) / G.number_of_nodes()],
+            "average_out_degree": [sum(dict(G.out_degree()).values()) / G.number_of_nodes()],
+            "average_degree": [sum(dict(G.degree()).values()) / G.number_of_nodes()],
+            "max_closeness": [max(nx.closeness_centrality(G).items(), key=lambda x: x[1])[1]],
+            "max_betweenness": [max(nx.betweenness_centrality(G).items(), key=lambda x: x[1])[1]],
+            "number_of_sources": [len(sources)],
+            "number_of_sinks": [len(sinks)]}
+
         return metrics
         
 
