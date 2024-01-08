@@ -37,7 +37,12 @@ class Nodemaker_distribution_random_full(INodemaker_distribution_collection):
     
     def __init__(self):
         """ Initializes the distribution list with specific distribution instances. """
-        self.distribution_list=[Distribution_uniform(min=0, max=1),Distribution_normal_truncated_at_3sigma(mu=0.5,sigma=0.16666),Distribution_mixture_of_normals_truncated_custom(list_of_mus=[0.0, 0.075,  0.15,  0.225,   0.3,   0.375,  0.625,  0.7,   0.775,  0.85, 0.925,], sigma=0.05)] 
+        self.distribution_list=[Distribution_uniform(min=0, max=1),
+                                Distribution_normal_truncated_at_3sigma(mu=0.5,sigma=0.16666),
+                                Distribution_mixture_of_normals_truncated_custom(list_of_mus=[0.0, 0.075,  0.15,  0.225,   0.3,   0.375,  0.625,  0.7,   0.775,  0.85, 0.925,], sigma=0.05),
+                                Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_borders_and_uniform_at_construction(sigma= 0.07, components= 9),
+                                Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform_at_construction(sigma= 0.08, components= 11),
+                                Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(lower_border= 0, upper_border= 1)] 
     def get_distribution(self):
         """ Randomly selects and returns a distribution from the distribution list.
         """

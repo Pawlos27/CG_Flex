@@ -42,6 +42,8 @@ class Blueprint_dependency:
     def __post_init__(self):
         # set the range after initialization
         self.tsd_collection.set_range(range=self.range_of_output)
+        self.initial_value_distributions.initialize_distributions(range=self.range_of_outputange)
+
 
 @dataclass
 class Blueprint_sampling:

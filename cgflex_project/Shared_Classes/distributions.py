@@ -23,7 +23,7 @@ class IDistributions(metaclass=ABCMeta): # used in 1: Nodemaker 2:IErrordistribu
         pass
 
 class Distribution_uniform(IDistributions):
-    def __init__(self, min:float, max=float):
+    def __init__(self, min:float, max:float):
         self.min = min
         self.max = max
     def get_value_from_distribution(self):
@@ -838,7 +838,7 @@ class Complex_distribution_list_of_Mus_maker:
         self.fixed_number_of_modes = fixed_number_of_modes
 
     def return_sigma(self)-> float:
-        sigma = self.maximum_distance/1.5
+        sigma = self.sigma
         return sigma
     def sample_lists_of_mus(self, size_of_samples:int ,  maximum_total_deviation:float)-> List[List[float]]:
         lists_of_mus = []
@@ -858,6 +858,7 @@ class Complex_distribution_list_of_Mus_maker:
         denominator = (self.total_number_of_elements-1)+4+(modes*(self.maximum_distance_between_modes_factor-1))
         maximum_distance = self.maximum_total_deviation/denominator
         self.maximum_distance = maximum_distance
+        self.sigma = maximum_distance/1.5
 
     def _make_list_for_components_per_mode(self, modes:int):
         if self.multimodal_normal == True :
@@ -878,7 +879,6 @@ class Complex_distribution_list_of_Mus_maker:
         maximum_distance_between_modes_factor = self.maximum_distance_between_modes_factor
         distribution = self.distribution_for_distances_between_components
         list_of_mus = [maximum_distance * 2]
-
         for mode_index in range(modes):
             elements_in_mode = components_per_mode[mode_index]
             if elements_in_mode > 1:
@@ -888,31 +888,34 @@ class Complex_distribution_list_of_Mus_maker:
                 distances_array_descending = np.sort(distances_array_descending)[::-1]
                 distances_array_ascending = distribution.get_distance_array(size=size_ascending_array, maximum_distance=maximum_distance)
                 distances_array_ascending = np.sort(distances_array_ascending)
-
                 for i in distances_array_descending:
                     new_mu = list_of_mus[-1] + i
                     list_of_mus.append(new_mu)
                 for i in distances_array_ascending:
                     new_mu = list_of_mus[-1] + i
                     list_of_mus.append(new_mu)
-
             if mode_index < modes - 1:
                 distance_between_modes_factor = np.random.uniform(low=1.5, high=maximum_distance_between_modes_factor)
                 x = list_of_mus[-1] + (maximum_distance * distance_between_modes_factor)
                 list_of_mus.append(x)
         list_of_mus = list_of_mus[:self.total_number_of_elements]
+        # stretch and correct, 2 times because sigma has iterative effect, at first round slightly to big at second time, sligtly to small, we aim for to small
+        for i in range(2):
+            stretch_factor = ((self.maximum_total_deviation - self.sigma*3 ) - 0) / (list_of_mus[-1] - 0)
+            list_of_mus = [mu * stretch_factor for mu in list_of_mus]
+            self.sigma = self.sigma*stretch_factor
         return list_of_mus
         
 
 
 
 class Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(IDistributions):
-    def __init__(self, mixture_list_of_mus_maker = Complex_distribution_list_of_Mus_maker, lower_border = 0 , upper_border = 1):
+    def __init__(self, mixture_list_of_mus_maker : Complex_distribution_list_of_Mus_maker = Complex_distribution_list_of_Mus_maker(), lower_border = 0 , upper_border = 1):
 
         maximum_total_deviation = upper_border - lower_border
         self.lists_of_mus =mixture_list_of_mus_maker.sample_lists_of_mus(size_of_samples=1,maximum_total_deviation=maximum_total_deviation)
         self.sigma = mixture_list_of_mus_maker.return_sigma()
-        self.distribution = Distribution_mixture_of_normals_truncated_at_3sigma(list_of_mus=self.lists_of_mus[0], sigma=self.sigma)
+        self.distribution = Distribution_mixture_of_normals_truncated_custom(list_of_mus=self.lists_of_mus[0], sigma=self.sigma, lower_border= lower_border, upper_border=upper_border)
 
 
 
@@ -954,10 +957,10 @@ if __name__ == "__main__":
     #x = Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_borders_and_uniform_at_construction( sigma=0.1)
    
     #x = Distribution_normal_truncated_at_3sigma_random_all_inside_borders_random_at_construction()
-    x = Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(mixture_list_of_mus_maker= Complex_distribution_list_of_Mus_maker(total_number_of_elements=14,distribution_for_distances_between_components=Collection_of_mixture_distance_distribution_trucated_inwards_steep()))
-
+    ##x = Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(mixture_list_of_mus_maker= Complex_distribution_list_of_Mus_maker(total_number_of_elements=14,distribution_for_distances_between_components=Collection_of_mixture_distance_distribution_trucated_inwards_steep()))
+    x= Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_borders_and_uniform_at_construction(sigma= 0.07, components= 9)
     #x = Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(mixture_list_of_mus_maker= Complex_distribution_list_of_Mus_maker())
-
+    #x = Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform_at_construction(sigma= 0.08, components= 11)] 
 
 
     #x.get_array_from_distribution(size=2)
