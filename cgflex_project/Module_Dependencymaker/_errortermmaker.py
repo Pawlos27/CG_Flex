@@ -27,7 +27,7 @@ class IErrorterm_maker(metaclass=ABCMeta):
      """Interface Method"""    
 
 class Errorterm_maker_default(IErrorterm_maker):
-    def __init__(self , errorterm_collection: _errortermmaker_collection.IError_term_collection, maximum_tolerance:float): # maximum relative tolarce is a percentage of the total value range of the base function
+    def __init__(self , errorterm_collection: _errortermmaker_collection.IError_term_collection, maximum_tolerance:float = 0.1): # maximum relative tolarce is a percentage of the total value range of the base function
         self.errorterm_collection_list = errorterm_collection.get_errorterm_list()
         self.maximum_tolerance = maximum_tolerance
       

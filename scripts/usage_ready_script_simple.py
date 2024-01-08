@@ -1,9 +1,10 @@
-from config_objects import blueprint_controller_test
+from config_objects import config_main_controller_no_errorterm, config_main_controller_default
 from cgflex_project.Main_Controller.Controllermodule import Cg_flex_controller
 
 
-Stage = 1
 
+
+config = config_main_controller_default
 Stage = 1 #Initiates Controller generates graph, dependencies and samples
 #Stage = 1.5 # Visual dependencies
 #Stage = 2
@@ -12,7 +13,7 @@ Stage = 1 #Initiates Controller generates graph, dependencies and samples
 
 if Stage == 1:
     #generate graph
-    dag_controll = Cg_flex_controller(config=blueprint_controller_test)
+    dag_controll = Cg_flex_controller(config=config)
     dag_controll.make_graphs(number_of_decoupled_elements=1)
     dag_controll.plot_graph()
     # generate dependency
@@ -32,12 +33,12 @@ if Stage == 1:
     #print(samples_abstracted)
 
 if Stage == 1.5 :
-    dag_controll = Cg_flex_controller.load_controller_state(config=blueprint_controller_test,file_path=None, file_name="full_state_simple")
+    dag_controll = Cg_flex_controller.load_controller_state(config=config,file_path=None, file_name="full_state_simple")
     dag_controll.show_dependencies_enforced_3d_visualisation(ids=[0,1,2,3,4])
 
 
 if Stage == 2 :
-    dag_controll = Cg_flex_controller.load_controller_state(config=blueprint_controller_test,file_path=None, file_name="full_state_simple")
+    dag_controll = Cg_flex_controller.load_controller_state(config=config,file_path=None, file_name="full_state_simple")
     
 
     dag_controll.set_sources_as_tsd_function()

@@ -84,7 +84,7 @@ class Error_distribution_normal_variable_variance(IErrordistribution):
         sigma_normalized = self.function_model.calculate_value(x_inputs=x_inputs)
         if sigma_normalized < 0:
             sigma_normalized = 0
-        error_value = distributions.Distribution_normal_truncated_at_3sigma_bound_to_zero(sigma= sigma_normalized)
+        error_value = distributions.Distribution_normal_truncated_at_3sigma_bound_to_zero(sigma= sigma_normalized).get_value_from_distribution()
         return error_value
     def show_error_distribution(self, label="errorterm" ):
         self.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=30, label= label + f" Distribution: {self.__class__.__name__}" )
@@ -165,6 +165,7 @@ class Error_distribution__mixture_model_interpolated(IErrordistribution):
             list_of_mus_interpolated.append(value_mu[0])
         distribution = distributions.Distribution_mixture_of_normals_truncated_at_3sigma_and_outlier_correction_for_interpolation(list_of_mus=list_of_mus_interpolated, sigma=self.sigma, upper_limit=self.maximum_total_deviation)
         error_value = distribution.get_value_from_distribution()
+
         distribution.plot_distribution()
         if error_value > self.maximum_total_deviation:
             error_value = self.maximum_total_deviation
@@ -299,7 +300,7 @@ class Error_term_collection_Tier_6(IError_term_collection):
         list = self.error_term_list
         return list
 
-class Error_term_collection_Tier_6(IError_term_collection):
+class Error_term_collection_Tier_7(IError_term_collection):
 
     def __init__(self):
         self.error_term_list = [Error_distribution_no_error(), Error_distribution_normal(),Error_distribution_normal_variable_variance(), Error_distribution_mixture_model_normal_multimodal(), Error_distribution_mixture_model_complex(), Error_distribution__mixture_model_interpolated() ]                                                                                                                                 
