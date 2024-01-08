@@ -16,112 +16,6 @@ from  cgflex_project.Module_Dependencymaker._inputloader import make_grid_for_hy
 from copy import deepcopy
 
 
-
-class IErrorterm_mixture_distance_distribution_collection(metaclass=ABCMeta):
-    @abstractmethod
-    def get_distance_array(self, size:int,maximum_distance:float ):
-        """Interface Method"""
-
-
-class Errorterm_mixture_distance_distribution_random(IErrorterm_mixture_distance_distribution_collection):
-    def __init__(self):
-        self.distribution_list=[Distribution_uniform(min=0, max=1),Distribution_mixture_of_normals_truncated_custom(list_of_mus=[1], sigma=0.00),Distribution_uniform(min=0.3, max=0.6),Distribution_mixture_of_normals_truncated_custom(list_of_mus=[0.1], sigma=0.1,lower_border=0.25, upper_border=0.55),Distribution_uniform(min=0.1, max=0.1),Distribution_uniform(min=0.9, max=1),Distribution_mixture_of_normals_truncated_custom(list_of_mus=[0.9,1,1.1,], sigma=0.7), Distribution_mixture_of_normals_truncated_custom(list_of_mus=[0.9,1,1.1,], sigma=0.2),Distribution_mixture_of_normals_truncated_custom(list_of_mus=[0.4], sigma=1)] 
-    def get_distance_array(self, size,maximum_distance):
-       random_distribution = random.choice(self.distribution_list)
-       distance_array = random_distribution.get_array_from_distribution(size=size)
-       distance_array = distance_array*maximum_distance
-       return distance_array
-    
-class Errorterm_mixture_distance_distribution_uniform(IErrorterm_mixture_distance_distribution_collection):
-    def __init__(self):
-        self.distribution_list=[Distribution_uniform(min=0.5, max=0.6)] 
-    def get_distance_array(self, size,maximum_distance):
-       random_distribution = random.choice(self.distribution_list)
-       distance_array = random_distribution.get_array_from_distribution(size=size)
-       distance_array = distance_array*maximum_distance
-       return distance_array
-
-class Errorterm_mixture_distance_distribution_normal_mixture(IErrorterm_mixture_distance_distribution_collection):
-    def __init__(self):
-        self.distribution=Distribution_mixture_of_normals_truncated_custom(list_of_mus=[0.4], sigma=1)
-    def get_distance_array(self, size,maximum_distance):
-       distribution = self.distribution
-       distance_array = distribution.get_array_from_distribution(size=size)
-       distance_array = distance_array*maximum_distance
-       return distance_array
-
-class Complex_distribution_list_of_Mus_maker:
-    def __init__(self,number_of_maximum_modes: int ,  total_number_of_elements: int, distribution_for_distances_between_components: IErrorterm_mixture_distance_distribution_collection,  maximum_distance_between_modes_factor=5) -> None:
-        if number_of_maximum_modes <=0:
-            raise ValueError("number of modes must be >0")
-        else:
-            pass
-        self.maximum_distance_between_modes_factor = maximum_distance_between_modes_factor
-        self.total_number_of_elements = total_number_of_elements
-        self.number_of_maximum_modes = number_of_maximum_modes
-        self.distribution_for_distances_between_components = distribution_for_distances_between_components
-
-    def return_sigma(self)-> float:
-        sigma = self.maximum_distance/1.5
-        return sigma
-    def sample_lists_of_mus(self, size_of_samples:int ,  maximum_total_deviation:float)-> List[List[float]]:
-        lists_of_mus = []
-        modes = random.randint(1, self.number_of_maximum_modes)
-        self.maximum_total_deviation = maximum_total_deviation
-        self._calculate_maximum_distance_for_mixture_model(modes=modes)
-        self._make_list_for_components_per_mode(modes=modes)
-        for i in range(size_of_samples):
-            modes = random.randint(1, self.number_of_maximum_modes)
-            self._make_list_for_components_per_mode(modes=modes)
-            single_list_of_mus = self._make_list_of_mus_for_mixture_model(modes=modes)
-            lists_of_mus.append(single_list_of_mus)
-        return lists_of_mus
-
-    def _calculate_maximum_distance_for_mixture_model(self,modes:int): # max distances between elements, + borders(4)+ distances between modes
-        denominator = (self.total_number_of_elements-1)+4+(modes*(self.maximum_distance_between_modes_factor-1))
-        maximum_distance = self.maximum_total_deviation/denominator
-        self.maximum_distance = maximum_distance
-
-    def _make_list_for_components_per_mode(self, modes:int):
-        components_per_mode = [1 for _ in range(modes)]
-        # Distribute the remaining elements (if any) after each mode has at least 1
-        remaining_elements = self.total_number_of_elements - modes
-        for i in range(remaining_elements):
-            components_per_mode[i % modes] += 1
-        self.components_per_mode = components_per_mode
-        print(components_per_mode)
-
-    def _make_list_of_mus_for_mixture_model(self, modes:int ) ->List[float]:
-
-        components_per_mode = self.components_per_mode
-        maximum_distance = self.maximum_distance
-        maximum_distance_between_modes_factor = self.maximum_distance_between_modes_factor
-        distribution = self.distribution_for_distances_between_components
-        list_of_mus = [maximum_distance * 2]
-
-        for mode_index in range(modes):
-            elements_in_mode = components_per_mode[mode_index]
-            if elements_in_mode > 1:
-                size_descending_array = random.randint(1, elements_in_mode - 1)
-                size_ascending_array = elements_in_mode - 1 - size_descending_array
-                distances_array_descending = distribution.get_distance_array(size=size_descending_array, maximum_distance=maximum_distance)
-                distances_array_descending = np.sort(distances_array_descending)[::-1]
-                distances_array_ascending = distribution.get_distance_array(size=size_ascending_array, maximum_distance=maximum_distance)
-                distances_array_ascending = np.sort(distances_array_ascending)
-
-                for i in distances_array_descending:
-                    new_mu = list_of_mus[-1] + i
-                    list_of_mus.append(new_mu)
-                for i in distances_array_ascending:
-                    new_mu = list_of_mus[-1] + i
-                    list_of_mus.append(new_mu)
-
-            if mode_index < modes - 1:
-                distance_between_modes_factor = np.random.uniform(low=1.5, high=maximum_distance_between_modes_factor)
-                x = list_of_mus[-1] + (maximum_distance * distance_between_modes_factor)
-                list_of_mus.append(x)
-        list_of_mus = list_of_mus[:self.total_number_of_elements]
-        return list_of_mus
         
 
 
@@ -270,7 +164,7 @@ class Interpolation_model_RBFInterpolator_datapoints_grid(IInterpolation_model):
         self.data_points = data_points
 
 
-class Interpolation_model_RBFInterpolator_datapoints_random(IInterpolation_model): # we need controlls for the string used to set the kernel
+class Interpolation_model_RBFInterpolator_datapoints_random(IInterpolation_model):
     def __init__(self) -> None:
         self.interpolation_kernel = "gaussian"
 
@@ -314,13 +208,13 @@ class Interpolation_model_RBFInterpolator_datapoints_random(IInterpolation_model
 
 if __name__ == "__main__":
   
-
+    # interpolation demonstration
 
     interpolator = Interpolation_model_RBFInterpolator_datapoints_grid()
     number = interpolator.return_number_of_required_values(dimensions=2)
     print(number)
     list_interpolation_models = []
-    mus_listen_maker = Complex_distribution_list_of_Mus_maker(number_of_maximum_modes=2, total_number_of_elements=10, distribution_for_distances_between_components=Errorterm_mixture_distance_distribution_normal_mixture(),maximum_distance_between_modes_factor=5)
+    mus_listen_maker = Complex_distribution_list_of_Mus_maker(number_of_maximum_modes=2, total_number_of_elements=10,maximum_distance_between_modes_factor=5)
     mu=mus_listen_maker.sample_lists_of_mus(maximum_total_deviation=0.5,size_of_samples=number)
     sigma= mus_listen_maker.return_sigma()
     counter = 1
@@ -339,17 +233,6 @@ if __name__ == "__main__":
         if i == 9:
             interpolator2.plot_interpolator_model(label= f"interpolation {i} component of mixtures")
         
-    x_inputs = [0.75]
-    new_mixture = []
-    for element in list_interpolation_models:
-        value_mu = element.calculate_interpolated_values( inputs= np.array([x_inputs]))
-        print(value_mu)
-        new_mixture.append(value_mu[0])
-    print(new_mixture)
-    distribution = Distribution_mixture_of_normals(list_of_mus=new_mixture, sigma=sigma)
-    distribution.plot_distribution(label= f"interpolated mixture at input x= {x_inputs}    " )
-
-
 
 
     #mu = mu[0]

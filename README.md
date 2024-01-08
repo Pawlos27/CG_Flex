@@ -65,7 +65,7 @@ poetry install
 ```
 
 
-## Generate Class and Parameter Documentation
+## **Generate_Class_and_Parameter_Documentation**
 
 Inside the Documentation directory you can generate the documentation
 
@@ -74,13 +74,18 @@ simply run
 make html
 ```
 
-but when using powershell you might need to use 
+when using powershell you might need to use 
 
 ```bash
 .\make.bat html
 ```
 
-## Usage_and_Steps
+after making changes you can update the documentation files by running
+```bash
+sphinx-apidoc -o <Documentation_directory_path> <cg_flex_directory_path>
+```
+
+## **Usage_and_Steps**
 
 For the execution of the steps below premade scripts are provided.
 

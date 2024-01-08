@@ -99,7 +99,7 @@ class Kernelcombinator_random_picking(IKernelcombinator):
         kernel_operator_collection (_kernel_collection.IKernel_operator_collection): a collection providing the operations for combination of kernels
         kernel_selector (IKernel_selector): selecting 
     """
-    def __init__(self , kernel_operator_collection: _kernel_collection.IKernel_operator_collection, kernel_selector: IKernel_selector):
+    def __init__(self , kernel_operator_collection: _kernel_collection.IKernel_operator_collection = _kernel_collection.Kernel__operator_collection_default(), kernel_selector: IKernel_selector = Kernel_selector_random(max_dimensions_per_kernel= 2,kernel_collection= _kernel_collection.Kernel_collection_general_full())):
 
         self.kernel_selector = kernel_selector
         self.kernel_operator_collection = kernel_operator_collection

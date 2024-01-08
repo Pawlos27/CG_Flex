@@ -365,7 +365,7 @@ class IFunction_maker(metaclass=ABCMeta):
 
 class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): # new discontinuity borders can appear only in the same dimensions used in the first discontinuity 
         
-    def __init__(self, discontinuity_frequency:float,  maximum_discontinuities:int, discontinuity_reappearance_frequency:float, extreme_value_setter: _functionmaker_extreme_values.IExtreme_value_setter, normalizer:_functionmaker_extreme_values.INormalizer, gp_model= GPyModel(), error_term_modus= False,inputloader= _inputloader.IInputloader):
+    def __init__(self, discontinuity_frequency:float = 0.2 ,  maximum_discontinuities:int = 2, discontinuity_reappearance_frequency:float = 0.4, extreme_value_setter: _functionmaker_extreme_values.IExtreme_value_setter = _functionmaker_extreme_values.Extreme_value_setter_solo_dimensionmax(resolution=100), normalizer:_functionmaker_extreme_values.INormalizer = _functionmaker_extreme_values.Normalizer_minmax_stretch(), gp_model= GPyModel(),inputloader= _inputloader.Inputloader_for_solo_random_values()):
         self.discontinuity_frequency = discontinuity_frequency
         self.maximum_discontinuities = maximum_discontinuities
         self.discontinuity_reappearance_frequency  = discontinuity_reappearance_frequency
@@ -374,9 +374,7 @@ class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): # n
         self.gp_model= gp_model
         self.inputloader = inputloader
         
- 
-        self.error_term_modus = error_term_modus
-        # check input values/parameters
+
 
     def load_inputs(self, dimensions, lower, upper):
         self.inputloader.set_input_loader(dimensions=dimensions, lower=lower, upper=upper)
@@ -489,7 +487,7 @@ if __name__ == "__main__":
 
 
 
-    function_maker = Function_maker_evenly_discontinuity_in_one_dimension(inputloader= _inputloader.Inputloader_for_solo_random_values(),normalizer= _functionmaker_extreme_values.Normalizer_minmax_stretch(),discontinuity_frequency= 0.7,  maximum_discontinuities=2, discontinuity_reappearance_frequency=0.5, extreme_value_setter=_functionmaker_extreme_values.Extreme_value_setter_solo_dimensionmax(resolution=50))
+    function_maker = Function_maker_evenly_discontinuity_in_one_dimension()
     dependency_functions_object = function_maker.make_functions(kernel=ker, errorterm_tolerance=0.1,   range_of_output=(0,1))
     dependency_functions_object.show_function_borders()
     #value= dependency_functions_object.calculate_value(inputlist)
