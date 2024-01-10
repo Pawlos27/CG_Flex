@@ -97,10 +97,9 @@ class INodemaker(metaclass=ABCMeta):
 class Nodemaker(INodemaker):
     """
     Implementation of INodemaker for creating a list of node objects.
-    This class is oour main Nodemaker and  provides functionality to create a list of node objects based on 
+    Provides functionality to create a list of node objects based on 
     given distributions for both layer and thorus dimensions.
-    this object will be part of a config file and is resposible for the size and form of the graph by  defining the number of the nodes and their distribution in the space.
-
+    
     Args:
         number_of_nodes(int) : The number of nodes to create.
         number_of_dimensions_thorus (int):  The number of dimensions for thorus coordinates.

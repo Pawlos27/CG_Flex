@@ -21,41 +21,61 @@ from  cgflex_project.Module_Dependencymaker._dependencymaker_tsd_functions impor
 
 @dataclass
 class Blueprint_graph():
+    """A dataclass representing the blueprint for graph configuration objects.
+    It is used for the Graph_controller.This class defines the components necessary for constructing, manipulating and analysing a graph. 
+    It includes instances of sub classes providing the functionality.
+
+    """
 
     nodemaker: INodemaker
+    """Component for determining the number and distribution of nodes."""
     layermaker: ILayersetter
+    """Component for setting the type and number of layers ."""
     sourcemaker: ISource_setter
+    """Component for setting sources."""
     sinkmaker: ISink_setter
+    """Component for setting sinks."""
     edgemaker: IEdgemaker
+    """Component for generating edges through various constraints."""
     graphprocessor: IGraph_processor
+    """Component for graph representation and analysis functionalities."""
     
 
 
 
 @dataclass
 class Blueprint_dependency:
+    """ A dataclass representing the blueprint for dependency configuration objects.
+    It is used for the Dependency_controller. This class sets parameters for the generation of dependencies in the graph, including 
+    dependency setters, value distributions, and a range of output values. The configuration 
+    is detailed, covering aspects from kernel combination to error term creation and normalization."""
+
     dependency_setter : IDependency_setter
+    """Component for setting dependencies(Instances of this class contain a nesting of many classes, ranging from kernel combination to function generation and error term generation)."""
     initial_value_distributions : IInitial_value_distribution_collection
+    """Pre-selected value distributions that can be assigned to nodes."""
     range_of_output : Tuple[float, float]
+    """The target value range ."""
     tsd_collection :  ITsd_function_collection
+    """A collection of TSD functions used as substitutes for dependencies or value distributions."""
 
     def __post_init__(self):
+        """Sets the parameters of random value distributions and tsd functions regarding to the set range of output."""
         # set the range after initialization
         self.tsd_collection.set_range(range=self.range_of_output)
-        self.initial_value_distributions.initialize_distributions(range=self.range_of_outputange)
+        self.initial_value_distributions.initialize_distributions(range=self.range_of_output)
 
 
 @dataclass
 class Blueprint_sampling:
+    """ A dataclass representing the blueprint for the sampling controller configuration object. 
+    This configuration is simpler compared to others, mainly containing the data_exporter component. 
+    The sampling controller's functionality is mostly realized through its own methods.
+    """
     data_exporter:IData_exporter
+    """Component responsible for exporting data during sampling."""
 
 
-#@dataclass
-#class Blueprint_main_controler:
-  #  object_serializer : IObject_serializer
-  #  controller_coordinator : IController_coordinator
- #   sampling_controller : Sampling_controller
-    
 
 
 

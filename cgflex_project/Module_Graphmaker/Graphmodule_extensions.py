@@ -14,10 +14,10 @@ import matplotlib.pyplot as plt
 from abc import ABCMeta, abstractstaticmethod, abstractmethod
 
 class IGraph_processor(metaclass=ABCMeta):
-    """Abstract base Class as INterface: IMplementations of this class contain functionality for analyzing, visualizing, and printing graphs"""
+    """Abstract base Class as Interface: Implementations of this class contain functionality for analyzing, visualizing, and printing graphs"""
     @abstractmethod
     def load_graph(self, nodelist: List[Nodeobject]):
-        """loading the graph into the processor
+        """loading the nodelist into the class
 
         Args:
             nodelist (List[Nodeobject]): the nodelist represents the graph structure
