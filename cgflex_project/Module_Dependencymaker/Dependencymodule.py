@@ -111,9 +111,9 @@ class Dependency_controller:
                         node.dependency.plot_distribution(label=f"distribution for node-id {id}")
                     elif isinstance(node.dependency, Dependencies):
                         print(f" Dependency at Node_ID: {id} is a Dependency_Object")
-                        node.dependency.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=resolution, label=f"function for node-id ={id}")
+                        node.dependency.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=resolution, label=f" node_id ={id}   Function")
                         node.dependency.function_model.show_function_borders()
-                        node.dependency.errorterm_model.errorterm_distribution.show_error_distribution(label =f"error distribution for node-id ={id}")
+                        node.dependency.errorterm_model.errorterm_distribution.show_error_distribution(label =f" node_id ={id}   ")
                     elif isinstance(node.dependency, ITsd_functions):
                         node.dependency.plot_function(label=f"tsd function for node-id ={id}")
                     else:
@@ -124,13 +124,15 @@ class Dependency_controller:
             for node in self.nodelist:
                 if node.id == id:
                     if isinstance(node.dependency, (float, int)):
-                        print( node.dependency )
+                        print(f" Dependency at Node_ID: {id} is a Value :  {node.dependency} ")
                     elif isinstance(node.dependency, IDistributions):
+                        print(f" Dependency at Node_ID: {id} is a Distribution")
                         node.dependency.plot_distribution()
                     elif isinstance(node.dependency, Dependencies):
-                        node.dependency.function_model.show_functions_3d_plot_for_first_two_dimensions_when_possible(resolution=resolution)
+                        print(f" Dependency at Node_ID: {id} is a Dependency_Object")
+                        node.dependency.function_model.show_functions_3d_plot_for_first_two_dimensions_when_possible(resolution=resolution, label=f" node_id ={id}   Function")
                         node.dependency.function_model.show_function_borders()
-                        node.dependency.errorterm_model.errorterm_distribution.show_error_distribution()
+                        node.dependency.errorterm_model.errorterm_distribution.show_error_distribution(label =f" node_id ={id}   ")
                     else:
                         print("dependency is empty yet, please make dependencies")
 

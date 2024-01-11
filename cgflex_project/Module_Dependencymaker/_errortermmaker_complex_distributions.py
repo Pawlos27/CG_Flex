@@ -42,7 +42,7 @@ class IInterpolation_model(metaclass=ABCMeta):
         elif dimensions == 2:
             self._plot_2d(label=label)
         elif dimensions > 2:
-            self._plot_multidim()   
+            self._plot_multidim(label=label)   
     
     def _plot_1d(self, label):
         """ For 1D, we use a simple line plot"""
@@ -88,7 +88,7 @@ class IInterpolation_model(metaclass=ABCMeta):
         plt.title(label)
         plt.show()
    
-    def _plot_multidim(self):
+    def _plot_multidim(self, label):
     
         """for multidimensions >2 we just plot the first 2 dimensions, the rest dimensions are always set to 0
         """
@@ -125,7 +125,7 @@ class IInterpolation_model(metaclass=ABCMeta):
         ax.set_ylabel('inputs second dimension')
         ax.set_zlabel('Interpolated Values')
         ax.legend()
-        plt.title("interpolation of one mixture component")
+        plt.title(label)
         plt.show()
 
 

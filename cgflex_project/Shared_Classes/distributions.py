@@ -62,7 +62,9 @@ class Distribution_uniform(IDistributions):
         y = [1,1]
                     
         plt.plot(x, y)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_uniform_random_at_construction(IDistributions):
@@ -97,7 +99,9 @@ class Distribution_uniform_random_at_construction(IDistributions):
         y = [1,1]
                     
         plt.plot(x, y)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_uniform_random_at_every_acess(IDistributions):
@@ -150,7 +154,9 @@ class Distribution_uniform_random_at_every_acess(IDistributions):
         y = [1,1]
                     
         plt.plot(x, y)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 
@@ -177,7 +183,9 @@ class Distribution_normal(IDistributions):
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_normal_random_sigma_at_construction(IDistributions):
@@ -203,7 +211,9 @@ class Distribution_normal_random_sigma_at_construction(IDistributions):
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_normal_random_all_inside_borders_random_at_construction(IDistributions):
@@ -232,7 +242,9 @@ class Distribution_normal_random_all_inside_borders_random_at_construction(IDist
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_normal_random_sigma_at_acess(IDistributions):
@@ -261,7 +273,9 @@ class Distribution_normal_random_sigma_at_acess(IDistributions):
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 
@@ -302,7 +316,9 @@ class Distribution_normal_truncated_at_3sigma(IDistributions):
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 
@@ -345,7 +361,9 @@ class Distribution_normal_truncated_at_3sigma_random_all_inside_borders_random_a
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_normal_truncated_at_3sigma_random_sigma_at_construction(IDistributions):
@@ -386,7 +404,9 @@ class Distribution_normal_truncated_at_3sigma_random_sigma_at_construction(IDist
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_normal_truncated_at_3sigma_random_sigma_at_acess(IDistributions):
@@ -431,7 +451,9 @@ class Distribution_normal_truncated_at_3sigma_random_sigma_at_acess(IDistributio
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_normal_truncated_at_3sigma_bound_to_zero(IDistributions):
@@ -472,7 +494,9 @@ class Distribution_normal_truncated_at_3sigma_bound_to_zero(IDistributions):
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_normal_truncated_at_3sigma_bound_to_zero_random_at_construction(IDistributions):
@@ -513,7 +537,9 @@ class Distribution_normal_truncated_at_3sigma_bound_to_zero_random_at_constructi
         mu=self.mu
         x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
         plt.plot(x, stats.norm.pdf(x, mu, sigma))
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 
@@ -556,7 +582,9 @@ class Distribution_mixture_of_normals(IDistributions):
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_mixture_of_normals_random_uniform_at_construction(IDistributions):
@@ -599,7 +627,9 @@ class Distribution_mixture_of_normals_random_uniform_at_construction(IDistributi
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_mixture_of_normals_truncated_at_3sigma(IDistributions):
@@ -651,7 +681,9 @@ class Distribution_mixture_of_normals_truncated_at_3sigma(IDistributions):
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_mixture_of_normals_truncated_at_3sigma_and_outlier_correction_for_interpolation(IDistributions):
@@ -707,7 +739,9 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_and_outlier_correction
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 
@@ -761,7 +795,9 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_random_sigma_outward_r
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 
@@ -816,7 +852,9 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform_at_construction(IDistributions):
@@ -869,7 +907,9 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 class Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_mu_and_random_spread_uniform_at_construction(IDistributions):
@@ -926,7 +966,9 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_mu_and_
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 
@@ -984,7 +1026,9 @@ class Distribution_mixture_of_normals_truncated_custom(IDistributions): # mus of
             sum_distribuitons = sum_distribuitons  + y
             plt.plot(x,y)
         plt.plot(x, sum_distribuitons)
-        plt.title(label + f": {self.__class__.__name__}")
+        if label == "":
+            label = f": {self.__class__.__name__}"
+        plt.title(label)
         plt.show()
 
 

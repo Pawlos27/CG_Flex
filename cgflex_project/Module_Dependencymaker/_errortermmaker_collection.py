@@ -65,7 +65,7 @@ class Error_distribution_normal(IErrordistribution):
             error_value = self.distribution.get_value_from_distribution()
         return error_value
     def show_error_distribution(self, label="errorterm"):
-        self.distribution.plot_distribution(label=label + f" Distribution: {self.__class__.__name__}")
+        self.distribution.plot_distribution(label=label + f" {self.__class__.__name__}")
 
 
 class Error_distribution_normal_variable_variance(IErrordistribution):
@@ -92,7 +92,7 @@ class Error_distribution_normal_variable_variance(IErrordistribution):
         error_value_normalized = self.normalizer.normalize_value(input_value=error_value)
         return error_value_normalized
     def show_error_distribution(self, label="errorterm" ):
-        self.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=30, label= label + f" {self.__class__.__name__}, Function for sigma will be stretched to 0-{self.maxium_total_deviation}" )
+        self.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=30, label= label + f" Error_distribution_normal with Sigma_function (streched to: 0-{self.maxium_total_deviation/6})" )
 
 
 class Error_distribution_mixture_model_normal_multimodal(IErrordistribution):
@@ -113,7 +113,7 @@ class Error_distribution_mixture_model_normal_multimodal(IErrordistribution):
         error_value = self.distribution.get_value_from_distribution()
         return error_value
     def show_error_distribution(self, label="errorterm" ):
-        self.distribution.plot_distribution( label= label + f" Distribution: {self.__class__.__name__}")
+        self.distribution.plot_distribution( label= label + f"{self.__class__.__name__}")
 
 
 class Error_distribution_mixture_model_complex(IErrordistribution):
@@ -129,7 +129,7 @@ class Error_distribution_mixture_model_complex(IErrordistribution):
         error_value = self.distribution.get_value_from_distribution()
         return error_value
     def show_error_distribution(self, label="errorterm" ):
-        self.distribution.plot_distribution( label= label + f" Distribution: {self.__class__.__name__}")
+        self.distribution.plot_distribution( label= label + f" {self.__class__.__name__}")
 
 
 class Error_distribution__mixture_model_interpolated(IErrordistribution):
@@ -178,7 +178,7 @@ class Error_distribution__mixture_model_interpolated(IErrordistribution):
 
         self.list_of_mu_as_interpolation_models[0].plot_interpolator_model()
         distribution = distributions.Distribution_mixture_of_normals_truncated_at_3sigma_and_outlier_correction_for_interpolation(list_of_mus=self.lists_of_mus_training[0], sigma=self.sigma, upper_limit=self.maximum_total_deviation)
-        distribution.plot_distribution( label= label + f" Distribution: {self.__class__.__name__}")
+        distribution.plot_distribution( label= label + f"{self.__class__.__name__}")
 
         """currently only showing one mixture, and interpolation mesh vor the possible positions of the first element of the mixture regarding to its training points"""
     def show_mixture_interpolated_for_certain_point(self, x_inputs):
