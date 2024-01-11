@@ -105,36 +105,32 @@ class Dependency_controller:
             for node in self.nodelist:
                 if node.id == id:
                     if isinstance(node.dependency, (float, int)):
-                        print(f" Dependency at Node_ID: {id} is a Value :  {node.dependency} ")
+                        print(f" Node_ID: {id}   Dependency is a fixed Value :  {node.dependency} ")
                     elif isinstance(node.dependency, IDistributions):
-                        print(f" Dependency at Node_ID: {id} is a Distribution")
+                        print(f" Node_ID: {id}    Dependency is a Distribution")
                         node.dependency.plot_distribution(label=f"distribution for node-id {id}")
                     elif isinstance(node.dependency, Dependencies):
-                        print(f" Dependency at Node_ID: {id} is a Dependency_Object")
+                        print(f" Node_ID: {id}   Dependency is a Dependency_Object")
                         node.dependency.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=resolution, label=f" node_id ={id}   Function")
-                        node.dependency.function_model.show_function_borders()
+                        node.dependency.function_model.show_function_borders(node_id=node.id)
                         node.dependency.errorterm_model.errorterm_distribution.show_error_distribution(label =f" node_id ={id}   ")
                     elif isinstance(node.dependency, ITsd_functions):
                         node.dependency.plot_function(label=f"tsd function for node-id ={id}")
-                    else:
-                        print("dependency is empty yet, please make dependencies")
 
-    def show_dependencies_enforce_3d_plot(self,ids:List[int],resolution:int): 
+    def show_dependencies_enforce_3d_plot(self,ids:List[int],resolution:int, visualized_dimensions: Tuple[int, int] = (0, 1)): 
         for id in ids:
             for node in self.nodelist:
                 if node.id == id:
                     if isinstance(node.dependency, (float, int)):
-                        print(f" Dependency at Node_ID: {id} is a Value :  {node.dependency} ")
+                        print(f" Node_ID: {id}   Dependency  is a fixed Value :  {node.dependency} ")
                     elif isinstance(node.dependency, IDistributions):
-                        print(f" Dependency at Node_ID: {id} is a Distribution")
+                        print(f" Node_ID: {id}   Dependency  is a Distribution")
                         node.dependency.plot_distribution()
                     elif isinstance(node.dependency, Dependencies):
-                        print(f" Dependency at Node_ID: {id} is a Dependency_Object")
-                        node.dependency.function_model.show_functions_3d_plot_for_first_two_dimensions_when_possible(resolution=resolution, label=f" node_id ={id}   Function")
-                        node.dependency.function_model.show_function_borders()
+                        print(f" Node_ID: {id}   Dependency is a Dependency_Object")
+                        node.dependency.function_model.show_functions_3d_plot_when_possible(resolution=resolution, label=f" node_id ={id}   Function", visualized_dimensions=visualized_dimensions)
+                        node.dependency.function_model.show_function_borders(node_id=node.id)
                         node.dependency.errorterm_model.errorterm_distribution.show_error_distribution(label =f" node_id ={id}   ")
-                    else:
-                        print("dependency is empty yet, please make dependencies")
 
     def show_dependency_function(self,ids:List[int],resolution:int): 
         for id in ids:
@@ -145,12 +141,12 @@ class Dependency_controller:
                     else:
                         print("no functions in dependency for {id}")
 
-    def show_dependency_function_enforce_3d_plot(self,ids:List[int],resolution:int): 
+    def show_dependency_function_enforce_3d_plot(self,ids:List[int],resolution:int,visualized_dimensions: Tuple[int, int] = (0, 1)): 
         for id in ids:
             for node in self.nodelist:
                 if node.id == id:
                     if isinstance(node.dependency, Dependencies):
-                        node.dependency.function_model.show_functions_3d_plot_for_first_two_dimensions_when_possible(resolution=resolution)
+                        node.dependency.function_model.show_functions_3d_plot_when_possible(resolution=resolution, visualized_dimensions= visualized_dimensions)
                     else:
                         print("no functions in dependency for {id}")
     def show_dependency_errorterm(self,ids:List[int],resolution:int): 
@@ -160,16 +156,16 @@ class Dependency_controller:
                     if isinstance(node.dependency, Dependencies):
                         node.dependency.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=resolution)
                     else:
-                        print("no errorterm in dependency")
+                        print("no errorterm in dependency for {id}")
 
     def show_dependency_errorterm_enforce_3d_plot(self,ids:List[int],resolution =30): 
         for id in ids:    
             for node in self.nodelist:
                 if node.id == id:                  
                     if isinstance(node.dependency, Dependencies):
-                        node.dependency.function_model.show_functions_3d_plot_for_first_two_dimensions_when_possible(resolution=resolution)
+                        node.dependency.function_model.show_functions_3d_plot_when_possible(resolution=resolution)
                     else:
-                        print("no errorterm in dependency")
+                        print("no errorterm in dependency for {id}")
 
     def print_kernels_used(self,ids:List[int]): 
         pass

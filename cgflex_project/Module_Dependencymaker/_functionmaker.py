@@ -32,6 +32,7 @@ class discontinuity_borders_per_dimension:
 class Predictions_3d:
     resolution: int
     predictions : np.ndarray
+    visualized_dimensions: Tuple[int, int] = (0, 1)
 
     def __post_init__(self):    
         pass
@@ -118,7 +119,8 @@ class Dependency_functions:   # the class containing the dependency functions ca
 
         return values_normalized
 
-    def show_function_borders(self):
+    def show_function_borders(self, node_id= "unknown"):
+
         functions = self.functions
         list_of_function_data = []
         function_counter=1
@@ -131,6 +133,7 @@ class Dependency_functions:   # the class containing the dependency functions ca
                 function_border_data_dict = {"function_number":function_counter, "dimension":dimension, "lower_border": lower_border, "upper_border":upper_border}
                 list_of_function_data.append(function_border_data_dict)
         df_function_with_borders =  pd.DataFrame(list_of_function_data)
+        print(f"Node_ID {node_id}   Overviev of responsible functions depending on the input range per dimension")
         print(df_function_with_borders)
 
     def make_new_predictions_for_plotting(self, resolution):
@@ -193,50 +196,56 @@ class Dependency_functions:   # the class containing the dependency functions ca
         plt.show()
         print("activated test")
 
-    def make_new_3d_predictions(self, resolution=20):
-        dimensions= self.functions[0].function_model.return_kernel_dimensions()
-        if dimensions >= 2:
-    
-            initial_plot =np.linspace(0, 1, resolution)
-            y_values_for_x_combinations_list = []
-            x = initial_plot
-            y = initial_plot
-            for i in initial_plot:
-                sub_coordinate_list = []
-                for j in initial_plot:
-                    coordinate_point = [i, j]
-                    sub_coordinate_list.append(coordinate_point)
-                if dimensions >2:
-                    for i in range(dimensions-2):
-                        for coordinate in sub_coordinate_list:
-                            coordinate.append(0)
-                predicitions = self.make_predicitions_for_multiple_points(x_inputs=sub_coordinate_list)
-                y_values_for_x_combinations_list.append(predicitions)
-            z = np.atleast_2d(y_values_for_x_combinations_list)
-            self.predictions_3d = Predictions_3d(resolution=resolution, predictions=z)
+    def make_new_3d_predictions(self, resolution=20, visualized_dimensions: Tuple[int, int] = (0, 1)):
+        dimensions = self.functions[0].function_model.return_kernel_dimensions()
+        if dimensions < 2:
+            raise ValueError("No 3D visualisation of 1D data possible")
+        elif max(visualized_dimensions) >= dimensions:
+           visualized_dimensions = (0, 1)
 
-    def show_3d_plot(self, resolution=20, label="unknown_function"): # making 3d plot, when no plotdata existing or resolution unsufficient then calculating new data
-        dimensions= self.functions[0].function_model.return_kernel_dimensions()
-        if dimensions >= 2:
+        initial_plot = np.linspace(self.range_of_output[0], self.range_of_output[1], resolution)
+        y_values_for_x_combinations_list = []
 
-            if self.predictions_3d == None:
-                self.make_new_3d_predictions()
-            elif self.predictions_3d.resolution < resolution:
-                self.make_new_3d_predictions()
-                
-            resolution_final = self.predictions_3d.resolution
-            z = self.predictions_3d.predictions
-            x = np.linspace(0, 1, resolution_final)
-            y = x
-            X, Y = np.meshgrid(x,y)
-            fig = plt.figure()
-            ax = fig.add_subplot(111,projection="3d")
-            ax.plot_surface(X, Y, z)
-            ax.set_xlabel("input first dimension")
-            ax.set_ylabel("input second dimension")
-            ax.set_zlabel("output")
-            plt.title(label)
-            plt.show()
+        for i in initial_plot:
+            sub_coordinate_list = []
+            for j in initial_plot:
+                coordinate_point = [0] * dimensions
+                coordinate_point[visualized_dimensions[0]] = i
+                coordinate_point[visualized_dimensions[1]] = j
+                sub_coordinate_list.append(coordinate_point)
+            predicitions = self.make_predicitions_for_multiple_points(x_inputs=sub_coordinate_list)
+            y_values_for_x_combinations_list.append(predicitions)
+
+        z = np.atleast_2d(y_values_for_x_combinations_list)
+        self.predictions_3d = Predictions_3d(resolution=resolution, predictions=z, visualized_dimensions=visualized_dimensions)
+
+    def show_3d_plot(self, resolution=20, visualized_dimensions: Tuple[int, int] = (0, 1),label="unknown_function"): # making 3d plot, when no plotdata existing or resolution unsufficient then calculating new data
+        dimensions= self.functions[0].function_model.return_kernel_dimensions()
+        if dimensions < 2:
+            raise ValueError("No 3D visualisation of 1D data possible")
+        elif max(visualized_dimensions) >= dimensions:
+           visualized_dimensions = (0, 1)
+
+        if self.predictions_3d == None:
+            self.make_new_3d_predictions()
+        elif self.predictions_3d.visualized_dimensions != visualized_dimensions :
+            self.make_new_3d_predictions()
+        elif self.predictions_3d.resolution < resolution:
+            self.make_new_3d_predictions()
+            
+        resolution_final = self.predictions_3d.resolution
+        z = self.predictions_3d.predictions
+        x = np.linspace(0, 1, resolution_final)
+        y = x
+        X, Y = np.meshgrid(x,y)
+        fig = plt.figure()
+        ax = fig.add_subplot(111,projection="3d")
+        ax.plot_surface(X, Y, z)
+        ax.set_xlabel(f"input dimension: {visualized_dimensions[0]}")
+        ax.set_ylabel(f"input dimension: {visualized_dimensions[1]}")
+        ax.set_zlabel("output")
+        plt.title(label)
+        plt.show()
 
     def show_3d_plot_not_normalized(self, resolution=20, label="not_normalized_plot"):
         dimensions= self.functions[0].function_model.return_kernel_dimensions()
@@ -271,35 +280,27 @@ class Dependency_functions:   # the class containing the dependency functions ca
             plt.title(label=label)
             plt.show()
 
-    def show_functions_3d_plot_for_first_two_dimensions_when_possible(self,resolution, label="unknown function"):
+    def show_functions_3d_plot_when_possible(self,resolution, visualized_dimensions: Tuple[int, int] = (0, 1),label="unknown function"):
         dimensions= self.functions[0].function_model.return_kernel_dimensions()
         if dimensions == 1:
             if self.functions[0].predictions == None:
                 self.make_new_predictions_for_plotting(resolution=resolution)
-            
             elif len(self.functions[0].predictions[0].predicted_values) < resolution :
                 self.make_new_predictions_for_plotting(resolution=resolution)
-            else:
-                pass
             self.show_functions_for_existing_predictions(label=label)
         elif dimensions > 1 :
-            self.show_3d_plot(resolution=resolution, label=label)
-        else:
-            pass
+            self.show_3d_plot(resolution=resolution, label=label,visualized_dimensions=visualized_dimensions )
+
 
     def show_functions_3d_plot_if_exactly_two_dimensions(self,resolution,label="unknown_function"):
         dimensions= self.functions[0].function_model.return_kernel_dimensions()
         if dimensions == 2:
             self.show_3d_plot(resolution=resolution,label=label)
-
         else:
             if self.functions[0].predictions == None:
                 self.make_new_predictions_for_plotting(resolution=resolution)
-            
             elif len(self.functions[0].predictions[0].predicted_values) < resolution :
                 self.make_new_predictions_for_plotting(resolution=resolution)
-            else:
-                pass
             self.show_functions_for_existing_predictions(label= label)
   
     def _extract_model_associated_with_inputs(self,functions: List[Type[single_function_with_discontinuity]], inputs:list):
@@ -352,8 +353,8 @@ class Dependency_functions:   # the class containing the dependency functions ca
             self.gridsearch_extreme_values()
         
     def _determine_and_set_absolute_extreme_values(self):# here 
-        absolute_maximum = self.functions[0].maximum_local
-        absolute_minimum = self.functions[0].minimum_local
+        absolute_maximum = self.functions[0].maximum_local.value
+        absolute_minimum = self.functions[0].minimum_local.value
         for function in self.functions[1:]:
             if function.maximum_local.value > absolute_maximum:
                 absolute_maximum = function.maximum_local.value
@@ -388,7 +389,7 @@ class IFunction_maker(metaclass=ABCMeta):
 
 class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): # new discontinuity borders can appear only in the same dimensions used in the first discontinuity 
         
-    def __init__(self, discontinuity_frequency:float = 0.2 ,  maximum_discontinuities:int = 2, discontinuity_reappearance_frequency:float = 0.4, normalizer:_functionmaker_extreme_values.INormalizer = _functionmaker_extreme_values.Normalizer_minmax_stretch(), gp_model= GPyModel(),inputloader= _inputloader.Inputloader_for_solo_random_values(), sampling_resolution= 4):
+    def __init__(self, discontinuity_frequency:float = 0.2 ,  maximum_discontinuities:int = 2, discontinuity_reappearance_frequency:float = 0.4,sampling_resolution:int = 4, normalizer:_functionmaker_extreme_values.INormalizer = _functionmaker_extreme_values.Normalizer_minmax_stretch(), gp_model= GPyModel(),inputloader= _inputloader.Inputloader_for_solo_random_values()):
         self.discontinuity_frequency = discontinuity_frequency
         self.maximum_discontinuities = maximum_discontinuities
         self.discontinuity_reappearance_frequency  = discontinuity_reappearance_frequency
@@ -396,8 +397,6 @@ class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): # n
         self.gp_model= gp_model
         self.inputloader = inputloader
         self.sampling_resolution = sampling_resolution
-        
-
 
     def load_inputs(self, dimensions, lower, upper):
         self.inputloader.set_input_loader(dimensions=dimensions, lower=lower, upper=upper)
@@ -518,7 +517,7 @@ if __name__ == "__main__":
     #dependency_functions_object.print_predictions()
     dependency_functions_object.show_3d_plot()
     dependency_functions_object.show_3d_plot_not_normalized()
-    dependency_functions_object.show_functions_3d_plot_for_first_two_dimensions_when_possible(resolution=20)
+    dependency_functions_object.show_functions_3d_plot_when_possible(resolution=20)
     dependency_functions_object.make_new_predictions_for_plotting(resolution=30)
 
 

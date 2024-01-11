@@ -256,8 +256,8 @@ class Cg_flex_controller:
     def show_dependencies(self,ids:List[int],resolution =100, graph_id=0 ): 
         self.dependency_controller[graph_id].show_dependencies(ids=ids,resolution=resolution)
 
-    def show_dependencies_enforced_3d_visualisation(self,ids:List[int],resolution =100, graph_id=0): # only 2 dimensions shown with rest set to 0
-        self.dependency_controller[graph_id].show_dependencies_enforce_3d_plot(ids=ids,resolution=resolution)
+    def show_dependencies_enforced_3d_visualisation(self,ids:List[int],resolution =100, graph_id=0, visualized_dimensions: Tuple[int, int] = (0, 1)): # only 2 dimensions shown with rest set to 0
+        self.dependency_controller[graph_id].show_dependencies_enforce_3d_plot(ids=ids,resolution=resolution, visualized_dimensions=visualized_dimensions)
 
     def show_dependency_functions_only(self,ids:List[int],resolution =100, graph_id=0 ):  
         self.dependency_controller[graph_id].show_dependency_function(ids=ids,resolution=resolution)
