@@ -165,7 +165,7 @@ class Dependency_functions:   # the class containing the dependency functions ca
                 y_predictions =predictions[0]
                 y_predictions = y_predictions.flatten()
                 y_predictions = self.normalize_array_of_values(values=y_predictions)
-                prediction_object = _functionmaker_extreme_values.Predictions(function_nr=function_counter,predicted_values=y_predictions,input_values=x_plot,dimension=dimension)
+                prediction_object = _functionmaker_extreme_values.Predictions(function_nr=function_counter,predicted_values=y_predictions,input_values=x_plot,dimension=dimension, normalized= True)
                 new_prediction_list.append(prediction_object)
             function.predictions = new_prediction_list
             function_counter += 1
@@ -187,20 +187,21 @@ class Dependency_functions:   # the class containing the dependency functions ca
                 print(output_data)
 
     def show_functions_for_existing_predictions(self, label="unknown_function"):
-        new_prediction_list = []
+        plt.figure()
         for function in self.functions:
             predictionsliste = function.predictions
             for prediction in predictionsliste :
-                new_prediction_list.append(prediction)
-        plt.figure()
-        for i in new_prediction_list:
-                y_values = i.predicted_values
-                x_values = i.input_values
+                if prediction.normalized == False:
+                    prediction.predicted_values = self.normalize_array_of_values(values=prediction.predicted_values)
+                    prediction.normalized = True
+                y_values = prediction.predicted_values
+                x_values = prediction.input_values
                 plt.plot(x_values, y_values)
         plt.xlabel('input per dimension')
         plt.ylabel('output')
         plt.title(label)
         plt.show()
+        print("activated test")
 
     def make_new_3d_predictions(self, resolution=20):
         dimensions= self.functions[0].function_model.return_kernel_dimensions()

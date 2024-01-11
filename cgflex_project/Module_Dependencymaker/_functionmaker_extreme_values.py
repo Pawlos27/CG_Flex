@@ -100,6 +100,7 @@ class Predictions: # predictions may be filled with only 1d-inputs despite being
     predicted_values: np.ndarray
     input_values : np.ndarray
     function_nr: Optional[int] = None
+    normalized: bool = False
     
 
 
