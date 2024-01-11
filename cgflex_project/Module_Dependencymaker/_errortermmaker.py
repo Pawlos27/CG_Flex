@@ -38,6 +38,10 @@ class Errorterm_maker_default(IErrorterm_maker):
         maximum_total_deviation= self._calculate_total_deviation(function_model=function_model)
         original_distribution = random.choice(self.errorterm_collection_list)
         selected_errorterm_distribution = copy.deepcopy(original_distribution)
+        
+        # when the errorterm is a normal function with variable sigma, we need to pass the range of possible inputs for its function
+        if isinstance(selected_errorterm_distribution , _errortermmaker_collection.Error_distribution_normal_variable_variance):
+            selected_errorterm_distribution.set_range(range_of_output=function_model.range_of_output)
 
         selected_errorterm_distribution.make_distribution(dimensionality=dimensionality, maximum_total_deviation=maximum_total_deviation)
         dependency_errorterm_object = Dependency_errorterm(errorterm_distribution=selected_errorterm_distribution , errorterm_maximum=maximum_total_deviation)
@@ -48,6 +52,7 @@ class Errorterm_maker_default(IErrorterm_maker):
         range_total_deviation = function_model.range_of_output[1] - function_model.range_of_output[0]
         total_deviation = range_total_deviation * self.maximum_tolerance
         return total_deviation
+    
 
         
 

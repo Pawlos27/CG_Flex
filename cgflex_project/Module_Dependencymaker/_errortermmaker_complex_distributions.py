@@ -35,28 +35,30 @@ class IInterpolation_model(metaclass=ABCMeta):
             inputs (_type_): _description_
         """
 
-    def plot_interpolator_model(self, label="interpolated component of errorterm"):
+    def plot_interpolator_model(self, label="interpolation of one component of errorterm"):
         dimensions = self.data_points.shape[1]
         if dimensions == 1:
-            self._plot_1d()
+            self._plot_1d(label=label)
         elif dimensions == 2:
-            self._plot_2d()
+            self._plot_2d(label=label)
         elif dimensions > 2:
             self._plot_multidim()   
     
-    def _plot_1d(self):
+    def _plot_1d(self, label):
         """ For 1D, we use a simple line plot"""
         x = np.linspace(np.min(self.data_points), np.max(self.data_points), 200)
         y = self.calculate_interpolated_values(inputs=x[:, np.newaxis])
         plt.figure(figsize=(8, 6))
         plt.scatter(self.data_points, self.values, color='red', label='Original Data Points')
         plt.plot(x, y, color='blue', label='Interpolated Values')
+        plt.title(label)
         plt.xlabel('X-axis')
         plt.ylabel('Values')
         plt.legend()
         plt.show()
+        
     
-    def _plot_2d(self):
+    def _plot_2d(self, label):
         """ For 2D, we use 3d plot"""
         # For 2D, proceed as before
         x = np.linspace(0, 1, 50)
@@ -83,7 +85,7 @@ class IInterpolation_model(metaclass=ABCMeta):
         ax.set_ylabel('inputs second dimension')
         ax.set_zlabel('Interpolated Values')
         ax.legend()
-        plt.title("interpolation of one mixture component")
+        plt.title(label)
         plt.show()
    
     def _plot_multidim(self):

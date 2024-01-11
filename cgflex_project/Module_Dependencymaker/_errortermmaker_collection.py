@@ -9,7 +9,7 @@ import cgflex_project.Module_Dependencymaker._kernelcombinator as _kernelcombina
 import numpy as np
 import GPy
 import matplotlib.pyplot as plt
-from typing import Any, List, Type, Union
+from typing import Any, List, Type, Union, Tuple
 import cgflex_project.Module_Dependencymaker._functionmaker as _functionmaker
 
 import cgflex_project.Module_Dependencymaker._errortermmaker_complex_distributions as _errortermmaker_complex_distributions
@@ -70,23 +70,29 @@ class Error_distribution_normal(IErrordistribution):
 
 class Error_distribution_normal_variable_variance(IErrordistribution):
 
-    def __init__(self, function_maker: _functionmaker.IFunction_maker =  _functionmaker.Function_maker_evenly_discontinuity_in_one_dimension() , kernel_maker: _kernelcombinator.IKernelcombinator = _kernelcombinator.Kernelcombinator_random_picking() ):
+    def __init__(self, function_maker: _functionmaker.IFunction_maker =  _functionmaker.Function_maker_evenly_discontinuity_in_one_dimension() , kernel_maker: _kernelcombinator.IKernelcombinator = _kernelcombinator.Kernelcombinator_random_picking(), normalizer: _functionmaker_extreme_values.INormalizer = _functionmaker_extreme_values.Normalizer_minmax_stretch()):
         self.function_maker = function_maker
         self.kernel_maker = kernel_maker
+        self.normalizer = normalizer
+    
+    def set_range(self, range_of_output= Tuple[int,int]):
+        self.range_of_output = range_of_output
         
     def make_distribution(self,dimensionality:int,  maximum_total_deviation:float  ):
         self.maxium_total_deviation = maximum_total_deviation
         kernel = self.kernel_maker.combinate_kernels(dimensions=dimensionality)
+        self.function_model= self.function_maker.make_functions(kernel=kernel,errorterm_tolerance=0, range_of_output=self.range_of_output)
         maximum_sigma = maximum_total_deviation/6
-        self.function_model= self.function_maker.make_functions(kernel=kernel,errorterm_tolerance=0, range_of_output=(0,maximum_sigma))
+        self.normalizer.set_normalizer(output_maximum= maximum_sigma,output_minimum= 0,input_max=self.range_of_output[1],input_min=self.range_of_output[0])
     def calc_from_distribution(self, x_inputs:list):
         sigma_normalized = self.function_model.calculate_value(x_inputs=x_inputs)
         if sigma_normalized < 0:
             sigma_normalized = 0
         error_value = distributions.Distribution_normal_truncated_at_3sigma_bound_to_zero(sigma= sigma_normalized).get_value_from_distribution()
-        return error_value
+        error_value_normalized = self.normalizer.normalize_value(input_value=error_value)
+        return error_value_normalized
     def show_error_distribution(self, label="errorterm" ):
-        self.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=30, label= label + f" Distribution: {self.__class__.__name__}" )
+        self.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=30, label= label + f" {self.__class__.__name__}, Function for sigma will be stretched to 0-{self.maxium_total_deviation}" )
 
 
 class Error_distribution_mixture_model_normal_multimodal(IErrordistribution):

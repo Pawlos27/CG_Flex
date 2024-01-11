@@ -12,17 +12,42 @@ import matplotlib.pyplot as plt
 
 
 
-class IDistributions(metaclass=ABCMeta): # used in 1: Nodemaker 2:IErrordistribution #i   # while plotting the truncated distributions should be shifted up by the truncated quota
+class IDistributions(metaclass=ABCMeta):
+    """ Abstract base class for different types of distributions.
+
+        This class serves as an interface for various distribution implementations. It is reused in components like NodeMaker and IErrordistribution and InitialDistributions. 
+        Derived classes should implement methods to get values and arrays from the distribution and to plot the distribution.
+        """
+    
     @abstractmethod
     def get_value_from_distribution(self):
-     """Interface Method"""
+     """Interface Method to get a single value from the distribution."""
+    @abstractmethod
     def get_array_from_distribution(self, size):
-     """Interface Method"""
-    
+     """
+        Interface Method to get an array of values from the distribution.
+
+        Args:
+            size (int): The size of the array to be generated.
+
+        Returns:
+            numpy.ndarray: An array of values from the distribution.
+        """
+    @abstractmethod 
     def plot_distribution(self, label=""):
-        pass
+        """ Plots the distribution. This method may be overridden by subclasses.
+
+        Args:
+            label (str): Label for the plot.
+        """
 
 class Distribution_uniform(IDistributions):
+    """Uniform distribution generates values uniformly distributed between a minimum and maximum value.
+
+    Args:
+        min (float): The minimum value of the distribution.
+        max (float): The maximum value of the distribution.
+    """
     def __init__(self, min:float, max:float):
         self.min = min
         self.max = max
@@ -41,6 +66,13 @@ class Distribution_uniform(IDistributions):
         plt.show()
 
 class Distribution_uniform_random_at_construction(IDistributions):
+    """ This class generates a uniform distribution where the range (min and max) is randomly determined once at the time of object construction. 
+    The range is determined within given absolute min and max limits.
+
+    Args:
+        min_absolute (float): The absolute minimum limit for the distribution range.
+        max_absolute (float): The absolute maximum limit for the distribution range.
+    """
     def __init__(self, min_absolute:float, max_absolute:float):
         a = np.random.uniform(low = min_absolute, high = max_absolute)
         b = np.random.uniform(low = min_absolute, high = max_absolute)
@@ -69,6 +101,16 @@ class Distribution_uniform_random_at_construction(IDistributions):
         plt.show()
 
 class Distribution_uniform_random_at_every_acess(IDistributions):
+    """
+    Uniform distribution with randomly determined min and max values at every access.
+
+    Each time a value is requested from this distribution, the range (min and max) is randomly determined anew within the given absolute limits. 
+    This leads to a different uniform distribution for each access.
+
+    Args:
+        min_absolute (float): The absolute minimum limit for the distribution range.
+        max_absolute (float): The absolute maximum limit for the distribution range.
+    """
     def __init__(self, min_absolute:float, max_absolute:float):
         self.min_absolute = min_absolute
         self.max_absolute = max_absolute
@@ -113,6 +155,15 @@ class Distribution_uniform_random_at_every_acess(IDistributions):
 
 
 class Distribution_normal(IDistributions):
+    """
+    Normal (Gaussian) distribution.
+
+    This class represents a normal distribution characterized by its mean (mu) and standard deviation (sigma).
+
+    Args:
+        mu (float): The mean of the distribution.
+        sigma (float): The standard deviation of the distribution.
+    """
     def __init__(self, mu:float, sigma:float):
         self.mu = mu
         self.sigma = sigma
@@ -130,6 +181,15 @@ class Distribution_normal(IDistributions):
         plt.show()
 
 class Distribution_normal_random_sigma_at_construction(IDistributions):
+    """
+    Normal distribution with a random standard deviation determined at construction.
+
+    The mean (mu) is fixed, but the standard deviation (sigma) is randomly selected within a given range when the object is constructed.
+
+    Args:
+        mu (float): The mean of the distribution.
+        sigma_max (float): The maximum limit for the randomly chosen standard deviation.
+    """
     def __init__(self, mu:float, sigma_max:float):
         self.mu = mu
         self.sigma = np.random.uniform(low = 0, high = sigma_max)
@@ -147,6 +207,16 @@ class Distribution_normal_random_sigma_at_construction(IDistributions):
         plt.show()
 
 class Distribution_normal_random_all_inside_borders_random_at_construction(IDistributions):
+    """
+    Normal distribution with both mean and standard deviation randomly determined at construction within specified borders.
+    
+    The standard deviation (sigma) and the mean (mu) are randomly selected within a range that ensures that 99.7percent of the distribution falls within the given lower and upper borders.
+
+
+    Args:
+        lower_border (float): The lower border for the mean of the distribution.
+        upper_border (float): The upper border for the mean of the distribution.
+    """
     def __init__(self,lower_border=0 , upper_border=1 ):
         sigma_max = (abs(upper_border - lower_border))/6
         self.sigma = np.random.uniform(low = 0, high = sigma_max)
@@ -166,6 +236,15 @@ class Distribution_normal_random_all_inside_borders_random_at_construction(IDist
         plt.show()
 
 class Distribution_normal_random_sigma_at_acess(IDistributions):
+    """
+    Normal distribution where the standard deviation is randomly determined at each access.
+
+    The mean (mu) is fixed, but the standard deviation (sigma) is randomly selected within a given range each time a value is accessed.
+
+    Args:
+        mu (float): The mean of the distribution.
+        sigma_max (float): The maximum limit for the randomly chosen standard deviation.
+    """
     def __init__(self, mu:float, sigma_max:float):
         self.sigma_max = sigma_max
         self.mu = mu
@@ -187,6 +266,15 @@ class Distribution_normal_random_sigma_at_acess(IDistributions):
 
 
 class Distribution_normal_truncated_at_3sigma(IDistributions):
+    """
+    Normal distribution truncated at 3 standard deviations from the mean.
+
+    Values falling outside of 3 standard deviations from the mean are rejected and redrawn, ensuring all values fall within this range.
+
+    Args:
+        mu (float): The mean of the distribution.
+        sigma (float): The standard deviation of the distribution.
+    """
     def __init__(self, mu:float, sigma:float):
         self.mu = mu
         self.sigma = sigma
@@ -219,6 +307,15 @@ class Distribution_normal_truncated_at_3sigma(IDistributions):
 
 
 class Distribution_normal_truncated_at_3sigma_random_all_inside_borders_random_at_construction(IDistributions):
+    """
+    Normal distribution truncated at 3 standard deviations, with mean and standard deviation randomly determined at construction within specified borders.
+
+    The mean and standard deviation are selected such that the distribution, truncated at 3 sigma, completely fits within the given lower and upper borders.
+
+    Args:
+        lower_border (float): The lower border for the distribution.
+        upper_border (float): The upper border for the distribution.
+    """
     def __init__(self,lower_border=0 , upper_border=1 ):
         sigma_max = (abs(upper_border - lower_border))/6
         self.sigma = np.random.uniform(low = 0, high = sigma_max)
@@ -252,6 +349,16 @@ class Distribution_normal_truncated_at_3sigma_random_all_inside_borders_random_a
         plt.show()
 
 class Distribution_normal_truncated_at_3sigma_random_sigma_at_construction(IDistributions):
+    """
+    Normal distribution truncated at 3 standard deviations, with random standard deviation determined at construction.
+
+    The mean is fixed, but the standard deviation is randomly determined within a specified maximum range. 
+    The distribution is truncated at 3 standard deviations from the mean.
+
+    Args:
+        mu (float): The mean of the distribution.
+        sigma_max (float): The maximum limit for the randomly chosen standard deviation.
+    """
     def __init__(self, mu:float, sigma_max:float):
         self.mu = mu
         self.sigma = np.random.uniform(low = 0, high = sigma_max)
@@ -283,6 +390,17 @@ class Distribution_normal_truncated_at_3sigma_random_sigma_at_construction(IDist
         plt.show()
 
 class Distribution_normal_truncated_at_3sigma_random_sigma_at_acess(IDistributions):
+    """
+    Normal distribution truncated at 3 standard deviations, with random standard deviation determined at each access.
+
+    The mean is fixed, while the standard deviation is randomly selected within a specified maximum range each time a value is accessed. 
+    The distribution is truncated at 3 standard deviations from the mean.
+
+    Args:
+        mu (float): The mean of the distribution.
+        sigma_max (float): The maximum limit for the randomly chosen standard deviation.
+    """
+
     def __init__(self, mu:float, sigma_max:float):
         self.mu = mu
         self.sigma_max = sigma_max
@@ -317,6 +435,15 @@ class Distribution_normal_truncated_at_3sigma_random_sigma_at_acess(IDistributio
         plt.show()
 
 class Distribution_normal_truncated_at_3sigma_bound_to_zero(IDistributions):
+    """
+    Normal distribution truncated at 3 standard deviations and bound to zero.
+
+    This distribution is designed such that its mean is always 3 standard deviations from zero, ensuring all values are non-negative. 
+    The distribution is truncated at 3 standard deviations from the mean.
+
+    Args:
+        sigma (float): The standard deviation of the distribution.
+    """
     def __init__(self, sigma:float):
         
         self.sigma = sigma
@@ -349,6 +476,15 @@ class Distribution_normal_truncated_at_3sigma_bound_to_zero(IDistributions):
         plt.show()
 
 class Distribution_normal_truncated_at_3sigma_bound_to_zero_random_at_construction(IDistributions):
+    
+    """
+    Normal distribution truncated at 3 standard deviations, bound to zero, and with random standard deviation determined at construction.
+
+    Similar to Distribution_normal_truncated_at_3sigma_bound_to_zero, but the standard deviation is randomly determined within a specified range when the object is constructed.
+
+    Args:
+        sigma_max (float): The maximum limit for the randomly chosen standard deviation.
+    """
     def __init__(self, sigma_max:float):
         
         self.sigma = np.random.uniform(low = 0, high = sigma_max)
@@ -382,6 +518,17 @@ class Distribution_normal_truncated_at_3sigma_bound_to_zero_random_at_constructi
 
 
 class Distribution_mixture_of_normals(IDistributions):
+    """
+    A mixture of normal distributions.
+
+    This class represents a mixture of several normal distributions, each with its own mean but sharing a common standard deviation. 
+    A value is drawn from one of these distributions chosen at random.
+
+    Args:
+        list_of_mus (List[float]): A list of means for the individual normal distributions.
+        sigma (float): The common standard deviation for all distributions in the mixture.
+    """
+
     def __init__(self, list_of_mus:List[float], sigma:float):
         self.list_of_mus = list_of_mus
         self.list_of_mus.sort()
@@ -413,6 +560,18 @@ class Distribution_mixture_of_normals(IDistributions):
         plt.show()
 
 class Distribution_mixture_of_normals_random_uniform_at_construction(IDistributions):
+    """
+    A mixture of normal distributions with random means determined uniformly at construction.
+
+    A specified number of normal distributions are created, each with a mean randomly determined within specified borders. 
+    All distributions share a common standard deviation.
+
+    Args:
+        sigma (float): The standard deviation for all distributions in the mixture.
+        lower_border (float): The lower border for random mean selection.
+        upper_border (float): The upper border for random mean selection.
+        components (int): The number of normal distributions in the mixture.
+    """
     def __init__(self,  sigma:float, lower_border=0.0, upper_border=1.0, components=20):
         self.sigma = sigma
         self.list_of_mus = np.random.uniform(lower_border , upper_border , components).tolist()
@@ -444,6 +603,16 @@ class Distribution_mixture_of_normals_random_uniform_at_construction(IDistributi
         plt.show()
 
 class Distribution_mixture_of_normals_truncated_at_3sigma(IDistributions):
+    """
+    A mixture of normal distributions truncated at 3 standard deviations.
+
+    This class represents a mixture of several normal distributions, each with its own mean but sharing a common standard deviation. 
+    The distributions are truncated at 3 standard deviations from their first and last component means. A value is drawn from one of these distributions chosen at random.
+
+    Args:
+        list_of_mus (List[float]): A list of means for the individual normal distributions.
+        sigma (float): The common standard deviation for all distributions in the mixture.
+    """
     def __init__(self, list_of_mus:List[float], sigma:float):
         self.list_of_mus = list_of_mus
         self.list_of_mus.sort()
@@ -487,6 +656,18 @@ class Distribution_mixture_of_normals_truncated_at_3sigma(IDistributions):
 
 class Distribution_mixture_of_normals_truncated_at_3sigma_and_outlier_correction_for_interpolation(IDistributions):
     def __init__(self, list_of_mus:List[float], sigma:float, upper_limit:float):
+        """
+            A mixture of normal distributions truncated at 3 standard deviations with outlier correction suitable for interpolation.
+
+            This class is similar to Distribution_mixture_of_normals_truncated_at_3sigma, but includes an additional outlier correction mechanism trough upper range
+            to ensure the generated values are suitable for interpolation within a specified range.
+
+            Args:
+                list_of_mus (List[float]): A list of means for the individual normal distributions.
+                sigma (float): The standard deviation for all distributions in the mixture.
+                upper_limit (float): The upper limit for outlier correction.
+            """
+
         self.list_of_mus = list_of_mus
         self.list_of_mus.sort()
         self.sigma = sigma
@@ -531,6 +712,17 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_and_outlier_correction
 
 
 class Distribution_mixture_of_normals_truncated_at_3sigma_random_sigma_outward_random_inside_borders_and_uniform_at_construction(IDistributions):
+    """
+    A mixture of normal distributions with random sigma, truncated at 3 standard deviations, and random means inside specified borders.
+
+    This class creates a mixture of normal distributions where both the standard deviation and means are randomly determined. 
+    The standard deviation is chosen such that the distributions are truncated at 3 sigma, while the means are randomly chosen within specified borders so that the complete distribution is inside the borders.
+
+    Args:
+        lower_border (float): The lower border for mean selection.
+        upper_border (float): The upper border for mean selection.
+        components (int): The number of normal distributions in the mixture.
+    """
     def __init__(self,  lower_border=0.0, upper_border=1.0, components=20):
         self.sigma = np.random.uniform( 0 , upper_border/10 )
         self.list_of_mus = np.random.uniform(lower_border + 3*self.sigma , upper_border - 3*self.sigma, components).tolist()
@@ -574,6 +766,18 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_random_sigma_outward_r
 
 
 class Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_borders_and_uniform_at_construction(IDistributions):
+    """
+    A mixture of normal distributions with a fixed sigma, truncated at 3 standard deviations, and random means inside specified borders.
+
+    Similar to Distribution_mixture_of_normals_truncated_at_3sigma_random_sigma_outward_random_inside_borders_and_uniform_at_construction, 
+    but with a fixed standard deviation. The means are randomly chosen within specified borders, the distribution is completely inside the borders.
+
+    Args:
+        sigma (float): The fixed standard deviation for all distributions in the mixture.
+        lower_border (float): The lower border for mean selection.
+        upper_border (float): The upper border for mean selection.
+        components (int): The number of normal distributions in the mixture.
+    """
     def __init__(self,  sigma:float, lower_border=0.0, upper_border=1.0, components=20):
         self.sigma = sigma
         self.list_of_mus = np.random.uniform(lower_border + 3*sigma , upper_border - 3*sigma, components).tolist()
@@ -616,6 +820,18 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_
         plt.show()
 
 class Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform_at_construction(IDistributions):
+    """
+    A mixture of normal distributions with a fixed sigma, truncated at 3 standard deviations inwards, with random means determined uniformly at construction.
+
+    This class creates a mixture of normal distributions where the means are randomly determined within a range wider than the specified borders, 
+    resulting in a truncation effect towards the borders.
+
+    Args:
+        sigma (float): The standard deviation for all distributions in the mixture.
+        lower_border (float): The lower border for the distribution range.
+        upper_border (float): The upper border for the distribution range.
+        components (int): The number of normal distributions in the mixture.
+    """
     def __init__(self,  sigma:float, lower_border=0.0, upper_border=1.0, components=20):
         self.sigma = sigma
         self.upper_border = upper_border
@@ -657,6 +873,20 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform
         plt.show()
 
 class Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_mu_and_random_spread_uniform_at_construction(IDistributions):
+    
+    """
+    A mixture of normal distributions with truncated ranges and random means and spread, determined uniformly at construction.
+
+    This class creates a mixture of normal distributions with each mean and the spread randomly determined. 
+    The distributions are truncated inwards, ensuring the generated values are within specified limits.
+
+    Args:
+        sigma (float): The standard deviation for the distributions.
+        lower_border_max (float): The maximum lower border for distribution range.
+        upper_border_max (float): The maximum upper border for distribution range.
+        components (int): The number of normal distributions in the mixture.
+    """
+
     def __init__(self,  sigma:float, lower_border_max=0.0, upper_border_max=1.0, components=2):
         self.sigma = sigma
         limits= np.random.uniform(lower_border_max , upper_border_max , 2).tolist()
@@ -701,6 +931,18 @@ class Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_mu_and_
 
 
 class Distribution_mixture_of_normals_truncated_custom(IDistributions): # mus of mixture need to be within the borders
+    """
+    A mixture of normal distributions with custom truncation and specified means.
+
+    This class allows for the creation of a mixture of normal distributions with specified means and custom truncation ranges. 
+    All means must fall within specified borders to ensure valid distribution creation.
+
+    Args:
+        list_of_mus (List[float]): A list of means for the individual normal distributions.
+        sigma (float): The standard deviation for all distributions in the mixture.
+        lower_border (float): The lower border for truncation.
+        upper_border (float): The upper border for truncation.
+    """
     def __init__(self, list_of_mus:List[float], sigma:float, lower_border=0.0, upper_border=1.0):
         self.sigma = sigma
         self.lower_border = lower_border
@@ -747,6 +989,15 @@ class Distribution_mixture_of_normals_truncated_custom(IDistributions): # mus of
 
 
 class Distrib_custom_with_valuelist(IDistributions):
+    """
+    Custom distribution defined by a predefined list of values.
+
+    This distribution class allows for the creation of a distribution based on a predefined list of values. 
+    Values are randomly selected from this list.
+
+    Args:
+        valuelist (List[Type[float]]): A list of predefined values to form the basis of the distribution.
+    """
     def __init__(self, valuelist= List[Type[float]] ):
         self.valuelist = valuelist
     def get_value_from_distribution(self):
