@@ -4,7 +4,7 @@ import GPy
 import matplotlib.pyplot as plt
 
 from dataclasses import dataclass, field
-from typing import Any, List, Type, Tuple, Optional
+from typing import Any, List, Type, Tuple, Optional, Union
 import random
 from abc import ABCMeta, abstractstaticmethod, abstractmethod
 import matplotlib.pyplot as plt
@@ -38,9 +38,11 @@ class Predictions_3d:
 
 
 class single_function_with_discontinuity:
-    def __init__(self,function_model:IGaussianProcessModel,list_of_discontinuity_borders: List[discontinuity_borders_per_dimension],maximum_local: _functionmaker_extreme_values.Extreme_value_with_coordinates, minimum_local: _functionmaker_extreme_values.Extreme_value_with_coordinates, predictions: List[Type[_functionmaker_extreme_values.Predictions]]) :
+    def __init__(self,function_model:IGaussianProcessModel,list_of_discontinuity_borders: List[discontinuity_borders_per_dimension]) :
         self.function_model = function_model
         self.list_of_discontinuity_borders = list_of_discontinuity_borders 
+
+    def set_extreme_values(self, maximum_local: _functionmaker_extreme_values.Extreme_value_with_coordinates, minimum_local: _functionmaker_extreme_values.Extreme_value_with_coordinates, predictions: Union[None, List[_functionmaker_extreme_values.Predictions]]):
         self.maximum_local = maximum_local
         self.minimum_local = minimum_local
         self.predictions= predictions
@@ -86,21 +88,9 @@ class Dependency_functions:   # the class containing the dependency functions ca
             predicted_value=self.calculate_value(x_inputs=inputs)
             predicted_value_list.append(predicted_value)
         return predicted_value_list
-    
-    def _determine_and_set_absolute_extreme_values(self):# here 
-        absolute_maximum = 0
-        absolute_minimum = 0
-        for function in self.functions:
-            if function.maximum_local.value > absolute_maximum:
-                absolute_maximum = function.maximum_local.value
-            if function.minimum_local.value < absolute_minimum:
-                absolute_minimum = function.minimum_local.value
-        self.maximum_absolute = absolute_maximum
-        self.minimum_absolute = absolute_minimum
 
     def set_normalizer(self,minimum_output,maximum_output): # always absolute stretching, possibility to stretch only if over the max, or to stretch randomly
-        self._determine_and_set_absolute_extreme_values()
-    
+        self._find_and_set_extreme_values()
         self.normalizer.set_normalizer(output_minimum=minimum_output,output_maximum=maximum_output,input_min=self.minimum_absolute,input_max=self.maximum_absolute)
 
     def normalize_value(self, value:float):
@@ -312,7 +302,6 @@ class Dependency_functions:   # the class containing the dependency functions ca
                 pass
             self.show_functions_for_existing_predictions(label= label)
   
-    
     def _extract_model_associated_with_inputs(self,functions: List[Type[single_function_with_discontinuity]], inputs:list):
         model = functions[0].function_model
         miss = False
@@ -353,6 +342,39 @@ class Dependency_functions:   # the class containing the dependency functions ca
                 print(f"funktion immernoch nicht zugeordner")
         return model
 
+    def _find_and_set_extreme_values(self):
+        for single_function in self.functions:
+            extreme_value_setter = self.normalizer.extreme_value_setter
+            extreme_value_setter.find_extreme_values( function_model=single_function.function_model,list_of_discontinuity_borders=single_function.list_of_discontinuity_borders )
+            single_function.set_extreme_values(maximum_local=extreme_value_setter.get_maximum(), minimum_local=extreme_value_setter.get_minimum(), predictions=extreme_value_setter.get_predictions())
+        self._determine_and_set_absolute_extreme_values()
+        if isinstance(self.normalizer.extreme_value_setter, _functionmaker_extreme_values.Extreme_value_setter_solo_dimensionmax):
+            self.gridsearch_extreme_values()
+        
+    def _determine_and_set_absolute_extreme_values(self):# here 
+        absolute_maximum = self.functions[0].maximum_local
+        absolute_minimum = self.functions[0].minimum_local
+        for function in self.functions[1:]:
+            if function.maximum_local.value > absolute_maximum:
+                absolute_maximum = function.maximum_local.value
+            if function.minimum_local.value < absolute_minimum:
+                absolute_minimum = function.minimum_local.value
+        self.maximum_absolute = absolute_maximum
+        self.minimum_absolute = absolute_minimum
+
+    def gridsearch_extreme_values(self, resolution=3):
+        check_inputs = _inputloader.make_grid_for_hypercube(dimensions=self.functions[0].function_model.return_kernel_dimensions(), lower_bound= self.range_of_output[0], upper_bound=self.range_of_output[1], resolution=resolution)
+        check_inputs.tolist()
+        predictions = self.make_predicitions_for_multiple_points_raw(x_inputs=check_inputs)
+        max_prediction = max(predictions)
+        min_prediction = min(predictions)
+        if max_prediction > self.maximum_absolute:
+            print(f"{max_prediction} is bigger {self.maximum_absolute}")
+            self.maximum_absolute = max_prediction
+        if min_prediction < self.minimum_absolute:
+            print(f"{min_prediction} is smaller {self.minimum_absolute}")
+            self.minimum_absolute = min_prediction
+
 
 
 class IFunction_maker(metaclass=ABCMeta):
@@ -366,14 +388,14 @@ class IFunction_maker(metaclass=ABCMeta):
 
 class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): # new discontinuity borders can appear only in the same dimensions used in the first discontinuity 
         
-    def __init__(self, discontinuity_frequency:float = 0.2 ,  maximum_discontinuities:int = 2, discontinuity_reappearance_frequency:float = 0.4, extreme_value_setter: _functionmaker_extreme_values.IExtreme_value_setter = _functionmaker_extreme_values.Extreme_value_setter_solo_dimensionmax(resolution=100), normalizer:_functionmaker_extreme_values.INormalizer = _functionmaker_extreme_values.Normalizer_minmax_stretch(), gp_model= GPyModel(),inputloader= _inputloader.Inputloader_for_solo_random_values()):
+    def __init__(self, discontinuity_frequency:float = 0.2 ,  maximum_discontinuities:int = 2, discontinuity_reappearance_frequency:float = 0.4, normalizer:_functionmaker_extreme_values.INormalizer = _functionmaker_extreme_values.Normalizer_minmax_stretch(), gp_model= GPyModel(),inputloader= _inputloader.Inputloader_for_solo_random_values(), sampling_resolution= 4):
         self.discontinuity_frequency = discontinuity_frequency
         self.maximum_discontinuities = maximum_discontinuities
         self.discontinuity_reappearance_frequency  = discontinuity_reappearance_frequency
-        self.extreme_value_setter = extreme_value_setter
         self.normalizer = normalizer
         self.gp_model= gp_model
         self.inputloader = inputloader
+        self.sampling_resolution = sampling_resolution
         
 
 
@@ -383,20 +405,16 @@ class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): # n
         self.training_input_y= self.inputloader.load_y_training_data()
 
     def make_functions(self, kernel, errorterm_tolerance:float,   range_of_output: Tuple[float, float])-> Dependency_functions :
-        print("functionamker initialized")
         minimum_output= range_of_output[0]
         maximum_output= range_of_output[0]+((range_of_output[1]-range_of_output[0])*(1-errorterm_tolerance))
         dimensions = kernel.input_dim
         self.load_inputs(dimensions=dimensions, upper=minimum_output, lower=maximum_output)
-
         list_of_function_objects = []
         model = self.gp_model
         model.train(X=self.training_input_x,Y=self.training_input_y ,kernel=kernel)
-        
         number_of_functions, list_of_dimensions_with_discontinuity = self._generate_number_for_functions_and_list_of_discontinuity_dimensions(dimensions=dimensions,discontinuity_frequency=self.discontinuity_frequency , discontinuity_reappearance_frequency=self.discontinuity_reappearance_frequency, maximum_discontinuities=self.maximum_discontinuities)
         list_of_borders_and_its_dimensionality = self._generate_list_of_borders_and_its_dimensionality(number_of_functions=number_of_functions,list_of_dimensions_with_discontinuity=list_of_dimensions_with_discontinuity,range_of_output=range_of_output)  #list_of_borders_and_its_dimensionality[i][0] for dimension and [i][1] for borderlist
-        #sample_input_x = _inputloader.make_2d_array_for_x_inputs_full(dimensions=dimensions)
-        sample_input_x = _inputloader.make_grid_for_hypercube(dimensions=dimensions, resolution=4)
+        sample_input_x = _inputloader.make_grid_for_hypercube(dimensions=dimensions, resolution=self.sampling_resolution)
         for j in range(number_of_functions):
             sample_function = self._sample_and_correct(model=model,sample_input_x=sample_input_x)
             function_model = copy.deepcopy(self.gp_model)
@@ -411,13 +429,15 @@ class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): # n
                 dimension=entry[0]
                 list_of_discontinuity_borders[dimension].lower_border = entry[1][j]
                 list_of_discontinuity_borders[dimension].upper_border= entry[1][j+1]
-            self.extreme_value_setter.find_extreme_values( function_model=function_model,list_of_discontinuity_borders=list_of_discontinuity_borders )
-            function_object= single_function_with_discontinuity(function_model=function_model, list_of_discontinuity_borders= list_of_discontinuity_borders, maximum_local=self.extreme_value_setter.get_maximum(), minimum_local=self.extreme_value_setter.get_minimum(), predictions=self.extreme_value_setter.get_predictions())
+
+
+            function_object= single_function_with_discontinuity(function_model=function_model, list_of_discontinuity_borders= list_of_discontinuity_borders)
             list_of_function_objects.append(function_object)
         normalizer = copy.deepcopy(self.normalizer)
 
-        dependency_functions = Dependency_functions(functions=list_of_function_objects, normalizer = normalizer, range_of_output=range_of_output )
+        dependency_functions = Dependency_functions(functions=list_of_function_objects, normalizer = normalizer, range_of_output=range_of_output)
         dependency_functions.set_normalizer(minimum_output=minimum_output,maximum_output=maximum_output)
+
         return dependency_functions
     
     @staticmethod

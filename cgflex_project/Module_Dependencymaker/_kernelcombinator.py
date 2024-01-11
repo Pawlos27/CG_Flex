@@ -53,7 +53,6 @@ class Kernel_selector_random(IKernel_selector):
         limit_used_dimensions = min(free_dimensions,self.max_dimensions_per_kernel) # setting actual limit to the dimensions
         list_kernels_matching = self._make_matching_kernel_list(limit_used_dimensions=limit_used_dimensions) 
         selected_kernel = random.choice(list_kernels_matching)
-        print(selected_kernel)
         dimensionality_kernel = random.randint(a=1, b=limit_used_dimensions)
         if selected_kernel.min_dimensions == selected_kernel.max_dimensions:
             dimensionality_kernel = selected_kernel.min_dimensions

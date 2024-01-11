@@ -14,80 +14,7 @@ from  cgflex_project.Module_Dependencymaker._functionmaker_gaussian_process_mode
 
 
 
-class INormalizer(metaclass=ABCMeta): # interface for strategies for setting extreme values currently only solo_dimension_max.   extreme_value_empty might be usable if extreme value setter is not needed due to already "normalized kernels"
-    @abstractmethod
-    def normalize_value(self,input_value:float ):
-     """Interface Method"""
-    @abstractmethod
-    def set_normalizer(self, output_minimum, output_maximum,input_max, input_min):
-     """Interface Method"""
-         
-class Normalizer_minmax_stretch(INormalizer): 
-    def __init__(self):
-        self.output_minimum = 0
-        self.output_maximum = 1
 
-    def set_normalizer(self, output_minimum, output_maximum,input_max, input_min):
-        self.output_minimum = output_minimum 
-        self.output_maximum = output_maximum
-        self.input_min = input_min
-        self.input_max = input_max
-
-    def normalize_value(self,input_value:float ):
-        span_inputs = (self.input_max-self.input_min)
-        if span_inputs == 0:
-            normalized_value= (input_value-self.input_min)
-            normalized_value= (input_value-self.input_min) + (self.output_maximum - self.output_minimum)/2
-        else:
-            squeeze_faktor = (self.output_maximum - self.output_minimum)/span_inputs
-            normalized_value= (input_value-self.input_min)
-            normalized_value = normalized_value * squeeze_faktor
-
-        return normalized_value 
-
-class Normalizer_minmax_stretch_random(INormalizer): 
-    def __init__(self):
-        self.output_minimum = 0
-        self.output_maximum = 1
-
-    def set_normalizer(self, output_minimum, output_maximum,input_max, input_min):
-        self.output_minimum = output_minimum 
-        self.output_maximum = output_maximum
-        self.input_min = input_min
-        self.input_max = input_max
-        self.squeeze_faktor = (self.output_maximum - self.output_minimum)/(self.input_max-self.input_min)
-        self.squeeze_corrector = random.uniform(0.1, 1) # this is the new squeeze value
-        self.shift_corrector = random.uniform(0, (self.output_maximum-(self.output_maximum*self.squeeze_corrector))) # this is the new room for the value to "shift"
-
-    def normalize_value(self,input_value:float ):
-        span_inputs = (self.input_max-self.input_min)
-        if span_inputs == 0:
-            normalized_value= (input_value-self.input_min)
-            normalized_value= (input_value-self.input_min) + self.shift_corrector
-        else:
-            self.squeeze_faktor = (self.output_maximum - self.output_minimum)/span_inputs
-            squeez_corrector = self.squeeze_corrector
-            shift_corrector = self.shift_corrector
-            normalized_value= (input_value-self.input_min)
-            normalized_value = normalized_value * self.squeeze_faktor
-            normalized_value =normalized_value*squeez_corrector + shift_corrector
-        return normalized_value 
-
-class Normalizer_minmax_alt: 
-    def __init__(self, output_minimum, output_maximum,input_max, input_min):
-        self.output_minimum = output_minimum 
-        self.output_maximum = output_maximum
-        self.input_min = input_min
-        self.input_max = input_max
-
-    def normalize_value(self,input_value:float ):
-        normalized_value = (input_value-self.input_min)/(self.input_max-self.input_min) # normalize to 0-1
-        normalized_value =(normalized_value*(self.output_maximum-self.output_minimum))+self.output_minimum # reverse method for shift and stretch
-        if normalized_value > self.output_maximum: # corrections
-            normalized_value  = self.output_maximum
-        if normalized_value < self.output_minimum:
-            normalized_value  = self.output_minimum
-        return normalized_value 
 
 @dataclass
 class Extreme_value_with_coordinates:
@@ -102,31 +29,6 @@ class Predictions: # predictions may be filled with only 1d-inputs despite being
     function_nr: Optional[int] = None
     normalized: bool = False
     
-
-
-def make_prediction_object(y_predictions, reference_inputs_array_x, dimension)-> Predictions:
-        y_predictions_list = list(y_predictions)
-        reference_inputs_array_x_list= list(reference_inputs_array_x)
-        prediction_object = Predictions(predicted_values=y_predictions_list, input_values=reference_inputs_array_x_list, dimension=dimension )
-        return prediction_object 
-
-
-def extract_absolute_maximum(list_of_maximum_objects: List[Type[Extreme_value_with_coordinates]])-> Extreme_value_with_coordinates:
-    absolute_maximum_object = list_of_maximum_objects.pop(0)
-    for maximum_object in list_of_maximum_objects:
-        if maximum_object.value > absolute_maximum_object.value:
-            absolute_maximum_object = maximum_object
-    return absolute_maximum_object
-
-   
-def extract_absolute_minimum(list_of_minimum_objects: List[Type[Extreme_value_with_coordinates]])-> Extreme_value_with_coordinates:
-    absolute_minimum_object = list_of_minimum_objects.pop(0)
-    for minimum_object in list_of_minimum_objects:
-        if minimum_object.value < absolute_minimum_object.value:
-            absolute_minimum_object = minimum_object
-    return absolute_minimum_object
-
-
 
 class IExtreme_value_setter(metaclass=ABCMeta): # interface for strategies for setting extreme values currently only solo_dimension_max.   extreme_value_empty might be usable if extreme value setter is not needed due to already "normalized kernels"
     @abstractmethod
@@ -147,29 +49,22 @@ class Extreme_value_setter_empty(IExtreme_value_setter):  # when using already n
         pass
 
     def get_maximum(self)-> Extreme_value_with_coordinates:
-        zero_array = np.zeros(1)
-        zero_object= Extreme_value_with_coordinates(value=0,coordinates=zero_array  )
-        return zero_object
+        return None
     
     def get_minimum(self)-> Extreme_value_with_coordinates:
-        zero_array = np.zeros(1)
-        zero_object= Extreme_value_with_coordinates(value=0,coordinates=zero_array  )
-        return zero_object
+        return None
 
     def get_predictions(self):
-        predictions_list = [Predictions(predicted_values=[0], input_values=[0])]
+        predictions_list = None
         return predictions_list
-
-
+    
 class Extreme_value_setter_solo_dimensionmax(IExtreme_value_setter): 
     def __init__(self, resolution=1000):
        self.resolution = resolution
 
     def find_extreme_values(self,list_of_discontinuity_borders, function_model:IGaussianProcessModel, ):
-
         self._locate_extreme_values(function_model=function_model,list_of_discontinuity_borders=list_of_discontinuity_borders)
 
-    
     def get_maximum(self)-> Extreme_value_with_coordinates:
         maximum = self.maximum
         return maximum
@@ -229,3 +124,76 @@ class Extreme_value_setter_solo_dimensionmax(IExtreme_value_setter):
             coordinate_for_extreme_value= reference_inputs_array_x[index_for_coordinates_of_extreme_value]
             coordinate_for_extreme_value = coordinate_for_extreme_value[0]
             return coordinate_for_extreme_value
+    
+
+class INormalizer(metaclass=ABCMeta): # interface for strategies for setting extreme values currently only solo_dimension_max.   extreme_value_empty might be usable if extreme value setter is not needed due to already "normalized kernels"
+    extreme_value_setter : IExtreme_value_setter
+    @abstractmethod
+    def normalize_value(self,input_value:float ):
+     """Interface Method"""
+    @abstractmethod
+    def set_normalizer(self, output_minimum, output_maximum,input_max, input_min):
+     """Interface Method"""
+         
+class Normalizer_minmax_stretch(INormalizer): 
+    def __init__(self, extreme_value_setter: IExtreme_value_setter = Extreme_value_setter_solo_dimensionmax()):
+        self.extreme_value_setter = extreme_value_setter
+        self.output_minimum = 0
+        self.output_maximum = 1
+
+    def set_normalizer(self, output_minimum, output_maximum,input_max, input_min):
+        self.output_minimum = output_minimum 
+        self.output_maximum = output_maximum
+        self.input_min = input_min
+        self.input_max = input_max
+
+    def normalize_value(self,input_value:float ):
+        span_inputs = (self.input_max-self.input_min)
+        if span_inputs == 0:
+            normalized_value= (input_value-self.input_min)
+            normalized_value= (input_value-self.input_min) + (self.output_maximum - self.output_minimum)/2
+        else:
+            squeeze_faktor = (self.output_maximum - self.output_minimum)/span_inputs
+            normalized_value= (input_value-self.input_min)
+            normalized_value = normalized_value * squeeze_faktor
+
+        return normalized_value 
+
+class Normalizer_minmax_stretch_random(INormalizer): 
+    def __init__(self, extreme_value_setter: IExtreme_value_setter = Extreme_value_setter_solo_dimensionmax()):
+        self.extreme_value_setter = extreme_value_setter
+        self.output_minimum = 0
+        self.output_maximum = 1
+
+    def set_normalizer(self, output_minimum, output_maximum,input_max, input_min):
+        self.output_minimum = output_minimum 
+        self.output_maximum = output_maximum
+        self.input_min = input_min
+        self.input_max = input_max
+        self.squeeze_faktor = (self.output_maximum - self.output_minimum)/(self.input_max-self.input_min)
+        self.squeeze_corrector = random.uniform(0.1, 1) # this is the new squeeze value
+        self.shift_corrector = random.uniform(0, (self.output_maximum-(self.output_maximum*self.squeeze_corrector))) # this is the new room for the value to "shift"
+
+    def normalize_value(self,input_value:float ):
+        span_inputs = (self.input_max-self.input_min)
+        if span_inputs == 0:
+            normalized_value= (input_value-self.input_min)
+            normalized_value= (input_value-self.input_min) + self.shift_corrector
+        else:
+            self.squeeze_faktor = (self.output_maximum - self.output_minimum)/span_inputs
+            squeez_corrector = self.squeeze_corrector
+            shift_corrector = self.shift_corrector
+            normalized_value= (input_value-self.input_min)
+            normalized_value = normalized_value * self.squeeze_faktor
+            normalized_value =normalized_value*squeez_corrector + shift_corrector
+        return normalized_value 
+
+class Normalizer_empty(INormalizer): 
+    def __init__(self, extreme_value_setter= Extreme_value_setter_empty()):
+        self.extreme_value_setter = extreme_value_setter
+
+    def set_normalizer(self, output_minimum, output_maximum,input_max, input_min):
+        pass
+
+    def normalize_value(self,input_value:float ):
+        return input_value
