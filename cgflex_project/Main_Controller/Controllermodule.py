@@ -339,7 +339,8 @@ class Cg_flex_controller:
                 graph_id, node_id = self.find_graph_id_and_node_id_from_shuffle_index(id_abstract=id)
                 self.sampling_controller.show_values_histogramm(graph_id= graph_id, node_id=node_id, output_range=output_range)
 
-
+    def print_samples_raw(self):
+        self.sampling_controller.print_samples_raw()
     
     def show_values_histogramm_raw(self, node_id:  Union[int, List[int]], graph_id=0):
         output_range = self._get_total_output_range()
@@ -359,7 +360,10 @@ class Cg_flex_controller:
     def export_value_id_samples_abstract(self, filename="last export"):
         self.sampling_controller.export_value_id_samples_abstract(filename=filename)
 
-    
+    def return_samples_abstracted_hidden_nodes(self, num_nodes_to_hide:int=5):
+        samples = self.sampling_controller.return_samples_abstracted_hidden_nodes( num_nodes_to_hide=num_nodes_to_hide)
+        return samples
+
     def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int, graph_id=0 , resolution = 100):
 
         self.load_full_nodelists_into_sampling_controller()
@@ -372,8 +376,12 @@ class Cg_flex_controller:
         self.load_full_nodelists_into_sampling_controller()
         range_f = self.dependency_controller[graph_id].inputs_dependency.range_of_output
         self.sampling_controller.show_dependency_from_2_nodes(node_id_target=node_id_target, node_id_dependency_x= node_id_dependency_x,node_id_dependency_y= node_id_dependency_y,  graph_id= graph_id , resolution = resolution, range_f=range_f)       
+   
+    def show_dependency_from_parents_scatterplot(self, node_id_target:int, graph_id:int=0, resolution:int=100, visualized_dimensions:Tuple[int,int] = (0,1)):
 
-
+        self.load_full_nodelists_into_sampling_controller()
+        range_f = self.dependency_controller[graph_id].inputs_dependency.range_of_output
+        self.sampling_controller.show_dependency_from_parents_scatterplot(node_id_target= node_id_target, graph_id= graph_id, resolution= resolution, visualized_dimensions= visualized_dimensions, range_f=range_f )
 
 #serialization methods
 

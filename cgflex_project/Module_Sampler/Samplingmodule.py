@@ -39,6 +39,24 @@ class Sampling_controller:
         self.id_value_list_of_arrays = None
         self.samples_abstracted_id = None
         self.samples_accumulated_per_id = None
+    
+    def print_samples_raw(self):
+        if self.id_value_list_of_arrays == None:
+            raise ValueError("there are no samples yet to print, please generate samples first")
+        data=[]
+        counter_sample = 0
+        for sample in self.id_value_list_of_arrays:
+                counter_graph = 0
+                for graph in sample:
+                    for node in graph :
+
+                        datapoint = {"Sample_number": counter_sample,'Graph_id': counter_graph, "Node_id": int(node[0]) ,'Value': node[1]}
+                        data.append(datapoint)
+                    counter_graph +=1
+                counter_sample += 1     
+        df=pd.DataFrame(data)
+        print (df)
+
 
 
     def return_nested_nodelist(self):
@@ -53,7 +71,17 @@ class Sampling_controller:
     def return_samples_abstracted_id (self):
         return self.samples_abstracted_id 
     
-    
+    def return_samples_abstracted_hidden_nodes(self, num_nodes_to_hide:int=5):
+        if self.samples_abstracted_id is None:
+            raise ValueError("No abstracted samples existing yet")
+        if num_nodes_to_hide >= self.samples_abstracted_id[0]:
+            raise ValueError("you try to hide more nodes then existing")
+        shortened_samples = []
+        for sample in self.samples_abstracted_id:
+            shortened_sample = sample[:len(sample) - num_nodes_to_hide]
+            shortened_samples.append(shortened_sample)
+        return np.array(shortened_samples)
+
     def get_values_from_nodelist(self,graph_id:int, node_ids:List[int]):
         value_list=[]
         for node_id in node_ids:
@@ -87,7 +115,7 @@ class Sampling_controller:
         for i in range(graph_number):
             self._calculate_values_per_graph(graph_id=i)
 
-    def _calculate_value_up_to_certain_node_and_replace_values(self,node_id:int, replaced_nodes:Tuple[int,float] , graph_id=0 ):
+    def _calculate_value_up_to_certain_node_and_replace_values(self,node_id:int, replaced_nodes:List[Tuple[int,float]] , graph_id:int=0 , replaced_nodes_to_zero:List[int]=[]):
         target_value = None
 
         for node in self.nodelist_nested_list[graph_id]:
@@ -103,12 +131,15 @@ class Sampling_controller:
             for replaced_node in replaced_nodes:
                 if replaced_node[0] == node.id:
                     node.value = replaced_node[1]
+            for replaced_node in replaced_nodes_to_zero:
+                if replaced_node == node.id:
+                    node.value = 0
             if node.id == node_id:
                 target_value = node.value
                 break
         return target_value
            
-    def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int,range: Tuple[float,float], graph_id=0 , resolution = 100):
+    def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int,range: Tuple[float,float], graph_id=0 , resolution:int=100):
         # Check if node_id_target is greater than node_id_dependency_
         if node_id_target <= node_id_dependency:
             raise ValueError("node_id_target must be greater than node_id_dependency_")
@@ -128,7 +159,7 @@ class Sampling_controller:
         plt.grid(True)
         plt.show()
             
-    def show_dependency_from_2_nodes(self, node_id_target:int, node_id_dependency_x:int,node_id_dependency_y:int, range_f:Tuple[float,float], graph_id=0 , resolution = 10):
+    def show_dependency_from_2_nodes(self, node_id_target:int, node_id_dependency_x:int,node_id_dependency_y:int, range_f:Tuple[float,float], graph_id:int=0 , resolution:int=10, replaced_nodes_to_zero:List[int]=[]):
         if node_id_target <= node_id_dependency_x:
             raise ValueError("node_id_target must be greater than node_id_dependency_x")
         if node_id_target <= node_id_dependency_y:
@@ -146,7 +177,7 @@ class Sampling_controller:
             for j in range(len(input_range)):
                 x_val = X[i, j]
                 y_val = Y[i, j]
-                z_val = self._calculate_value_up_to_certain_node_and_replace_values(node_id=node_id_target, graph_id=graph_id, replaced_nodes=[(node_id_dependency_x,x_val),(node_id_dependency_y,y_val)] )
+                z_val = self._calculate_value_up_to_certain_node_and_replace_values(node_id=node_id_target, graph_id=graph_id, replaced_nodes=[(node_id_dependency_x,x_val),(node_id_dependency_y,y_val)], replaced_nodes_to_zero=replaced_nodes_to_zero )
                 Z.append(z_val)
 
         # Convert Z to a numpy array
@@ -163,6 +194,28 @@ class Sampling_controller:
         plt.title(f'Scatter Plot of dependency  of Node: {node_id_target} from Node_x: {node_id_dependency_x} and from Node_y: {node_id_dependency_y}')
         plt.show()
 
+    def show_dependency_from_parents_scatterplot(self, node_id_target:int, range_f:Tuple[float,float], graph_id:int=0, resolution:int=100, visualized_dimensions:Tuple[int,int] = (0,1)):
+        if min(visualized_dimensions) < 0:
+            raise ValueError("dimension cannot be smaller then 0")
+        parents = self._get_parents_of_node(node_id=node_id_target, graph_id=graph_id)
+        parents_copy = list(parents)
+        if len(parents) == 1:
+            self.show_dependency_from_one_node(node_id_target=node_id_target, range=range_f, node_id_dependency=parents[0], graph_id=graph_id, resolution=resolution)
+        elif len(parents_copy)> 1:
+            if max(visualized_dimensions) > len(parents_copy):
+                node_id_dependency_x = parents_copy.pop(0)
+                node_id_dependency_y = parents_copy.pop(1)
+            else:
+                node_id_dependency_x = parents_copy.pop(visualized_dimensions[0])
+                node_id_dependency_y = parents_copy.pop(visualized_dimensions[1])          
+            self.show_dependency_from_2_nodes(node_id_target=node_id_target, node_id_dependency_x=node_id_dependency_x, node_id_dependency_y=node_id_dependency_y,range_f=range_f, graph_id=graph_id,resolution=resolution, replaced_nodes_to_zero=parents_copy)
+        else:
+            print(f"node_id:{node_id_target} has no parents, hence there is no dependency for scatterplot visualisation")
+
+    def _get_parents_of_node(self,node_id:int, graph_id:int=0):
+        parents = self.nodelist_nested_list[graph_id][node_id].parents
+        return parents
+
     def _make_value_id_samples_array(self): # makes list of id_value_pair arrays, each sub graph has an 2d array
         id_values_list_nested_one_sample = [] 
         for nodelist in self.nodelist_nested_list:
@@ -174,9 +227,8 @@ class Sampling_controller:
         return id_values_list_nested_one_sample
 
     def sample_value_id_pairs(self, number_of_samples=1):
-        list_of_nested_arrays = []
         if self.id_value_list_of_arrays == None:
-            self.id_value_list_of_arrays = list_of_nested_arrays
+            self.id_value_list_of_arrays = []
         
 
         for i in range(number_of_samples):
@@ -185,7 +237,6 @@ class Sampling_controller:
             self.id_value_list_of_arrays.append(list_of_samples)
             #counter for tsd functions, resetable
             self.tsd_counter += 1
-        #self.id_value_list_of_arrays = list_of_nested_arrays
     
     def reset_samples(self):
         self.id_value_list_of_arrays  = None 
