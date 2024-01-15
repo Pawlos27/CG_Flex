@@ -219,6 +219,7 @@ class Dependency_functions:   # the class containing the dependency functions ca
         z = np.atleast_2d(y_values_for_x_combinations_list)
         self.predictions_3d = Predictions_3d(resolution=resolution, predictions=z, visualized_dimensions=visualized_dimensions)
 
+  
     def show_3d_plot(self, resolution=20, visualized_dimensions: Tuple[int, int] = (0, 1),label="unknown_function"): # making 3d plot, when no plotdata existing or resolution unsufficient then calculating new data
         dimensions= self.functions[0].function_model.return_kernel_dimensions()
         if dimensions < 2:
@@ -240,7 +241,7 @@ class Dependency_functions:   # the class containing the dependency functions ca
         X, Y = np.meshgrid(x,y)
         fig = plt.figure()
         ax = fig.add_subplot(111,projection="3d")
-        ax.plot_surface(X, Y, z)
+        ax.plot_surface(Y, X, z)
         ax.set_xlabel(f"input dimension: {visualized_dimensions[0]}")
         ax.set_ylabel(f"input dimension: {visualized_dimensions[1]}")
         ax.set_zlabel("output")

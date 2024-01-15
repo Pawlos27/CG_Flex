@@ -204,8 +204,14 @@ class edgemaker(IEdgemaker):
         self._first_loop_edgemaking()
         self._second_loop_edgemaking_correcting_outgoing_edges()
         self._third_loop_edgemaking_correcting_ingoing_edges()
+        self.sort_parents_children(nodelist=nodelist)
         return nodelist
     
+    def sort_parents_children(self,nodelist: List[Nodeobject])-> List[Nodeobject]:
+        for node in nodelist:
+            node.parents.sort()
+            node.children.sort()
+
     def  _initialize_parameters(self):
         self.listlenght = len(self.nodelist)
         self.dimensions_thorus = len(self.nodelist[0].coord_t)

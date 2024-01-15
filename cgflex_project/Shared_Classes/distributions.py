@@ -501,9 +501,7 @@ class Distribution_normal_truncated_at_3sigma_bound_to_zero(IDistributions):
 
 class Distribution_normal_truncated_at_3sigma_bound_to_zero_random_at_construction(IDistributions):
     
-    """
-    Normal distribution truncated at 3 standard deviations, bound to zero, and with random standard deviation determined at construction.
-
+    """ Normal distribution truncated at 3 standard deviations, bound to zero, and with random standard deviation determined at construction.
     Similar to Distribution_normal_truncated_at_3sigma_bound_to_zero, but the standard deviation is randomly determined within a specified range when the object is constructed.
 
     Args:
@@ -1252,13 +1250,14 @@ if __name__ == "__main__":
     #x = Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_borders_and_uniform_at_construction( sigma=0.1)
    
     #x = Distribution_normal_truncated_at_3sigma_random_all_inside_borders_random_at_construction()
-    ##x = Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(mixture_list_of_mus_maker= Complex_distribution_list_of_Mus_maker(total_number_of_elements=14,distribution_for_distances_between_components=Collection_of_mixture_distance_distribution_trucated_inwards_steep()))
-    x= Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_borders_and_uniform_at_construction(sigma= 0.07, components= 9)
+    x = Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(mixture_list_of_mus_maker= Complex_distribution_list_of_Mus_maker(total_number_of_elements=14,distribution_for_distances_between_components=Collection_of_mixture_distance_distribution_random()))
+    #x= Distribution_mixture_of_normals_truncated_at_3sigma_outward_random_inside_borders_and_uniform_at_construction(sigma= 0.07, components= 9)
     #x = Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(mixture_list_of_mus_maker= Complex_distribution_list_of_Mus_maker())
-    #x = Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform_at_construction(sigma= 0.08, components= 11)] 
+    #x = Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform_at_construction(sigma= 0.08, components= 11)
+    #x = Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_uniform_at_construction(sigma= 0.08, components= 3)
 
 
     #x.get_array_from_distribution(size=2)
 
-    x.plot_distribution(label="uniform abstraction")
+    x.plot_distribution()
    

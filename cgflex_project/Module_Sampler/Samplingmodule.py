@@ -170,18 +170,17 @@ class Sampling_controller:
         X, Y = np.meshgrid(input_range, input_range)
 
         # Initialize an empty list to store output values
-        Z = []
+        Z = np.zeros((len(input_range), len(input_range)))
 
         # Calculate output for each pair in the meshgrid
         for i in range(len(input_range)):
             for j in range(len(input_range)):
                 x_val = X[i, j]
                 y_val = Y[i, j]
-                z_val = self._calculate_value_up_to_certain_node_and_replace_values(node_id=node_id_target, graph_id=graph_id, replaced_nodes=[(node_id_dependency_x,x_val),(node_id_dependency_y,y_val)], replaced_nodes_to_zero=replaced_nodes_to_zero )
-                Z.append(z_val)
-
-        # Convert Z to a numpy array
-        Z = np.array(Z).reshape(X.shape)
+                Z[i, j] = self._calculate_value_up_to_certain_node_and_replace_values(
+                    node_id=node_id_target, graph_id=graph_id, 
+                    replaced_nodes=[(node_id_dependency_x, x_val), (node_id_dependency_y, y_val)], 
+                    replaced_nodes_to_zero=replaced_nodes_to_zero)
         # Create a 3D scatter plot
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
@@ -199,15 +198,26 @@ class Sampling_controller:
             raise ValueError("dimension cannot be smaller then 0")
         parents = self._get_parents_of_node(node_id=node_id_target, graph_id=graph_id)
         parents_copy = list(parents)
+        parents_copy.sort()
         if len(parents) == 1:
             self.show_dependency_from_one_node(node_id_target=node_id_target, range=range_f, node_id_dependency=parents[0], graph_id=graph_id, resolution=resolution)
-        elif len(parents_copy)> 1:
+
+        elif len(parents_copy) > 1:
             if max(visualized_dimensions) > len(parents_copy):
-                node_id_dependency_x = parents_copy.pop(0)
-                node_id_dependency_y = parents_copy.pop(1)
+                node_id_dependency_x = parents_copy[0]
+                node_id_dependency_y = parents_copy[1]
             else:
-                node_id_dependency_x = parents_copy.pop(visualized_dimensions[0])
-                node_id_dependency_y = parents_copy.pop(visualized_dimensions[1])          
+                # Fetch elements at specified dimensions
+                node_id_dependency_x = parents_copy[visualized_dimensions[0]]
+                node_id_dependency_y = parents_copy[visualized_dimensions[1]]
+
+            # Remove the elements after fetching them
+            # It's important to remove the higher index first to avoid index shifting
+            higher_index = max(visualized_dimensions[0], visualized_dimensions[1])
+            lower_index = min(visualized_dimensions[0], visualized_dimensions[1])
+            parents_copy.pop(higher_index)
+            parents_copy.pop(lower_index)
+
             self.show_dependency_from_2_nodes(node_id_target=node_id_target, node_id_dependency_x=node_id_dependency_x, node_id_dependency_y=node_id_dependency_y,range_f=range_f, graph_id=graph_id,resolution=resolution, replaced_nodes_to_zero=parents_copy)
         else:
             print(f"node_id:{node_id_target} has no parents, hence there is no dependency for scatterplot visualisation")
