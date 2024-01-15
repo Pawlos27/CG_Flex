@@ -27,6 +27,8 @@ class Cg_flex_controller:
         self.dependency_controller = None
         self.sampling_controller = None
         self.config = config
+        self.sampling_controller_sync = False
+        self.dependency_controller_sync = False
 
 
 
@@ -44,6 +46,7 @@ class Cg_flex_controller:
         return components
     
     def make_graphs(self, number_of_decoupled_elements:int):
+        self.dependency_controller_sync = False
         self.reset_controller(size=number_of_decoupled_elements) 
         for graph_controller in self.graph_controller:
             graph_controller.make_graph()
@@ -52,18 +55,23 @@ class Cg_flex_controller:
         self.graph_controller[graph_id].reset_config(config=config)
 
     def reset_layers_graph(self, graph_id=0):
+        self.dependency_controller_sync = False
         self.graph_controller[graph_id].reset_layers()
 
     def set_new_sources_graph(self, graph_id=0):
+        self.dependency_controller_sync = False
         self.graph_controller[graph_id].new_sources()
 
     def set_new_sinks_graph(self, graph_id=0):
+        self.dependency_controller_sync = False
         self.graph_controller[graph_id].new_sinks()
 
     def set_new_sinks_and_sources_graph(self, graph_id=0):
+        self.dependency_controller_sync = False
         self.graph_controller[graph_id].new_sinks_and_sources()
 
     def set_new_edges_graph(self, graph_id=0):
+        self.dependency_controller_sync = False
         self.graph_controller[graph_id].new__edges()
 
     def print_nodelists_graph(self,  graph_ids: Optional[List[int]] = None): # can print nodelists of selected graphs
@@ -151,15 +159,18 @@ class Cg_flex_controller:
 
 # Methods dependencycontroller 
     def load_graph_nodelists_into_dependency_controller(self): # first adjust the lenght of dependency_controlers, then load the nodelists from the graph_controller
+        self.dependency_controller_sync = True
         for i in range (len(self.graph_controller)):
             self.dependency_controller[i].load_nodelist_graph(nodelist=self.graph_controller[i].get_nodelist_graph())
 
     def make_dependencies(self):
+        self.sampling_controller_sync = False
         self.load_graph_nodelists_into_dependency_controller()
         for dependency_controller in self.dependency_controller:
             dependency_controller.make_dependencies()
-    
+
     def reset_dependencies(self):
+        self.sampling_controller_sync = False
         for dependency_controller in self.dependency_controller:
             dependency_controller.make_dependencies()
 
@@ -167,34 +178,42 @@ class Cg_flex_controller:
         self.dependency_controller[graph_id].reset_config(config=config)
 
     def reset_dependencies_specific(self, node_ids: List[int], graph_id=0): 
+        self.sampling_controller_sync = False
         self.dependency_controller[graph_id].reset_dependencies_specific(node_id=node_ids)
     
     def reset_tsd_counter(self):
         self.sampling_controller.reset_tsd_counter()
     
     def replace_dependencies_by_tsd_function(self, node_ids: List[int], graph_id=0): 
+        self.sampling_controller_sync = False
         self.dependency_controller[graph_id].replace_dependencies_by_tsd_function(node_id=node_ids)
 
     def replace_dependencies_by_tsd_function_abstract_id(self, ids_abstract:List[int]):
+        self.sampling_controller_sync = False
         for id in ids_abstract:
             ids= self.sampling_controller.find_graph_id_and_node_id_from_shuffle_index(id_abstract=id)
             graph_id, node_id = ids 
             self.dependency_controller[graph_id].replace_dependencies_by_tsd_function(node_id=[node_id])
 
     def replace_dependencies_by_initial_distributions(self, node_ids: List[int], graph_id=0):
+        self.sampling_controller_sync = False
         self.dependency_controller[graph_id].replace_dependencies_by_initial_distributions(node_ids=node_ids)
 
     def replace_all_dependencies_by_initial_distributions(self):
+        self.sampling_controller_sync = False
         for dependency_controller in self.dependency_controller:
             dependency_controller.replace_all_dependencies_by_initial_distributions()
 
     def replace_dependencies_by_single_values(self, node_ids_and_values: List[Tuple[int, float]] ,graph_id=0):
+        self.sampling_controller_sync = False
         self.dependency_controller[graph_id].replace_dependencies_by_single_values(node_ids_and_values=node_ids_and_values)
 
     def replace_dependencies_by_single_values_from_random_distribution(self,  node_ids: List[int],graph_id=0):
+        self.sampling_controller_sync = False
         self.dependency_controller[graph_id].replace_dependencies_by_single_values_from_random_distribution(node_ids=node_ids)
 
     def replace_dependencies_by_single_values_abstract_id(self, abstract_ids_and_values: List[Tuple[int, float]]):
+        self.sampling_controller_sync = False
         for tuple in abstract_ids_and_values:
             ids= self.sampling_controller.find_graph_id_and_node_id_from_shuffle_index(id_abstract=tuple[0])
             graph_id, node_id = ids 
@@ -202,6 +221,7 @@ class Cg_flex_controller:
             self.replace_dependencies_by_single_values(graph_id=graph_id, node_ids_and_values=node_id_and_value)
 
     def reset_dependencies_abstract_id(self, ids_abstract:List[int]):
+        self.sampling_controller_sync = False
         for id in ids_abstract:
             ids= self.sampling_controller.find_graph_id_and_node_id_from_shuffle_index(id_abstract=id)
             graph_id, node_id = ids 
@@ -211,12 +231,14 @@ class Cg_flex_controller:
 
         
     def replace_dependencies_by_initial_distributions_abstract_id(self, ids_abstract:List[int]):
+        self.sampling_controller_sync = False
         for id in ids_abstract:
             ids= self.sampling_controller.find_graph_id_and_node_id_from_shuffle_index(id_abstract=id)
             graph_id, node_id = ids 
             self.replace_dependencies_by_initial_distributions_abstract_id(node_id=[node_id],graph_id=graph_id)
 
-    def replace_dependencies_by_single_random_values_abstract_id(self, ids_abstract:List[int]): # hier prüfen!!!!!
+    def replace_dependencies_by_single_random_values_abstract_id(self, ids_abstract:List[int]):
+        self.sampling_controller_sync = False
         for id in ids_abstract:
             ids= self.sampling_controller.find_graph_id_and_node_id_from_shuffle_index(id_abstract=id)
             graph_id, node_id = ids 
@@ -235,14 +257,17 @@ class Cg_flex_controller:
         return nested_lists_of_sources
 
     def set_sources_as_tsd_function(self):
+        self.sampling_controller_sync = False
         for dependency_controller in self.dependency_controller:
             dependency_controller.set_sources_as_tsd_function()
 
     def set_sources_as_distributions(self):
+        self.sampling_controller_sync = False
         for dependency_controller in self.dependency_controller:
             dependency_controller.set_sources_as_distributions()
 
     def set_sources_to_fixed_values(self):
+        self.sampling_controller_sync = False
         for dependency_controller in self.dependency_controller:
             dependency_controller.set_sources_to_fixed_values()
 
@@ -304,6 +329,11 @@ class Cg_flex_controller:
             single_nodelist.sort()
             full_nodelist.append(single_nodelist)
         self.sampling_controller.load_nodelist_dependencies(nodelist_nested=full_nodelist)
+        self.sampling_controller_sync = True
+
+    def _check_and_update_sampling_controller_synchronization(self):
+        if self.sampling_controller_sync is False:
+            self.load_full_nodelists_into_sampling_controller()
 
     def reset_config_sampler(self, config:Blueprint_sampling):  
         self.sampling_controller.reset_config(config=config)
@@ -312,6 +342,7 @@ class Cg_flex_controller:
         self.sampling_controller.reset_samples()
 
     def replace_id_shuffle_index(self):
+        self._check_and_update_sampling_controller_synchronization()
         self.sampling_controller.replace_id_shuffle_index()
         
     def find_graph_id_and_node_id_from_shuffle_index(self,id_abstract:int):
@@ -319,11 +350,12 @@ class Cg_flex_controller:
         return graph_id, node_id 
 
     def sample_values_raw(self,number_of_samples=1):
-        self.load_full_nodelists_into_sampling_controller()
+        self._check_and_update_sampling_controller_synchronization()
         self.sampling_controller.sample_value_id_pairs(number_of_samples=number_of_samples)
         self.sampling_controller.make_accumulated_samples()
 
     def sample_values_full(self,number_of_samples=1):
+        self._check_and_update_sampling_controller_synchronization()
         self.sample_values_raw(number_of_samples=number_of_samples)
         self.sampling_controller.make_abstracted_samples()
 
@@ -365,20 +397,19 @@ class Cg_flex_controller:
         return samples
 
     def show_dependency_from_one_node(self, node_id_target:int, node_id_dependency:int, graph_id=0 , resolution = 100):
-
+        self._check_and_update_sampling_controller_synchronization()
         self.load_full_nodelists_into_sampling_controller()
         range = self.dependency_controller[graph_id].inputs_dependency.range_of_output
         self.sampling_controller.show_dependency_from_one_node(node_id_target=node_id_target, node_id_dependency=node_id_dependency, graph_id=graph_id,range=range , resolution=resolution)
-
     
     def show_dependency_from_2_nodes(self, node_id_target:int, node_id_dependency_x:int,node_id_dependency_y:int,  graph_id=0 , resolution = 10):
-
+        self._check_and_update_sampling_controller_synchronization()
         self.load_full_nodelists_into_sampling_controller()
         range_f = self.dependency_controller[graph_id].inputs_dependency.range_of_output
         self.sampling_controller.show_dependency_from_2_nodes(node_id_target=node_id_target, node_id_dependency_x= node_id_dependency_x,node_id_dependency_y= node_id_dependency_y,  graph_id= graph_id , resolution = resolution, range_f=range_f)       
    
     def show_dependency_from_parents_scatterplot(self, node_id_target:int, graph_id:int=0, resolution:int=100, visualized_dimensions:Tuple[int,int] = (0,1)):
-
+        self._check_and_update_sampling_controller_synchronization()
         self.load_full_nodelists_into_sampling_controller()
         range_f = self.dependency_controller[graph_id].inputs_dependency.range_of_output
         self.sampling_controller.show_dependency_from_parents_scatterplot(node_id_target= node_id_target, graph_id= graph_id, resolution= resolution, visualized_dimensions= visualized_dimensions, range_f=range_f )

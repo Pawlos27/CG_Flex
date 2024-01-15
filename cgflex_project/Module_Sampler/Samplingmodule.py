@@ -74,7 +74,7 @@ class Sampling_controller:
     def return_samples_abstracted_hidden_nodes(self, num_nodes_to_hide:int=5):
         if self.samples_abstracted_id is None:
             raise ValueError("No abstracted samples existing yet")
-        if num_nodes_to_hide >= self.samples_abstracted_id[0]:
+        if num_nodes_to_hide >= len(self.samples_abstracted_id[0]):
             raise ValueError("you try to hide more nodes then existing")
         shortened_samples = []
         for sample in self.samples_abstracted_id:
