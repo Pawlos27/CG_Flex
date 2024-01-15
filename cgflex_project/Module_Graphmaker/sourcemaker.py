@@ -23,6 +23,7 @@ def correct_sources_and_sinks(nodelist: List[Nodeobject])-> List[Nodeobject]:
         """
 
         nodelist[0].source = True
+        nodelist[0].sink= False
         nodelist[-1].source = False
         nodelist[-1].sink = True
         return nodelist
@@ -96,7 +97,7 @@ class Source_setter_handmade(ISource_setter):
     """
 
 
-    def __init__(self, list_of_sources:list):
+    def __init__(self, list_of_sources:List[int]):
 
         self.list_of_sources= list_of_sources
 
@@ -105,16 +106,11 @@ class Source_setter_handmade(ISource_setter):
 
         """Sets specified nodes as sources based on the list_of_sources attribute."""
         nodelist.sort()
-
-        nodelist_f = nodelist
-        list_of_sources_f = self.list_of_sources
-        for node in nodelist_f:     # reset all sources
+        for node in nodelist:     # reset all sources
             node.source = False
-        for source in list_of_sources_f:    # set new sources
-            for node in nodelist_f:
-                if node.id == source:
-                    node.source = True
-        nodelist = self._correct_sources(nodelist=nodelist_f) # correct
+        for source in self.list_of_sources: # set new sources
+            nodelist[source].source = True
+        nodelist = self._correct_sources(nodelist=nodelist) # correct
         return nodelist
     @staticmethod
     def _correct_sources(nodelist: List[Nodeobject])-> List[Nodeobject]:

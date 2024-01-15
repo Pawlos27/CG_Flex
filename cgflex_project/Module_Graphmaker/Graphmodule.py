@@ -9,6 +9,9 @@ from typing import Any, List, Type, Tuple, Optional
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
+from cgflex_project.Module_Graphmaker.sinkmaker import Sink_setter_handmade
+from cgflex_project.Module_Graphmaker.sourcemaker import Source_setter_handmade
+
 
 
 
@@ -53,24 +56,39 @@ class Graph_controller:
     def reset_layers(self):
         """
         Resets the layers of the graph. This method is used after replacing the config object to ensure the layers are set accordingly with the new configuration.
-        
         """
         nodelist_layered = self.config.layermaker.make_layer(nodelist=self.nodelist)
         self.nodelist = self.config.edgemaker.make_edges(nodelist=nodelist_layered)
 
-    def new_sources(self):
+    def new_sources(self, list_of_sources:List[int]= None ):
         """
         Resets sources and generates new ones, implying also the creation of new edges.
         """
-        nodelist_sourced = self.config.sourcemaker.make_sources(nodelist=self.nodelist)
-        self.nodelist = self.config.edgemaker.make_edges(nodelist=nodelist_sourced)
+        if list_of_sources == None :
+            nodelist_sourced = self.config.sourcemaker.make_sources(nodelist=self.nodelist)
+            self.nodelist = self.config.edgemaker.make_edges(nodelist=nodelist_sourced)
+        else:
+            if max(list_of_sources) >= len(self.nodelist):
+                raise ValueError("given source ids are not in the nodelist, too big")
+            source_maker = Source_setter_handmade(list_of_sources=list_of_sources)
+            nodelist_sourced = source_maker.make_sources(nodelist=self.nodelist)
+            self.nodelist = self.config.edgemaker.make_edges(nodelist=nodelist_sourced)
        
-    def new_sinks(self ):
+    def new_sinks(self,list_of_sinks:List[int]= None ):
         """
         Resets sinks in the graph and generates new ones,implying also the creation of new edges.
         """
-        nodelist_sinked = self.config.sinkmaker.make_sinks(nodelist=self.nodelist)
-        self.nodelist = self.config.edgemaker.make_edges(nodelist=nodelist_sinked)
+        if list_of_sinks == None :
+            nodelist_sinked = self.config.sinkmaker.make_sinks(nodelist=self.nodelist)
+            self.nodelist = self.config.edgemaker.make_edges(nodelist=nodelist_sinked)
+
+        else:
+            if max(list_of_sinks) >= len(self.nodelist):
+                raise ValueError("given sink ids are not in the nodelist, too big")
+            sink_maker = Sink_setter_handmade(list_of_sinks=list_of_sinks)
+            nodelist_sinked = sink_maker.make_sinks(nodelist=self.nodelist)
+            self.nodelist = self.config.edgemaker.make_edges(nodelist=nodelist_sinked)
+
 
     def new_sinks_and_sources(self):
         """

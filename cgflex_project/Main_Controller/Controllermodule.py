@@ -58,13 +58,13 @@ class Cg_flex_controller:
         self.dependency_controller_sync = False
         self.graph_controller[graph_id].reset_layers()
 
-    def set_new_sources_graph(self, graph_id=0):
+    def set_new_sources_graph(self,list_of_sources:List[int]= None , graph_id=0):
         self.dependency_controller_sync = False
-        self.graph_controller[graph_id].new_sources()
+        self.graph_controller[graph_id].new_sources(list_of_sources=list_of_sources)
 
-    def set_new_sinks_graph(self, graph_id=0):
+    def set_new_sinks_graph(self, list_of_sinks:List[int]= None ,graph_id=0):
         self.dependency_controller_sync = False
-        self.graph_controller[graph_id].new_sinks()
+        self.graph_controller[graph_id].new_sinks(list_of_sinks=list_of_sinks)
 
     def set_new_sinks_and_sources_graph(self, graph_id=0):
         self.dependency_controller_sync = False

@@ -82,32 +82,26 @@ class Sink_setter_handmade(ISink_setter):
     Args:
         list_of_sinks (list): A list of integers representing the IDs of nodes to be set as sinks.
     """
-    def __init__(self,list_of_sinks : list):
+    def __init__(self,list_of_sinks : List[int]):
         self.list_of_sinks = list_of_sinks 
     def make_sinks(self,nodelist : List[Nodeobject] ):
         
         """Sets specified nodes as sinks based on the list_of_sinks attribute."""
         nodelist.sort()
-
-        nodelist_f = nodelist
-        nodelist_f.reverse()
-        list_of_sinks_f = self.list_of_sinks
-        for node in nodelist_f: # reset sinks
+        for node in nodelist: # reset sinks
             node.sink = False
-        nodelist_f[0].sink = True # set new sinks
-        for sink in list_of_sinks_f:
-            for node in nodelist_f:
-                if node.id == sink and node.source == False:
-                    node.sink = True
-        nodelist_f.reverse()      
-        nodelist = self._correct_sinks(nodelist=nodelist_f)
+        for sink in self.list_of_sinks:
+            if nodelist[sink].source == False:
+                nodelist[sink].sink = True
+        nodelist = self._correct_sinks(nodelist=nodelist)
         return nodelist
 
     @staticmethod
     def _correct_sinks(nodelist: List[Nodeobject]):
         nodelist = correct_sources_and_sinks(nodelist=nodelist)
         return nodelist
-
+    
+        
 
 if __name__ == "__main__":
     pass
