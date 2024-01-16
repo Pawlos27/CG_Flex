@@ -10,12 +10,40 @@ from cgflex_project.Shared_Classes.distributions import *
 
 
 class ITsd_functions(metaclass=ABCMeta):
+    """
+    Implementations of this interface enable the integration of Time-Series-Data
+    functionalities into our framework. Functions dependent on a time value are implemented.
+    In our model, this time value is determined by a counter that increases by 1 after each
+    sampling round. The implemented functions should be suitable for this integer value
+    range.
+
+    """
     @abstractmethod
     def calculate_value(self, x)-> float:
-     """Interface Method"""
+     """ Calculates the function value based on the input value x, here
+        the time value.
+
+        Args:
+            x: The input value.
+
+        Returns:
+            float: The calculated value of the TSD function.
+        """
     def set_range(self,range:tuple):
+        """
+        Sets the output range of the TSD function, to match our ovrall range.
+
+        Args:
+            range (tuple): A tuple specifying the minimum and maximum range for the function's output.
+        """
         self.range = range
     def plot_function(self, label="tsd_function"):
+        """
+        Plots the TSD function over a specified time range as input range, its set to 20.
+
+        Args:
+            label (str): The label for the plot.
+        """
 
         plot_input_range = range(0, 20)
         plot_output = [self.calculate_value(x=x) for x in plot_input_range]
@@ -31,6 +59,12 @@ class ITsd_functions(metaclass=ABCMeta):
         plt.show()
 
 class Tsd_function_sinus(ITsd_functions):
+    """
+    Sinusoidal TSD function implementation.
+
+    Args:
+        stretch_factor (int): Factor to stretch the sinusoidal function.
+    """
     def __init__(self, stretch_factor=10):
        self.stretch_factor = stretch_factor
        self.range = (0,1)
@@ -38,14 +72,6 @@ class Tsd_function_sinus(ITsd_functions):
    
     def calculate_value(self,x):
 
-        """
-        Scales the output of a sinusoidal function to fit within a specified range.
-
-        :param x: The input value.
-        :param stretch_factor: The factor by which to stretch the input.
-        :param output_range: A tuple (a, b) defining the desired output range.
-        :return: The scaled sinusoidal output.
-        """
         a, b = self.range
         scaled_output = a + ((b - a) / 2) * (np.sin(x / self.stretch_factor) + 1)
         return scaled_output
@@ -53,6 +79,12 @@ class Tsd_function_sinus(ITsd_functions):
 
 
 class Tsd_function_linear_cycle(ITsd_functions):
+    """
+    Linear cyclic TSD function implementation.
+
+    Args:
+        cycle_length (int): The length of the cycle in the linear function, regarding time units default at 20 .
+    """
     def __init__(self, cycle_length=20):
        self.cycle_length = cycle_length   
        self.range = (0,1)
@@ -72,6 +104,12 @@ class Tsd_function_linear_cycle(ITsd_functions):
 
 
 class Tsd_function_custom_list(ITsd_functions):
+    """
+    Custom list based TSD function implementation. The function output is taken from the provided list, input is used to iterate trough the list.
+
+    Args:
+        value_list (list): A list of values to be used in the TSD function.
+    """
     def __init__(self, value_list:list):
         self.value_list = value_list   
         self.range = (0,1)
@@ -90,19 +128,40 @@ class Tsd_function_custom_list(ITsd_functions):
 
 
 class ITsd_function_collection(metaclass=ABCMeta):
+    """
+    Offers the possibility to implement various collections that provide a preselection
+    of Time Series Data (TSD) functions.
+    """
     @abstractmethod
     def __init__(self):
+        """
+        Initializes the Tsd_function_collection_full with a list of predefined set of TSD functions.
+        """
         self.functions : List[ITsd_functions]
     @abstractmethod
     def get_tsd_function(self)-> ITsd_functions:
-     """Interface Method"""
+     """
+        Selects and returns a TSD function from the collection.
+
+        Returns:
+            ITsd_functions: A randomly chosen TSD function instance from the collection.
+        """
     def set_range(self,range: tuple):
+        """
+        Sets the output range for all TSD functions in the collection.
+
+        Args:
+            range (tuple): A tuple specifying the minimum and maximum range for the functions' output.
+        """
         self.range = range
 
 
 class Tsd_function_collection_full(ITsd_function_collection):
+    """
+    Concrete implementation of ITsd_function_collection.
+    """
     def __init__(self):
-        self.functions = [Tsd_function_sinus(), Tsd_function_custom_list(value_list=[0.1,0.2,0.3,0.7,0.6,0.5,1,0.9,0.8])]
+        self.functions = [Tsd_function_sinus(),Tsd_function_linear_cycle()]
     def get_tsd_function(self):
        random_tsd_function = random.choice(self.functions)
        random_tsd_function.set_range(range=self.range)
@@ -113,6 +172,6 @@ class Tsd_function_collection_full(ITsd_function_collection):
 if __name__ == "__main__":
 
     #funktion = Tsd_function_linear_cycle(cycle_length=10)
-    funktion = Tsd_function_sinus(stretch_factor=2)
-    funktion.plot_function(label="sinus      stretch factor=2 ")
+    function = Tsd_function_sinus(stretch_factor=2)
+    function.plot_function(label="sinus      stretch factor=2 ")
     pass

@@ -5,16 +5,29 @@ from typing import Any, List, Type, Tuple
 from cgflex_project.Shared_Classes.distributions import *
 
 class IInitial_value_distribution_collection(metaclass=ABCMeta):
+    """ An interface for Collection classes that store pre-instantiated IDistribution objects. It
+    is structured similarly to other Collection interfaces. The Dependency Controller offers
+    methods to replace a nodes dependencies with objects from this pre-selected collection.
+    """
 
     @abstractmethod
     def initialize_distributions(self, range: Tuple[float,float]):
-     """Interface Method"""
+     """ Initializes the distributions within the specified range.
+        Args:
+            range (Tuple[float, float]): A tuple specifying the minimum and maximum range for the distributions.
+        """
     @abstractmethod
     def get_distribution(self)-> IDistributions:
-     """Interface Method"""
+     """ Retrieves a distribution from the collection.
+
+        Returns:
+            IDistributions: An instance of a distribution from the collection.
+        """
 
 
 class Initial_value_distribution_random_full(IInitial_value_distribution_collection):
+    """ Implementation of IInitial_value_distribution_collection that initializes a diverse set of distributions. This class provides a wide range of distribution types, from uniform to normal, including both fixed and random distributions within the given range
+    """
     def __init__(self):
         pass
 
@@ -30,6 +43,8 @@ class Initial_value_distribution_random_full(IInitial_value_distribution_collect
        return random_distribution
     
 class Initial_value_distribution_random_mixture(IInitial_value_distribution_collection):
+    """ Implementation of IInitial_value_distribution_collection focused on mixture distributions.
+    """
     def __init__(self):
         pass
 
@@ -43,10 +58,8 @@ class Initial_value_distribution_random_mixture(IInitial_value_distribution_coll
 
 if __name__ == "__main__":
     range = ( 0, 4)
-    #distrib =  Initial_value_distribution_random_full() 
     distrib = Initial_value_distribution_random_mixture() 
     distrib.initialize_distributions(range=range)
     distribi = distrib.get_distribution()
     distribi.plot_distribution(label="initial distribution")
-
     pass

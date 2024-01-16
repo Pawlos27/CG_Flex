@@ -1060,19 +1060,42 @@ class Distrib_custom_with_valuelist(IDistributions):
 
 
 class IErrorterm_mixture_distance_distribution_collection(metaclass=ABCMeta):
+
+    """
+    Abstract base class for collections of distributions. 
+
+    The distributions are used to draw distances between components of mixture distributions.
+    
+    """
     distribution_list: List[Union[Distribution_uniform, 
                                   Distribution_uniform_random_at_construction,
                                   Distribution_mixture_of_normals_truncated_at_3sigma,
                                   Distribution_mixture_of_normals_truncated_custom,
                                   Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_mu_and_random_spread_uniform_at_construction,
                                   Distribution_mixture_of_normals_truncated_at_3sigma_random_sigma_outward_random_inside_borders_and_uniform_at_construction]]
-    """we cannot allow all IDistribution Classes, to prevent cirucular dependencies"""
+    """  List of specific distribution types that are permissible to avoid circular dependencies, because this class is reused to create another distribution of IDistributions type"""
 
     @abstractmethod
     def get_distance_array(self, size:int,maximum_distance:float ):
-        """Interface Method"""
+        """
+        Abstract method to get an array of values from the distribution between 0 and a maximum_distance.
+
+        Args:
+            size (int): The size of the array to be generated.
+            maximum_distance (float): The maximum distance value that can be generated.
+
+        Returns:
+            An array of values.
+        """
 
 class Collection_of_mixture_distance_distribution_random(IErrorterm_mixture_distance_distribution_collection):
+    """
+    Concrete class representing a random collection of distance distributions.
+
+    This class initializes with a predefined list of various distributions, 
+    from which it randomly selects to generate distance arrays.
+
+    """
     def __init__(self):
         self.distribution_list=[Distribution_uniform_random_at_construction(max_absolute=1,min_absolute=0),
                                 Distribution_uniform(min=0.9, max=1),
@@ -1095,6 +1118,9 @@ class Collection_of_mixture_distance_distribution_random(IErrorterm_mixture_dist
        return distance_array
     
 class Collection_of_mixture_distance_distribution_uniform(IErrorterm_mixture_distance_distribution_collection):
+    """Concrete class for a collection of uniform mixture distance distributions.
+    This class initializes with a list of uniform distributions. It is designed to randomly select from these distributions 
+    to generate distance arrays with uniform properties."""
     def __init__(self):
         self.distribution_list=[Distribution_uniform(min=0.5, max=0.6), Distribution_uniform(min=0.9, max=1), Distribution_uniform_random_at_construction(max_absolute=1,min_absolute=0)] 
     def get_distance_array(self, size,maximum_distance):
@@ -1104,6 +1130,9 @@ class Collection_of_mixture_distance_distribution_uniform(IErrorterm_mixture_dis
        return distance_array
 
 class Collection_of_mixture_distance_distribution_trucated_inwards_steep(IErrorterm_mixture_distance_distribution_collection):
+    """Concrete class for a collection of inward-truncated steep mixture distance distributions.
+    This class comprises distributions that are truncated inwards creating a steep profile at the edges, ensuring the generated distances 
+    fall within a specific range."""
     def __init__(self):
         self.distribution_list=[Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_mu_and_random_spread_uniform_at_construction(lower_border_max=0, upper_border_max=0.3, sigma= 0.1), Distribution_mixture_of_normals_truncated_at_3sigma_inwards_random_mu_and_random_spread_uniform_at_construction(lower_border_max=0.7, upper_border_max=1, sigma= 0.1)]
     def get_distance_array(self, size,maximum_distance):
@@ -1116,7 +1145,31 @@ class Collection_of_mixture_distance_distribution_trucated_inwards_steep(IErrort
 
 
 class Complex_distribution_list_of_Mus_maker:
+    """ 
+    This is an important Class for the creation of controlled mixture distributions. Can be used for simply generating distributions for use in the framework, but mainly used by the Errorterm for 
+    generating 1: Complex Mixture Distributions , 2: Multimodal Normal Distributions, 3: Complex Mixture Distributions for training interpolation
+
+    It generatse a list of means (mus) for reuse in mixture distributions of the Idistributions Class. 
+    It allows for creating complex distribution patterns with control over properties like specified number of modes, total number of  elements/components, use of various distributions for distances, and maximum distance factors between modes. 
+    It supports creation of complex pattern distribution patterns but also just multimodal normal distributions with enough spacing between the components.
+    Also it provides  fixed or random number of modes.
+
+    Args:
+        distribution_for_distances_between_components (IErrorterm_mixture_distance_distribution_collection): The distribution collection used for distances between components.
+        number_of_maximum_modes (int): The maximum number of modes in the distribution.
+        total_number_of_elements (int): The total number of elements in the distribution.
+        maximum_distance_between_modes_factor (float): The factor determining the maximum distance between modes.
+        multimodal_normal (bool): Flag to indicate if the distribution is multimodal normal.
+        fixed_number_of_modes (bool): Flag to indicate if the number of modes is fixed.
+    """
+
+
     def __init__(self,distribution_for_distances_between_components: IErrorterm_mixture_distance_distribution_collection = Collection_of_mixture_distance_distribution_random(), number_of_maximum_modes=5 ,  total_number_of_elements= 20,   maximum_distance_between_modes_factor=5, multimodal_normal = False, fixed_number_of_modes= False) -> None:
+        """
+        Initializes the Complex_distribution_list_of_Mus_maker instance with specified parameters.
+        """
+
+        
         if number_of_maximum_modes <=0:
             raise ValueError("number of modes must be >0")
         else:
@@ -1131,9 +1184,26 @@ class Complex_distribution_list_of_Mus_maker:
         self.fixed_number_of_modes = fixed_number_of_modes
 
     def return_sigma(self)-> float:
+        """ Returns the standard deviation (sigma) to be used in the final distribution.
+
+        Returns:
+            float: The standard deviation of the distribution.
+        """
         sigma = self.sigma
         return sigma
     def sample_lists_of_mus(self, size_of_samples:int ,  maximum_total_deviation:float)-> List[List[float]]:
+        """
+        Samples multiple lists of means (mus) for distributions, one list represents one set of means for creating a mixture distribution, 
+        with this one can sample stright multiple distributions with similiar properties to train an interpolation model to interpolate between them .
+
+        Args:
+            size_of_samples (int): The number of samples to generate.
+            maximum_total_deviation (float): The maximum total deviation allowed in the distribution.
+
+        Returns:
+            List[List[float]]: A list containing multiple lists of means for multiple distributions.
+        """
+
         lists_of_mus = []
         self.maximum_total_deviation = maximum_total_deviation
         for i in range(size_of_samples):
@@ -1147,13 +1217,26 @@ class Complex_distribution_list_of_Mus_maker:
             lists_of_mus.append(single_list_of_mus)
         return lists_of_mus
 
-    def _calculate_maximum_distance_for_mixture_model(self,modes:int): # max distances between elements, + borders(4)+ distances between modes
+    def _calculate_maximum_distance_for_mixture_model(self,modes:int): 
+        """
+        Calculates the maximum distance for the components within the same mode. 
+
+        This is a private method used internally to compute distances between distribution components.
+
+        Args:
+            modes (int): The number of modes in the distribution.
+        """
         denominator = (self.total_number_of_elements-1)+4+(modes*(self.maximum_distance_between_modes_factor-1))
         maximum_distance = self.maximum_total_deviation/denominator
         self.maximum_distance = maximum_distance
         self.sigma = maximum_distance/1.5
 
     def _make_list_for_components_per_mode(self, modes:int):
+        """ Generates a list indicating the number of components per mode. This method makes sure the total number of components is represented as predefined
+
+        Args:
+            modes (int): The number of modes to distribute components among.
+        """
         if self.multimodal_normal == True :
             self.components_per_mode = [1 for _ in range(modes)]
         else:
@@ -1166,6 +1249,19 @@ class Complex_distribution_list_of_Mus_maker:
             
 
     def _make_list_of_mus_for_mixture_model(self, modes:int ) ->List[float]:
+        """
+            This method generates the actual list of means used in the mixture distribution. 
+            It uses the provided distribution to sample distances for the compoinents within each mode.
+            Each mode has a central component, distances from component to component within a node first get smaller , and then from the central component on get bigger again.
+            Between the first and the las component of a mode there must be increased distance.
+            The List of mus is then streched at the end of the process, so that the final distribution will exactly fit in a certain range, the sigma is also corrected.
+
+            Args:
+                modes (int): The number of modes in the distribution.
+
+            Returns:
+                List[float]: A list of means for the mixture model.
+        """
 
         components_per_mode = self.components_per_mode
         maximum_distance = self.maximum_distance
@@ -1203,6 +1299,12 @@ class Complex_distribution_list_of_Mus_maker:
 
 
 class Distribution_mixture_of_normals_controlled_modes_complex_spread_of_mus_and_random(IDistributions):
+    """
+    Class for a distribution representing a random but controlled mixture of normals which uses the "Complex_distribution_list_of_Mus_maker" class to generate the positions of the components.
+    This class creates a mixture of normal distributions with controlled modes distance distributions between components. 
+    It is provides precise control over the distribution's multimodal characteristics."""
+
+    
     def __init__(self, mixture_list_of_mus_maker : Complex_distribution_list_of_Mus_maker = Complex_distribution_list_of_Mus_maker(), lower_border = 0 , upper_border = 1):
 
         maximum_total_deviation = upper_border - lower_border
