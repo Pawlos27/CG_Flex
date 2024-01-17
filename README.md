@@ -1,4 +1,4 @@
-# [CGFLEX]
+# [CG_Flex Readme]
 
 
 ## Table of Contents
