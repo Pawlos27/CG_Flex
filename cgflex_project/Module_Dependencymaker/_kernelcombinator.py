@@ -37,7 +37,7 @@ class Kernel_selector_random(IKernel_selector):
         kernel_collection (_kernel_collection.IKernel_collection):  setting the kernel colelction from which the selector can choose from
         max_dimensions_per_kernel (int): setting the maximum allowed dimensions per kernel
     """
-    def __init__(self, kernel_collection:_kernel_collection.IKernel_collection, max_dimensions_per_kernel:int):
+    def __init__(self, kernel_collection:_kernel_collection.IKernel_collection, max_dimensions_per_kernel:int =1):
         self.kernel_list = kernel_collection.get_kernel_list()
         self.max_dimensions_per_kernel = max_dimensions_per_kernel
     

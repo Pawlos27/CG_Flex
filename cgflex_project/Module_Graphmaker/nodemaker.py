@@ -109,7 +109,7 @@ class Nodemaker(INodemaker):
  
 
     """
-    def __init__(self, number_of_nodes: int,number_of_dimensions_thorus: int , l_distribution : INodemaker_distribution_collection, t_distribution: INodemaker_distribution_collection,scale_per_n=0.05) :
+    def __init__(self, number_of_nodes: int,number_of_dimensions_thorus: int = 1 , l_distribution : INodemaker_distribution_collection = Nodemaker_distribution_uniform(), t_distribution: INodemaker_distribution_collection = Nodemaker_distribution_uniform(),scale_per_n:float=0.05) :
 
         
         self.number_of_nodes = number_of_nodes

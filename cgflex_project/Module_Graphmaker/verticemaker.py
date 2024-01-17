@@ -179,9 +179,9 @@ class edgemaker(IEdgemaker):
 
     """
    
-    def __init__(self,layerlimit:int,number_of_edges:float,edgeprobability_layer: IEdge_probability_by_distance, edgeprobability_thorus: IEdge_probability_by_distance, edge_outdegree_max: int , edge_indegree_max: int , inner_layer_connection=False ):
+    def __init__(self,layerlimit:int,number_of_edges:float, edge_outdegree_max: int , edge_indegree_max: int ,edgeprobability_thorus: IEdge_probability_by_distance = Edge_probability_by_distance_decreasing_exponentially(),edgeprobability_layer: IEdge_probability_by_distance = Edge_probability_by_distance_decreasing_exponentially(),  inner_layer_connection=False ):
         self.layerlimit = layerlimit
-        self.number_of_edges = number_of_edges
+        self.number_of_edges = int(number_of_edges*0.9)
         self.edgeprobability_layer = edgeprobability_layer
         self.edgeprobability_thorus = edgeprobability_thorus
         self.edge_outdegree_max = edge_outdegree_max

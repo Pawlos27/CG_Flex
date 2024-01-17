@@ -38,6 +38,13 @@ UML Class Structure and Sequence Diagrams with explanation:
 
    Uml_documentation
 
+Demo configuration script:
+-----------------------------------------------------------
+.. toctree::
+   :maxdepth: 1
+
+   demo_configuration
+
 
 Further ressources:
 -------------------

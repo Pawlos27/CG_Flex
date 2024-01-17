@@ -6,13 +6,13 @@ from cgflex_project.Module_Graphmaker.verticemaker import IEdgemaker
 from cgflex_project.Module_Graphmaker.nodemaker import INodemaker
 from typing import Any, List, Type, Tuple, Optional
 from dataclasses import dataclass, field
-from  cgflex_project.Module_Dependencymaker._dependencymaker_initial_value_distributions import IInitial_value_distribution_collection
+from  cgflex_project.Module_Dependencymaker._dependencymaker_initial_value_distributions import IInitial_value_distribution_collection, Initial_value_distribution_random_full
 from  cgflex_project.Module_Dependencymaker._dependencymaker import IDependency_setter
 from  cgflex_project.Module_Dependencymaker._functionmaker_extreme_values import INormalizer, Normalizer_minmax_stretch
-from cgflex_project.Module_Graphmaker.Graphmodule_extensions import IGraph_processor
-from cgflex_project.Module_Sampler.Samplingmodule_extensions import IData_exporter
+from cgflex_project.Module_Graphmaker.Graphmodule_extensions import IGraph_processor, Graph_processor_networx_solo
+from cgflex_project.Module_Sampler.Samplingmodule_extensions import IData_exporter, Csv_exporter_for_id_value_pairs
 #from cgflex_project.Controllermodule_extensions import IObject_serializer
-from  cgflex_project.Module_Dependencymaker._dependencymaker_tsd_functions import ITsd_function_collection
+from  cgflex_project.Module_Dependencymaker._dependencymaker_tsd_functions import ITsd_function_collection, Tsd_function_collection_full
 
 
 @dataclass
@@ -33,7 +33,7 @@ class Blueprint_graph():
     """Component for setting sinks."""
     edgemaker: IEdgemaker
     """Component for generating edges through various constraints."""
-    graphprocessor: IGraph_processor
+    graphprocessor: IGraph_processor = Graph_processor_networx_solo()
     """Component for graph representation and analysis functionalities."""
     
 
@@ -48,11 +48,11 @@ class Blueprint_dependency:
 
     dependency_setter : IDependency_setter
     """Component for setting dependencies(Instances of this class contain a nesting of many classes, ranging from kernel combination to function generation and error term generation)."""
-    initial_value_distributions : IInitial_value_distribution_collection
+    initial_value_distributions : IInitial_value_distribution_collection = Initial_value_distribution_random_full()
     """Pre-selected value distributions that can be assigned to nodes."""
-    range_of_output : Tuple[float, float]
+    range_of_output : Tuple[float, float] = (0,1)
     """The target value range ."""
-    tsd_collection :  ITsd_function_collection
+    tsd_collection :  ITsd_function_collection = Tsd_function_collection_full()
     """A collection of TSD functions used as substitutes for dependencies or value distributions."""
 
     def __post_init__(self):
@@ -68,7 +68,7 @@ class Blueprint_sampling:
     This configuration is simpler compared to others, mainly containing the data_exporter component. 
     The sampling controller's functionality is mostly realized through its own methods.
     """
-    data_exporter:IData_exporter
+    data_exporter:IData_exporter = Csv_exporter_for_id_value_pairs()
     """Component responsible for exporting data during sampling."""
 
 
