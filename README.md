@@ -111,7 +111,7 @@ After completing the model generation, the model becomes ready for sampling oper
 
 
 
-1. **create_configs.py**:
+1. **[config_objects.py](scripts/config_objects.py)**:
 [Script for configuration setup](scripts/config_objects.py) 
 - The script contains the configuration objects for the controllers. It gives the user the possibility to create new configrations by instantiating new objects. It is easy to use because all the relevant imports are already made, and the premade configurations are a good example
 
