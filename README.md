@@ -70,7 +70,7 @@ The project includes a detailed documentation that provides explanations for all
 
 The documentation is generated using Sphinx, which is installed alongside Poetry. All necessary files and settings for the documentation generation are stored in the 'Documentation' directory and the docstrings of the code.
 
-*Installation*: 
+**Installation**: 
 
 The Documentation directory is inside the root directory of the project. after navigating to it with "cd Documentation"  you can generate html files for the documentation:
 
@@ -83,11 +83,6 @@ when using powershell you might need to use
 
 ```bash
 .\make.bat html
-```
-
-after making changes you can update the documentation files by running
-```bash
-sphinx-apidoc -o <Documentation_directory_path> <cg_flex_directory_path>
 ```
 
 ## **Usage_and_Steps**
