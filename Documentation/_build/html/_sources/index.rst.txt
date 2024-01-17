@@ -31,6 +31,12 @@ More detailed overview over the classes:
 
    cgflex_project
 
+UML Class Structure and Sequence Diagrams with explanation:
+-----------------------------------------------------------
+.. toctree::
+   :maxdepth: 1
+
+   Uml_documentation
 
 
 Further ressources:

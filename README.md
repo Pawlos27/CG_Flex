@@ -4,10 +4,10 @@
 ## Table of Contents
 1. [Description](#Description)
 2. [Installation](#Installation)
-3. [Generate Documentation](#Generate_Class_and_Parameter_Documentation)
+3. [Documentation](#Documentation)
 4. [Feautures](#Feautures)
-5. [Usage_Steps](#Usage_Steps)
-6. [Usage_and_Scripts](#Usage_and_Scripts)
+5. [Usage](#Usage)
+6. [Scripts](#Scripts)
 7. [Demos](#Demos)
 8. [Extensions](#Extensions)
 9. [Remaining_Tasks](#Remaining_Tasks)
@@ -17,31 +17,31 @@
 
 This framework is designed to generate synthetic data for evaluating causal discovery algorithms. It addresses the challenge of unrealistic synthetic data by allowing for the controlled generation of datasets with known dependencies. This is crucial in fields where understanding causal relationships is vital, and real observational data often lack clear causal structures.
 
+
 ## **Key Features**
 
-Graph Generation: Users can influence the graph's properties related to it´s shape, and interconnectivity, by setting various constraints like the number of nodes, edges, layers, indegree and also choosing the methodologies in which way the properties are .
+- **Graph Generation**: Facilitates the generation of Directed Acyclic Graphs (DAGs). Enables users to influence graph properties like number of nodes, edges,layers, and maximum indegree or outdegree. Also choosing methodologies for defining these properties.
 
-Dependency Definition: The framework allows for the creation of dependencies by combining functions dependent on parent node values with an error term. It supports linear and nonlinear functions, as well as various error term types like normal, mixture, and conditional distributions.
+- **Dependency Definition**: Each node's value in the DAG is represented by a dependency function D(x) = F(x) + E(x), where x denotes the values of its parent nodes. F(x) is a deterministic function based on these values, and E(x) represents an error term, introducing a deviation variable. 
+F(x): The framework supports the creation of random functions using Gaussian processes for both linear and nonlinear functions.
+E(x): It extends these functions with error terms like normal, mixture, and conditional distributions.
 
-Interactive Sampling: This feature enables users to adjust dependencies or fix variables between sampling rounds, facilitating the observation of effects on other variables. This enhances network investigation and is especially beneficial for algorithms designed to interact with the model.
+- **Interactive Sampling**: Enables users to adjust dependencies or replace node dependencies with fixed values between sampling rounds. This enhances network analysis and provides valuable insights for algorithm interaction.
 
-- Advantages:
+### Advantages
 
-Provides a baseline for simulating realistic scenarios.
-Enables gradual increase in complexity, challenging existing analytical methods.
-Offers interactive model manipulation for deeper insights into variable interactions.
-Ensures known dependencies for direct comparison with algorithmically identified dependencies, enhancing algorithm evaluation.
-This framework is an essential tool for improving the quality of causal discovery algorithms, providing both flexibility and control needed for effective algorithm evaluation and performance comparison under diverse conditions.
+- Provides a baseline for simulating realistic scenarios.
+- Enables a gradual increase in complexity of the dependencies("linear function < +nonlinear < + normal distribution < + mixture distribution< + consitional distribution). This allows challenging existing analytical methods.
+- Offers interactive model manipulation for deeper understanding of variable interactions.
+- Ensures known dependencies("Ground Truth") for direct comparison in algorithm evaluations, improving algorithm assessment.
+
+This framework is essential for improving causal discovery algorithms, providing the flexibility and control needed for effective evaluation and comparison under diverse conditions.
+
+
 
 ## **Framework Structure**
 
-The Framework consists of a Main Controller and three Sub Controllers, each specialized in a distinct area: the first for graph control, the second for dependency control, and the third for sampling control. This composite structure enables the Main Controller to oversee the Sub Controllers while acting as the central user interface.
-
-The Main Controller is the primary interface through which users interact with the Framework, offering an accessible gateway to its functionalities. The Sub Controllers, functioning as coordinators, are pivotal in implementing the Framework's core functionalities. They manage and utilize all the respective subclasses, providing the basic capabilities through their methods.
-
-In addition to this structure, the Framework is designed with high flexibility in mind. Through the use of interfaces, users can implement new classes to add or modify the Framework's functionalities, allowing for customization to meet specific needs and preferences.
-
-Controller classes are initialized with configuration objects, which are instances of implemented classes parameterized during object creation. This design enables users to fine-tune the configurations of the data generation process, ensuring the Framework can adapt to a wide range of use cases.
+Our Framework consists of a Main Controller and three Sub Controllers for graph, dependency, and sampling control. The Main Controller, serving as the primary user interface, coordinates core functionalities with the Sub Controllers. Configuration objects are crucial for initializing these controllers, allowing users to choose specific class implementations and parameters. This setup, along with the ability for users to introduce custom class implementations, ensures adaptability across various data generation scenarios.
 
 
 ## **Installation**
@@ -65,14 +65,14 @@ poetry install
 ```
 
 
-## **Generate_Class_and_Parameter_Documentation**
-The project includes a detailed documentation that provides explanations for all modules, classes, and methods, as well as the significance and impact of each parameter. The documentation also features UML class and sequence diagrams, which can be accessed separately.
+## **Documentation**
+The project includes a detailed documentation that provides explanations for all modules, classes, and methods, as well as the significance and impact of each parameter. The documentation also features UML class and sequence diagrams. Additionaly it gives further information on how to use the scripts 
 
-The documentation is generated using Sphinx, which is installed alongside Poetry. All necessary files and settings for the documentation generation are stored in the 'Documentation' directory and the docstrings of the code.
 
 **Installation**: 
+The documentation is generated from the docstrings of the code using Sphinx, which is installed alongside Poetry. All necessary files and settings are in the Documentation folder.
 
-The Documentation directory is inside the root directory of the project. after navigating to it with "cd Documentation"  you can generate html files for the documentation:
+After navigating to the Documentation directory you can generate html files for the documentation:
 
 simply run
 ```bash
@@ -85,14 +85,18 @@ when using powershell you might need to use
 .\make.bat html
 ```
 
-## **Usage_and_Steps**
+## **Usage**
 
-For the execution of the steps below premade scripts are provided.
+For the execution of the steps below premade scripts are provided:
+[Script for configuration setup](scripts/config_objects.py) 
+[Script for using the Framework simple](usage_ready_script_simple.py) 
+
 
 The steps of the Usage of the framework:
 
 1. **Preparation**:
 Begin with the initial setup. Create configuration objects for the Sub Controllers and then for the Main Controller. This involves parameterization and instantiation of these components.
+[Script for configuration setup](scripts/config_objects.py) 
 
 2. **Initiation**:
 Instantiate the Main Controller using the previously created configuration object as a parameter.
@@ -103,11 +107,12 @@ Utilize the Main Controller and its methods to access all functions of the frame
 4. **Sampling**: 
 After completing the model generation, the model becomes ready for sampling operations. Proceed with sampling to obtain the sampled data. It is possible to successively modify dependencies or individual variable values within the graph, and continue sampling to incorporate these changes in the dataset. Additionally, there is an option to export the sampled data in CSV format.
 
-## Usage_and_Scripts
+## **Scripts**
 
 
 
 1. **create_configs.py**:
+[Script for configuration setup](scripts/config_objects.py) 
 - The script contains the configuration objects for the controllers. It gives the user the possibility to create new configrations by instantiating new objects. It is easy to use because all the relevant imports are already made, and the premade configurations are a good example
 
 
@@ -115,6 +120,7 @@ After completing the model generation, the model becomes ready for sampling oper
 - The script provides an extensive example on how to use the framework. The main controller is initialized and the main methods are provided to generate, manipulate and visualize,  first the causal graph and then the dependencies. The  In the last step an example for interactive sampling and export and acess to the data samples is shown.
 
 3. **usage_ready_script_simple.py**:
+[Script for using the Framework simple](usage_ready_script_simple.py) 
 - an easy and fast example of graph and dependency generation and then sampling
 
 4. **comparisons_with_standard_and_real_graphs.py**:

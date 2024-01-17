@@ -1,5 +1,5 @@
 
-Cgflex_project Package Overview Classes
+Cgflex_project Package Overview:  Classes
 =======================================
 
 .. toctree::
