@@ -68,10 +68,10 @@ poetry install
 ## **Documentation**
 The project includes a detailed documentation that provides explanations for all modules, classes, and methods, as well as the significance and impact of each parameter. The documentation also features UML class and sequence diagrams. Additionaly it gives further information on how to use the scripts.
 
-The htmls are in the [Documentation](./Documentation/_build/html/) directory.
+The html files are in the [Documentation](./Documentation/_build/html/) directory. You can open the documentation with the index.html file.
 
-Otherwise you can also generate your own htmls.
-**Generate Documentation**: 
+Otherwise you can also generate your own html files.
+### **Generate Documentation**: 
 The documentation is generated from the docstrings of the code using Sphinx, which is installed alongside Poetry. All necessary files and settings are in the Documentation folder.
 
 After navigating to the Documentation directory you can generate html files for the documentation:
