@@ -1,10 +1,8 @@
-cgflex\_project.Module\_Graphmaker package
-==========================================
+Module\_Graphmaker Subpackage
+===============================
 
-Submodules
-----------
 
-cgflex\_project.Module\_Graphmaker.Graphmodule module
+Graphmodule module
 -----------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Graphmaker.Graphmodule
@@ -12,7 +10,7 @@ cgflex\_project.Module\_Graphmaker.Graphmodule module
    :undoc-members:
    :show-inheritance:
 
-cgflex\_project.Module\_Graphmaker.Graphmodule\_extensions module
+Graphmodule\_extensions module
 -----------------------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Graphmaker.Graphmodule_extensions
@@ -20,7 +18,7 @@ cgflex\_project.Module\_Graphmaker.Graphmodule\_extensions module
    :undoc-members:
    :show-inheritance:
 
-cgflex\_project.Module\_Graphmaker.layermaker module
+layermaker module
 ----------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Graphmaker.layermaker
@@ -28,7 +26,7 @@ cgflex\_project.Module\_Graphmaker.layermaker module
    :undoc-members:
    :show-inheritance:
 
-cgflex\_project.Module\_Graphmaker.nodemaker module
+nodemaker module
 ---------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Graphmaker.nodemaker
@@ -36,7 +34,7 @@ cgflex\_project.Module\_Graphmaker.nodemaker module
    :undoc-members:
    :show-inheritance:
 
-cgflex\_project.Module\_Graphmaker.sinkmaker module
+sinkmaker module
 ---------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Graphmaker.sinkmaker
@@ -44,7 +42,7 @@ cgflex\_project.Module\_Graphmaker.sinkmaker module
    :undoc-members:
    :show-inheritance:
 
-cgflex\_project.Module\_Graphmaker.sourcemaker module
+sourcemaker module
 -----------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Graphmaker.sourcemaker
@@ -52,7 +50,7 @@ cgflex\_project.Module\_Graphmaker.sourcemaker module
    :undoc-members:
    :show-inheritance:
 
-cgflex\_project.Module\_Graphmaker.verticemaker module
+verticemaker module
 ------------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Graphmaker.verticemaker
@@ -60,10 +58,3 @@ cgflex\_project.Module\_Graphmaker.verticemaker module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: cgflex_project.Module_Graphmaker
-   :members:
-   :undoc-members:
-   :show-inheritance:

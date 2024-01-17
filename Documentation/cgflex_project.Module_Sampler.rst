@@ -1,10 +1,9 @@
-cgflex\_project.Module\_Sampler package
-=======================================
+Module\_Sampler Subpackage
+===========================
 
-Submodules
-----------
 
-cgflex\_project.Module\_Sampler.Samplingmodule module
+
+Samplingmodule module
 -----------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Sampler.Samplingmodule
@@ -12,18 +11,10 @@ cgflex\_project.Module\_Sampler.Samplingmodule module
    :undoc-members:
    :show-inheritance:
 
-cgflex\_project.Module\_Sampler.Samplingmodule\_extensions module
+Samplingmodule\_extensions module
 -----------------------------------------------------------------
 
 .. automodule:: cgflex_project.Module_Sampler.Samplingmodule_extensions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: cgflex_project.Module_Sampler
    :members:
    :undoc-members:
    :show-inheritance:

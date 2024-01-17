@@ -4,7 +4,7 @@
 ## Table of Contents
 1. [Description](#Description)
 2. [Installation](#Installation)
-3. [Generate Class and Parameter Documentation](#Generate_Class_and_Parameter_Documentation)
+3. [Generate Documentation](#Generate_Class_and_Parameter_Documentation)
 4. [Feautures](#Feautures)
 5. [Usage_Steps](#Usage_Steps)
 6. [Usage_and_Scripts](#Usage_and_Scripts)
@@ -13,11 +13,11 @@
 9. [Remaining_Tasks](#Remaining_Tasks)
 
 
-## Description
+## **Description**
 
 This framework is designed to generate synthetic data for evaluating causal discovery algorithms. It addresses the challenge of unrealistic synthetic data by allowing for the controlled generation of datasets with known dependencies. This is crucial in fields where understanding causal relationships is vital, and real observational data often lack clear causal structures.
 
-## Key Features
+## **Key Features**
 
 Graph Generation: Users can influence the graph's properties related to it´s shape, and interconnectivity, by setting various constraints like the number of nodes, edges, layers, indegree and also choosing the methodologies in which way the properties are .
 
@@ -33,7 +33,7 @@ Offers interactive model manipulation for deeper insights into variable interact
 Ensures known dependencies for direct comparison with algorithmically identified dependencies, enhancing algorithm evaluation.
 This framework is an essential tool for improving the quality of causal discovery algorithms, providing both flexibility and control needed for effective algorithm evaluation and performance comparison under diverse conditions.
 
-## Framework Structure
+## **Framework Structure**
 
 The Framework consists of a Main Controller and three Sub Controllers, each specialized in a distinct area: the first for graph control, the second for dependency control, and the third for sampling control. This composite structure enables the Main Controller to oversee the Sub Controllers while acting as the central user interface.
 
@@ -44,7 +44,7 @@ In addition to this structure, the Framework is designed with high flexibility i
 Controller classes are initialized with configuration objects, which are instances of implemented classes parameterized during object creation. This design enables users to fine-tune the configurations of the data generation process, ensuring the Framework can adapt to a wide range of use cases.
 
 
-## Installation
+## **Installation**
 
 The Framework uses poetry to manage the projects dependencies and requires python 3.9.6 to 3.9.16 for the dependencies to work. The python version can be created via pyenv.
 
@@ -66,8 +66,13 @@ poetry install
 
 
 ## **Generate_Class_and_Parameter_Documentation**
+The project includes a detailed documentation that provides explanations for all modules, classes, and methods, as well as the significance and impact of each parameter. The documentation also features UML class and sequence diagrams, which can be accessed separately.
 
-Inside the Documentation directory you can generate the documentation
+The documentation is generated using Sphinx, which is installed alongside Poetry. All necessary files and settings for the documentation generation are stored in the 'Documentation' directory and the docstrings of the code.
+
+*Installation*: 
+
+The Documentation directory is inside the root directory of the project. after navigating to it with "cd Documentation"  you can generate html files for the documentation:
 
 simply run
 ```bash

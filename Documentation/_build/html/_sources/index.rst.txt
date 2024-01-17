@@ -13,15 +13,24 @@ Instantiations of these classes are provided to the controllers via configuratio
 In this objects the user can set various parameter of the classes. 
 This documentation provides an overview over al classes and also information about the parameters and its effects.
 
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Cgflex_project Package Contents:
 
    cgflex_project.Main_Controller
    cgflex_project.Module_Dependencymaker
    cgflex_project.Module_Graphmaker
    cgflex_project.Module_Sampler
    cgflex_project.Shared_Classes
+
+More detailed overview over the classes:
+----------------------------------------
+.. toctree::
+   :maxdepth: 1
+
+   cgflex_project
+
 
 
 Further ressources:
