@@ -6,7 +6,7 @@ from cgflex_project.Shared_Classes.distributions import IDistributions
 import os
 import pickle
 import GPy
-from  cgflex_project.Module_Dependencymaker._errortermmaker_collection import Error_distribution_normal_variable_variance
+from  cgflex_project.Module_Dependencymaker._errortermmaker_collection import Error_distribution_normal_variable_variance , IErrordistribution
 from  cgflex_project.Module_Dependencymaker._dependencymaker_tsd_functions import ITsd_functions
 
 
@@ -98,7 +98,7 @@ class Dependency_controller:
             node_ids (List[int]): List of node IDs to reset dependencies for.
         """
         for node_id in node_ids:
-            self.nodelist[node_id].dependency = self.inputs_dependency.dependency_setter.set_dependencies(node=self.nodelist[node_id])
+            self.nodelist[node_id].dependency = self.inputs_dependency.dependency_setter.set_dependencies(node=self.nodelist[node_id], range_of_output=self.inputs_dependency.range_of_output)
 
     def replace_dependencies_by_initial_distributions(self,node_ids: List[int]):
         """
@@ -273,11 +273,12 @@ class Dependency_controller:
         """
         for id in ids:    
             for node in self.nodelist:
-                if node.id == id:                  
+                if node.id == id:      
                     if isinstance(node.dependency, Dependencies):
-                        node.dependency.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=resolution)
+                        if isinstance(node.dependency.errorterm_model, IErrordistribution):
+                            node.dependency.errorterm_model.show_error_distribution(label =f" node_id ={id}   ")
                     else:
-                        print("no errorterm in dependency for {id}")
+                        print(f"no dependency for {node.id}")
 
     def show_dependency_errorterm_enforce_3d_plot(self,ids:List[int],resolution =30): 
         """
@@ -289,11 +290,14 @@ class Dependency_controller:
         """
         for id in ids:    
             for node in self.nodelist:
-                if node.id == id:                  
-                    if isinstance(node.dependency, Dependencies):
-                        node.dependency.function_model.show_functions_3d_plot_when_possible(resolution=resolution)
+                if node.id == id:    
+                    if isinstance(node.dependency, IDistributions):              
+                        if isinstance(node.dependencye.errorterm_model, Error_distribution_normal_variable_variance):
+                            node.dependency.function_model.show_functions_3d_plot_when_possible(resolution=resolution)
+                        elif isinstance(node.dependency.errorterm_model, IErrordistribution):
+                            node.dependency.errorterm_model.show_error_distribution(label =f" node_id ={id}   ")
                     else:
-                        print("no errorterm in dependency for {id}")
+                        print("no dependency for {id}")
 
     def print_kernels_used(self,ids:List[int]): 
         """

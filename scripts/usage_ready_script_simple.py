@@ -1,10 +1,21 @@
-from config_objects import config_main_controller_no_errorterm, config_main_controller_default
+from config_objects import  config_main_controller_default
 from cgflex_project.Main_Controller.Controllermodule import Cg_flex_controller
 
 
 
+#######################
+### 1.Set Config!!  ### 
+#######################
+config = config_main_controller_default  # default config, for own config use config_objects.py script
 
-config = config_main_controller_default
+
+#######################
+### 2.Set Stages!!  ### --> Remove the # in front of the Stage you want to use to set the Stage , the run code.
+#######################
+
+
+
+
 Stage = 1 #Initiates Controller generates graph, dependencies and samples
 #Stage = 1.5 # Visual dependencies
 #Stage = 2
@@ -35,7 +46,6 @@ if Stage == 1:
 if Stage == 1.5 :
     dag_controll = Cg_flex_controller.load_controller_state(config=config,file_path=None, file_name="full_state_simple")
     dag_controll.show_dependencies_enforced_3d_visualisation(ids=[0,1,2,3,4])
-
 
 if Stage == 2 :
     dag_controll = Cg_flex_controller.load_controller_state(config=config,file_path=None, file_name="full_state_simple")

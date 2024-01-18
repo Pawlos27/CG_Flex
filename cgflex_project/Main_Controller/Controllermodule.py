@@ -284,10 +284,12 @@ class Cg_flex_controller:
         Initializes and creates dependencies for all nodes in all dependency controllers.
         Also sets the  sync of the sampling controller to false.
         """
-        self.sampling_controller_sync = False
+        self.sampling_controller_sync = True
         self.load_graph_nodelists_into_dependency_controller()
         for dependency_controller in self.dependency_controller:
             dependency_controller.make_dependencies()
+        self.load_full_nodelists_into_sampling_controller()
+        
 
     def reset_dependencies(self):
         """
@@ -316,7 +318,7 @@ class Cg_flex_controller:
             graph_id (int, optional): The ID of the dependency controller. Defaults to 0.
         """
         self.sampling_controller_sync = False
-        self.dependency_controller[graph_id].reset_dependencies_specific(node_id=node_ids)
+        self.dependency_controller[graph_id].reset_dependencies_specific(node_ids=node_ids)
     
     def reset_tsd_counter(self):
         """
@@ -333,7 +335,7 @@ class Cg_flex_controller:
             graph_id (int, optional): The ID of the dependency controller. Defaults to 0.
         """
         self.sampling_controller_sync = False
-        self.dependency_controller[graph_id].replace_dependencies_by_tsd_function(node_id=node_ids)
+        self.dependency_controller[graph_id].replace_dependencies_by_tsd_function(node_ids=node_ids)
 
     def replace_dependencies_by_tsd_function_abstract_id(self, ids_abstract:List[int]):
         """
@@ -346,7 +348,7 @@ class Cg_flex_controller:
         for id in ids_abstract:
             ids= self.sampling_controller.find_graph_id_and_node_id_from_shuffle_index(id_abstract=id)
             graph_id, node_id = ids 
-            self.dependency_controller[graph_id].replace_dependencies_by_tsd_function(node_id=[node_id])
+            self.dependency_controller[graph_id].replace_dependencies_by_tsd_function(node_ids=[node_id])
 
     def replace_dependencies_by_initial_distributions(self, node_ids: List[int], graph_id=0):
         """
@@ -430,7 +432,7 @@ class Cg_flex_controller:
         for id in ids_abstract:
             ids= self.sampling_controller.find_graph_id_and_node_id_from_shuffle_index(id_abstract=id)
             graph_id, node_id = ids 
-            self.replace_dependencies_by_initial_distributions_abstract_id(node_id=[node_id],graph_id=graph_id)
+            self.replace_dependencies_by_initial_distributions(node_ids=[node_id],graph_id=graph_id)
 
     def replace_dependencies_by_single_random_values_abstract_id(self, ids_abstract:List[int]):
         """
@@ -443,13 +445,8 @@ class Cg_flex_controller:
         for id in ids_abstract:
             ids= self.sampling_controller.find_graph_id_and_node_id_from_shuffle_index(id_abstract=id)
             graph_id, node_id = ids 
-            self.replace_dependencies_by_single_values_from_random_distribution(node_id=[node_id],graph_id=graph_id)
+            self.replace_dependencies_by_single_values_from_random_distribution(node_ids=[node_id],graph_id=graph_id)
             
-            distribution = self.dependency_controller[graph_id].inputs_dependency.initial_value_distributions.get_distribution()
-            self.dependency_controller[graph_id].se
-        for source in self.list_of_sources:
-            self.nodelist[source].dependency = distribution.get_value_from_distribution()
-
     def get_sourcelist_dependencymaker(self):
         """
         Retrieves a nested list of source nodes from all dependency controllers.
@@ -735,10 +732,6 @@ class Cg_flex_controller:
             node_id (Union[int, List[int]]): The ID of the node to visualize.
         """
         output_range = self._get_total_output_range()
-        self.sampling_controller.show_values_histogramm(graph_id=graph_id,node_id=node_id, output_range=output_range)
-        
-
-
         if isinstance( node_id, int):
             
             self.sampling_controller.show_values_histogramm(graph_id= graph_id, node_id=node_id, output_range=output_range)

@@ -55,6 +55,7 @@ class Sampling_controller:
             nodelist_nested (List[List[Nodeobject]]): The nested node lists representing the entire graph.
         """
         self.nodelist_nested_list = nodelist_nested
+        self.make_new_id_shuffle_index()
 
     def reset_config(self,config:Blueprint_sampling):
         """

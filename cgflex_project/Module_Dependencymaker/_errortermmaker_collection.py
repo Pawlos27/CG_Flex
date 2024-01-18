@@ -141,7 +141,8 @@ class Error_distribution_normal_variable_variance(IErrordistribution):
         return error_value_normalized
     def show_error_distribution(self, label="errorterm" ):
         self.function_model.show_functions_3d_plot_if_exactly_two_dimensions(resolution=30, label= label + f" Error_distribution_normal with Sigma_function (streched to: 0-{self.maxium_total_deviation/6})" )
-
+    def show_functions_3d_plot_when_possible(self, label="errorterm" ):
+        self.function_model.show_functions_3d_plot_when_possible(resolution=30,label= label + f" Error_distribution_normal with Sigma_function (streched to: 0-{self.maxium_total_deviation/6})" )
 
 class Error_distribution_mixture_model_normal_multimodal(IErrordistribution):
     """
