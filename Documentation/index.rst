@@ -15,7 +15,7 @@ This documentation provides an overview over al classes and also information abo
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Cgflex_project Package Contents:
 
    cgflex_project.Main_Controller

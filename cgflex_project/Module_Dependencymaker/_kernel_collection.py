@@ -11,13 +11,28 @@ import scipy.stats as stats
 
 
 class IKernels(metaclass=ABCMeta):
+    """
+    Abstract base class for ecapsualting different kernel types.
+    """
     @abstractmethod
     def set_kernel(self, input_dim:int, active_dims: list):
-     """Interface Method"""
+     """
+        Sets the kernel with the  specified number "input dimensions" and the related explicit "active dimensions".
+
+        Args:
+            input_dim (int): Number of input dimensions.
+            active_dims (list): List of active dimensions for the kernel.
+        """
 
 
 class Rbf_kernel(IKernels):
-   def __init__(self, lenghtscale_generator: distributions.IDistributions  ):
+   """
+    Represents a Radial Basis Function (RBF) kernel.
+
+    Args:
+        lenghtscale_generator (distributions.IDistributions): Distribution to generate lengthscale.
+    """
+   def __init__(self, lenghtscale_generator: distributions.IDistributions = distributions.Distribution_uniform(min=0.01,max=1)  ):
         #self.kernel = None
         self.min_dimensions= 1
         self.max_dimensions = float('inf')
@@ -30,8 +45,8 @@ class Rbf_kernel(IKernels):
 
 
 
-class Periodic_kernel(IKernels ):
-   def __init__(self,lenghtscale_generator: distributions.IDistributions  ):
+class Periodic_kernel_decreasing(IKernels ):
+   def __init__(self,lenghtscale_generator: distributions.IDistributions = distributions.Distribution_uniform(min=0.01,max=1) ):
         #self.kernel = None
         self.min_dimensions= 1
         self.max_dimensions = 1
@@ -41,7 +56,7 @@ class Periodic_kernel(IKernels ):
         self.kernel = GPy.kern.PeriodicExponential(input_dim=input_dim, active_dims=active_dims ,lengthscale=self.lenghtscale_generator.get_value_from_distribution())
 
 class Matern32_kernel(IKernels ):
-   def __init__(self,lenghtscale_generator: distributions.IDistributions  ):
+   def __init__(self,lenghtscale_generator: distributions.IDistributions = distributions.Distribution_uniform(min=0.01,max=1)  ):
         #self.kernel = None
         self.min_dimensions= 1
         self.max_dimensions = 1
@@ -62,7 +77,7 @@ class Linear_kernel(IKernels):
 
 
 class Periodic_clean_kernel(IKernels):
-   def __init__(self, lenghtscale_generator: distributions.IDistributions  ):
+   def __init__(self, lenghtscale_generator: distributions.IDistributions = distributions.Distribution_uniform(min=0.01,max=1)  ):
         #self.kernel = None
         self.min_dimensions= 1
         self.max_dimensions = float('inf')
@@ -82,61 +97,77 @@ class IKernel_collection(metaclass=ABCMeta):
     """
     @abstractmethod
     def get_kernel_list(self)->List[IKernels]:
-        """ returns the kernel collectiion, represented by the kernel list 
+        """
+        Returns a list of kernel objects in the collection.
 
         Returns:
-            List[IKernels]: a list
+            List[IKernels]: List of kernel objects.
         """
 
+
 class Kernel_collection_linear(IKernel_collection):
+    """containing only the linear kernel"""
     def __init__(self):
         self.kernellist= []
     def get_kernel_list(self):
        return self.kernellist
 
 class Kernel_collection_rbf_small_lenghthscales(IKernel_collection):
+    """containing only the rbf kernel with small lenghtscales"""
     def __init__(self):
-        self.kernellist= [Rbf_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.01,max=0.1))]
+        self.kernellist= [Rbf_kernel()]
     def get_kernel_list(self) :
        return self.kernellist
     
-class Kernel_collection_periodic_decrease(IKernel_collection):
+class Kernel_collection_periodic_decreasing(IKernel_collection):
+    """containing only the preiodic decreasing kernel """
     def __init__(self):
-        self.kernellist= [Periodic_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.1,max=1))]
+        self.kernellist= [Periodic_kernel_decreasing()]
     def get_kernel_list(self) :
        return self.kernellist
     
 class Kernel_collection_periodic(IKernel_collection):
+    """containing only the preiodic kernel """
     def __init__(self):
-        self.kernellist= [Periodic_clean_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.1,max=1))]
+        self.kernellist= [Periodic_clean_kernel()]
     def get_kernel_list(self) :
        return self.kernellist
     
 class Kernel_collection_matern32(IKernel_collection):
+    """containing only the matern32 kernel """
     def __init__(self):
-        self.kernellist= [Matern32_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.1,max=1))]
+        self.kernellist= [Matern32_kernel()]
     def get_kernel_list(self) :
        return self.kernellist
 
 class Kernel_collection_variance_default(IKernel_collection):
+    """containing only the rbf and linear  kernel """
     def __init__(self ):
-        self.kernellist=[Linear_kernel(), Rbf_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.2,max=2)),]
+        self.kernellist=[Linear_kernel(), Rbf_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.05,max=0.8)),]
     def get_kernel_list(self):
        return self.kernellist
     
 class Kernel_collection_general_default(IKernel_collection):
+    """containing a mix of kernels """
     def __init__(self):
-        self.kernellist=[Linear_kernel(),  Rbf_kernel(lenghtscale_generator=distributions.Distrib_custom_with_valuelist(valuelist=[0.1,0.3,0.5,0.7,1,2])), Matern32_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.1,max=1))]
+        self.kernellist=[Linear_kernel(),  Rbf_kernel(lenghtscale_generator=distributions.Distrib_custom_with_valuelist(valuelist=[0.1,0.3,0.01,0.3,0.05,0.5,0.7,1])), Matern32_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.1,max=1))]
     def get_kernel_list(self):
        return self.kernellist
     
 class Kernel_collection_general_full(IKernel_collection):
+    """containing a mix of kernels """
     def __init__(self):
-        self.kernellist=[Linear_kernel(),  Rbf_kernel(lenghtscale_generator=distributions.Distrib_custom_with_valuelist(valuelist=[0.1,0.2,0.01,0.3,0.05,0.3,0.5,0.7,])), Periodic_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.01,max=1)),Rbf_kernel(lenghtscale_generator=distributions.Distribution_normal_truncated_at_3sigma(mu=0.2, sigma=0.05)),Periodic_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.001,max=1)), Matern32_kernel(lenghtscale_generator= distributions.Distribution_uniform(min=0.001,max=0.6))]
+        self.kernellist=[Linear_kernel(),  Rbf_kernel(lenghtscale_generator=distributions.Distrib_custom_with_valuelist(valuelist=[0.1,0.2,0.01,0.3,0.05,0.3,0.5,0.7,])), Periodic_kernel_decreasing(),Rbf_kernel(),Periodic_clean_kernel(), Matern32_kernel()]
     def get_kernel_list(self):
        return self.kernellist
 
 class Kernel_collection_custom(IKernel_collection):
+    """
+    Represents a custom collection of kernel objects.
+
+    Args:
+        kernellist (List[IKernels]): List of kernel objects to be included in the collection.
+    """
     def __init__(self, kernellist: List[IKernels]):
         self.kernellist = kernellist
     def get_kernel_list(self):
@@ -145,17 +176,21 @@ class Kernel_collection_custom(IKernel_collection):
 
 
 class IKernel_operator(metaclass=ABCMeta):
-    """Abstract base class as Interface, its implementations provide oprators and functionalityfor combining kernels"""
+    """
+    Abstract base class for kernel operators. 
+    This interface defines methods for combining Gaussian process kernels.
+    """
 
     @abstractmethod
     def perform_operation(self, kernel_inputs:list):
-        """this method performs the combination operations
+        """
+        Performs a combination operation on a list of kernel objects.
 
         Args:
-            kernel_inputs (list): the list contains kernel objects, typicaly there are 2
+            kernel_inputs (list): A list containing kernel objects, typically two kernels.
 
         Returns:
-            kernel: returns a combined kernel
+            kernel: The combined kernel after performing the specified operation.
         """
 class Kernel_adding(IKernel_operator):
     """class for summation of kernels """
@@ -183,12 +218,23 @@ class Kernel_multiplying(IKernel_operator):
 
 
 class IKernel_operator_collection(metaclass=ABCMeta):
+    """
+    Abstract base class for collections of kernel operators.
+    """
     @abstractmethod
-    def get_random_operator(self):
-     """Interface Method"""
+    def get_random_operator(self) -> IKernel_operator:
+     """
+        Abstract method to get a random kernel operator.
+
+        Returns:
+            Kernel operator object.
+        """
 
 
 class Kernel__operator_collection_default(IKernel_operator_collection):
+    """
+    Default collection of kernel operators.
+    """
     def __init__(self):
         self.operator_list=[Kernel_multiplying(), Kernel_adding()]
     def get_random_operator(self):
@@ -196,6 +242,9 @@ class Kernel__operator_collection_default(IKernel_operator_collection):
        return random_operator
 
 class Kernel__operator_solo_addition(IKernel_operator_collection):
+    """
+    Collection of kernel operators containing only the addition operator.
+    """
     def __init__(self):
         self.operator_list= [Kernel_adding()]
     def get_random_operator(self):
@@ -203,6 +252,9 @@ class Kernel__operator_solo_addition(IKernel_operator_collection):
        return random_operator
 
 class Kernel__operator_solo_multiplication(IKernel_operator_collection):
+    """
+    Collection of kernel operators containing only the multiplication operator.
+    """
     def __init__(self):
         self.operator_list= [Kernel_multiplying()]
     def get_random_operator(self):
@@ -210,7 +262,13 @@ class Kernel__operator_solo_multiplication(IKernel_operator_collection):
        return random_operator
 
 class Kernel_operator_collection_shifted_probability(IKernel_operator_collection):
-    def __init__(self, probability_for_multiplying):
+    """
+    Collection of kernel operators with a configurable probability between multiplication and addition.
+
+    Args:
+        probability_for_multiplying (float): Probability for selecting the multiplication operator.
+    """
+    def __init__(self, probability_for_multiplying:float = 0.3):
         self.operator_list=[Kernel_multiplying(), Kernel_adding()]
         self.probability_for_multiplying = probability_for_multiplying
     def get_random_operator(self):

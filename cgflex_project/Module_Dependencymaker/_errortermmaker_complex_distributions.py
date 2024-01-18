@@ -20,29 +20,30 @@ from copy import deepcopy
 
 
 class IInterpolation_model(metaclass=ABCMeta):
+    """
+    Interface for creating interpolation models, essential in dynamic error term modeling. Every Component of a mixture distribution gets an own interpolation model"""
+
     @abstractstaticmethod
     def return_number_of_required_values( dimensions:int)->float:
-        """Interface Method"""
+        """Determines the number of training data points required based on dimensions."""
     @abstractmethod
     def set_interpolator_model(self,values:List[float], dimensions:int):
-        """Interface Method"""
+        """Initializes and trains the interpolation model with provided values."""
 
     @abstractmethod
     def calculate_interpolated_values(self, inputs): 
-        """_summary_
-
-        Args:
-            inputs (_type_): _description_
+        """Calculates interpolated values based on inputs.
+ 
         """
 
     def plot_interpolator_model(self, label="interpolation of one component of errorterm"):
         dimensions = self.data_points.shape[1]
         if dimensions == 1:
-            self._plot_1d(label=label)
+            self._plot_1d(label=label + f"interpolation of one component of errorterm")
         elif dimensions == 2:
-            self._plot_2d(label=label)
+            self._plot_2d(label=label + f"interpolation of one component of errorterm")
         elif dimensions > 2:
-            self._plot_multidim(label=label)   
+            self._plot_multidim(label=label + f"interpolation of one component of errorterm")   
     
     def _plot_1d(self, label):
         """ For 1D, we use a simple line plot"""
@@ -131,6 +132,14 @@ class IInterpolation_model(metaclass=ABCMeta):
 
 
 class Interpolation_model_RBFInterpolator_datapoints_grid(IInterpolation_model): # we need controlls for the string used to set the kernel
+    """
+    Uses RBF Interpolator from scipy with data points distributed over a hypercube grid.
+
+    Arguments:
+    - interpolation_kernel: Defines the kernel type for interpolation (e.g., "linear", "gaussian").
+
+    Suitable for handling one-dimensional to multi-dimensional interpolation with effective control and precision.
+    """
     def __init__(self) :
         self.interpolation_kernel = "gaussian"
 
@@ -167,6 +176,15 @@ class Interpolation_model_RBFInterpolator_datapoints_grid(IInterpolation_model):
 
 
 class Interpolation_model_RBFInterpolator_datapoints_random(IInterpolation_model):
+    """
+    Uses RBF Interpolator from scipy with data points distributed randomly, 
+    worse control then Interpolation_model_RBFInterpolator_datapoints_grid, but can work with less datapoints, thus creating slimmer models
+
+    Arguments:
+    - interpolation_kernel: Defines the kernel type for interpolation (e.g., "linear", "gaussian").
+
+    Suitable for handling one-dimensional to multi-dimensional interpolation.
+    """
     def __init__(self) -> None:
         self.interpolation_kernel = "gaussian"
 

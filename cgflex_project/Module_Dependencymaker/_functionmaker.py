@@ -17,10 +17,28 @@ from  cgflex_project.Module_Dependencymaker._functionmaker_gaussian_process_mode
 # dimension number always 0,1,2,3etc
 
 def probabilitychecker(probability):
+    """
+    Checks if a randomly generated number is less than the specified probability.
+
+    Args:
+        probability (float): The probability threshold to check against.
+
+    Returns:
+        bool: True if the random number is less than the probability, False otherwise.
+    """
     return random.random() < probability
 
 @dataclass
 class discontinuity_borders_per_dimension:
+    """
+    Data class representing borders for a partial space for a specific dimension.
+    Functions have assigned subregions for which they are valid, allowing for the implementation of discontinuity..
+
+    Attributes:
+        dimension (int): The specific dimension the borders apply to.
+        lower_border (float): The lower boundary value of the discontinuity.
+        upper_border (float): The upper boundary value of the discontinuity.
+    """
     dimension: int
     lower_border : float
     upper_border :float
@@ -30,26 +48,61 @@ class discontinuity_borders_per_dimension:
 
 @dataclass
 class Predictions_3d:
+    """
+    Data class for storing 3D predictions, used for visualisation of functions.
+    """
     resolution: int
-    predictions : np.ndarray
+    """The resolution of the predictions."""
+
+    predictions: np.ndarray
+    """The array of predicted values."""
+
     visualized_dimensions: Tuple[int, int] = (0, 1)
+    """The dimensions visualized in the predictions."""
 
     def __post_init__(self):    
         pass
 
 
 class single_function_with_discontinuity:
+    """
+    Class representing a single function with specified discontinuities.
+
+    Attributes:
+        function_model (IGaussianProcessModel): The Gaussian process model for the function.
+        list_of_discontinuity_borders (List[discontinuity_borders_per_dimension]): 
+            A list of discontinuity borders for different dimensions, representing the input space for which the function is valid.
+    """
     def __init__(self,function_model:IGaussianProcessModel,list_of_discontinuity_borders: List[discontinuity_borders_per_dimension]) :
         self.function_model = function_model
         self.list_of_discontinuity_borders = list_of_discontinuity_borders 
 
     def set_extreme_values(self, maximum_local: _functionmaker_extreme_values.Extreme_value_with_coordinates, minimum_local: _functionmaker_extreme_values.Extreme_value_with_coordinates, predictions: Union[None, List[_functionmaker_extreme_values.Predictions]]):
+        """
+        Sets the extreme values for the function model, as a byprocess predictions for the valid input space can be added .
+
+        Args:
+            maximum_local (_functionmaker_extreme_values.Extreme_value_with_coordinates): 
+                The local maximum value with its coordinates.
+            minimum_local (_functionmaker_extreme_values.Extreme_value_with_coordinates): 
+                The local minimum value with its coordinates.
+            predictions (Union[None, List[_functionmaker_extreme_values.Predictions]]): 
+                The list of predictions associated with the function.
+        """
         self.maximum_local = maximum_local
         self.minimum_local = minimum_local
         self.predictions= predictions
 
 
-class Dependency_functions:   # the class containing the dependency functions can predict/calculate the output and also corrects the input space
+class Dependency_functions: 
+    """
+    Class containing the dependency functions that can predict/calculate the output and also correct the input space, it is the main class to manage the determenistic function model, the calculation, normalisation and visualisation of values.
+
+    Attributes:
+        functions (List[single_function_with_discontinuity]): List of functions and their valid inputspace.
+        normalizer (_functionmaker_extreme_values.INormalizer): Normalizer used for value normalization.
+        range_of_output (Tuple[float, float]): The range of the output values.
+    """
          
     def __init__(self, functions: List[single_function_with_discontinuity], normalizer: _functionmaker_extreme_values.INormalizer, range_of_output:Tuple[float,float]):
         self.functions = functions
@@ -60,6 +113,15 @@ class Dependency_functions:   # the class containing the dependency functions ca
         self.range_of_output = range_of_output
 
     def calculate_value(self,x_inputs)->float:
+        """
+        Calculates the normalized output value for given input values.
+
+        Args:
+            x_inputs (list): List of input values.
+
+        Returns:
+            float: The normalized output value.
+        """
         functions = self.functions
         model= self._extract_model_associated_with_inputs(functions= functions , inputs= x_inputs)
         x_inputs_formatted = np.array([x_inputs])
@@ -69,6 +131,15 @@ class Dependency_functions:   # the class containing the dependency functions ca
         return normalized_predicted_value
     
     def calculate_value_raw(self,x_inputs)->float:
+        """
+        Calculates the raw output value without normalization for given input values.
+
+        Args:
+            x_inputs (list): List of input values.
+
+        Returns:
+            float: The raw output value.
+        """
         functions = self.functions
         model= self._extract_model_associated_with_inputs(functions= functions , inputs= x_inputs)
         x_inputs_formatted = np.array([x_inputs])
@@ -77,6 +148,15 @@ class Dependency_functions:   # the class containing the dependency functions ca
         return predicted_value
     
     def make_predicitions_for_multiple_points_raw(self,x_inputs:List[List[float]])-> List[float]:
+        """
+        Makes raw predictions for multiple input points without normalization.
+
+        Args:
+            x_inputs (List[List[float]]): A list of lists, each inner list containing input values.
+
+        Returns:
+            List[float]: A list of predicted raw output values.
+        """
         predicted_value_list = []
         for inputs in x_inputs:
             predicted_value=self.calculate_value_raw(x_inputs=inputs)
@@ -84,22 +164,45 @@ class Dependency_functions:   # the class containing the dependency functions ca
         return predicted_value_list
     
     def make_predicitions_for_multiple_points(self,x_inputs:List[List[float]])-> List[float]:
+        """
+        Makes normalized predictions for multiple input points.
+
+        Args:
+            x_inputs (List[List[float]]): A list of lists, each inner list containing input values.
+
+        Returns:
+            List[float]: A list of predicted normalized output values.
+        """
         predicted_value_list = []
         for inputs in x_inputs:
             predicted_value=self.calculate_value(x_inputs=inputs)
             predicted_value_list.append(predicted_value)
         return predicted_value_list
 
-    def set_normalizer(self,minimum_output,maximum_output): # always absolute stretching, possibility to stretch only if over the max, or to stretch randomly
+    def set_normalizer(self,minimum_output,maximum_output):
+        """
+        Sets the normalizer parameters based on the found extreme values.
+
+        Args:
+            minimum_output (float): The minimum value of the output range.
+            maximum_output (float): The maximum value of the output range.
+        """ 
         self._find_and_set_extreme_values()
         self.normalizer.set_normalizer(output_minimum=minimum_output,output_maximum=maximum_output,input_min=self.minimum_absolute,input_max=self.maximum_absolute)
 
     def normalize_value(self, value:float):
+        """
+        Normalizes a single value.
+
+        Args:
+            value (float): The value to normalize.
+
+        Returns:
+            float: The normalized value.
+        """
         normalized_value = self.normalizer.normalize_value(input_value=value)
         return normalized_value
     
-    def normalize_initial_prediction(self):
-        pass
     
     def normalize_list_of_values(self, values:list):
         values_normalized = []
@@ -120,10 +223,16 @@ class Dependency_functions:   # the class containing the dependency functions ca
         return values_normalized
 
     def show_function_borders(self, node_id= "unknown"):
+        """
+        Prints an overview of responsible functions based on input ranges for each dimension.
+
+        Args:
+            node_id (str, optional): Identifier for the node. Defaults to "unknown".
+        """
 
         functions = self.functions
         list_of_function_data = []
-        function_counter=1
+        function_counter=0
         for function in functions:
             model= function.function_model
             for dim in function.list_of_discontinuity_borders :
@@ -132,11 +241,18 @@ class Dependency_functions:   # the class containing the dependency functions ca
                 upper_border = dim.upper_border 
                 function_border_data_dict = {"function_number":function_counter, "dimension":dimension, "lower_border": lower_border, "upper_border":upper_border}
                 list_of_function_data.append(function_border_data_dict)
+            function_counter +=1
         df_function_with_borders =  pd.DataFrame(list_of_function_data)
         print(f"Node_ID {node_id}   Overviev of responsible functions depending on the input range per dimension")
         print(df_function_with_borders)
 
     def make_new_predictions_for_plotting(self, resolution):
+        """
+        Generates new predictions for plotting purposes, for 2d plotting.
+
+        Args:
+            resolution (int): Resolution for plotting.
+        """
    
         functions = self.functions
         function_counter=0
@@ -164,6 +280,9 @@ class Dependency_functions:   # the class containing the dependency functions ca
             function_counter += 1
 
     def print_predictions(self):
+        """
+        Prints the predictions stored in the functions. Just for analytical purposes.
+        """
         new_prediction_list = []
         for function in self.functions:
             predictionsliste = function.predictions
@@ -180,6 +299,12 @@ class Dependency_functions:   # the class containing the dependency functions ca
                 print(output_data)
 
     def show_functions_for_existing_predictions(self, label="unknown_function"):
+        """
+        Plot functions for existing predictions.
+
+        Args:
+            label (str, optional): Label for the plot. Defaults to "unknown_function".
+        """
         plt.figure()
         for function in self.functions:
             predictionsliste = function.predictions
@@ -194,9 +319,15 @@ class Dependency_functions:   # the class containing the dependency functions ca
         plt.ylabel('output')
         plt.title(label)
         plt.show()
-        print("activated test")
 
     def make_new_3d_predictions(self, resolution=20, visualized_dimensions: Tuple[int, int] = (0, 1)):
+        """
+        Generates new 3D predictions based on the vidualization of specified dimensions, rest of the dimensions stays at a fixed value of 0.
+
+        Args:
+            resolution (int, optional): Resolution for 3D plotting. Defaults to 20.
+            visualized_dimensions (Tuple[int, int], optional): Dimensions to visualize in 3D plot. Defaults to (0, 1).
+        """
         dimensions = self.functions[0].function_model.return_kernel_dimensions()
         if dimensions < 2:
             raise ValueError("No 3D visualisation of 1D data possible")
@@ -220,7 +351,15 @@ class Dependency_functions:   # the class containing the dependency functions ca
         self.predictions_3d = Predictions_3d(resolution=resolution, predictions=z, visualized_dimensions=visualized_dimensions)
 
   
-    def show_3d_plot(self, resolution=20, visualized_dimensions: Tuple[int, int] = (0, 1),label="unknown_function"): # making 3d plot, when no plotdata existing or resolution unsufficient then calculating new data
+    def show_3d_plot(self, resolution=20, visualized_dimensions: Tuple[int, int] = (0, 1),label="unknown_function"):
+        """
+        Displays a 3D plot of the function based on provided dimensions and resolution. When no Predictions existing or resolution unsufficient then calculating new Predictions
+
+        Args:
+            resolution (int, optional): Resolution for 3D plotting. Defaults to 20.
+            visualized_dimensions (Tuple[int, int], optional): Dimensions to visualize in 3D plot. Defaults to (0, 1).
+            label (str, optional): Label for the plot. Defaults to "unknown_function".
+        """ 
         dimensions= self.functions[0].function_model.return_kernel_dimensions()
         if dimensions < 2:
             raise ValueError("No 3D visualisation of 1D data possible")
@@ -249,6 +388,13 @@ class Dependency_functions:   # the class containing the dependency functions ca
         plt.show()
 
     def show_3d_plot_not_normalized(self, resolution=20, label="not_normalized_plot"):
+        """
+        Displays a 3D plot of the raw (not normalized) function data.
+
+        Args:
+            resolution (int, optional): Resolution for 3D plotting. Defaults to 20.
+            label (str, optional): Label for the plot. Defaults to "not_normalized_plot".
+        """
         dimensions= self.functions[0].function_model.return_kernel_dimensions()
         if dimensions >= 2:
     
@@ -282,6 +428,14 @@ class Dependency_functions:   # the class containing the dependency functions ca
             plt.show()
 
     def show_functions_3d_plot_when_possible(self,resolution, visualized_dimensions: Tuple[int, int] = (0, 1),label="unknown function"):
+        """
+        Displays a 3D plot if the dimensions allow, otherwise shows existing predictions.
+
+        Args:
+            resolution (int): Resolution for the plot.
+            visualized_dimensions (Tuple[int, int], optional): Dimensions to visualize in 3D plot. Defaults to (0, 1).
+            label (str, optional): Label for the plot. Defaults to "unknown function".
+        """
         dimensions= self.functions[0].function_model.return_kernel_dimensions()
         if dimensions == 1:
             if self.functions[0].predictions == None:
@@ -294,6 +448,13 @@ class Dependency_functions:   # the class containing the dependency functions ca
 
 
     def show_functions_3d_plot_if_exactly_two_dimensions(self,resolution,label="unknown_function"):
+        """
+        Displays a 3D plot specifically for functions with exactly two dimensions.
+
+        Args:
+            resolution (int): Resolution for the plot.
+            label (str, optional): Label for the plot. Defaults to "unknown_function".
+        """
         dimensions= self.functions[0].function_model.return_kernel_dimensions()
         if dimensions == 2:
             self.show_3d_plot(resolution=resolution,label=label)
@@ -305,6 +466,16 @@ class Dependency_functions:   # the class containing the dependency functions ca
             self.show_functions_for_existing_predictions(label= label)
   
     def _extract_model_associated_with_inputs(self,functions: List[Type[single_function_with_discontinuity]], inputs:list):
+        """
+        Extracts the model associated with the given inputs from a list of functions.
+
+        Args:
+            functions (List[single_function_with_discontinuity]): List of functions to search.
+            inputs (list): List of input values.
+
+        Returns:
+            IGaussianProcessModel: The Gaussian process model associated with the inputs.
+        """
         model = functions[0].function_model
         miss = False
         if len(functions) > 1:
@@ -345,6 +516,9 @@ class Dependency_functions:   # the class containing the dependency functions ca
         return model
 
     def _find_and_set_extreme_values(self):
+        """
+        Finds and sets the extreme values (maximum and minimum) for the dependency functions.
+        """
         for single_function in self.functions:
             extreme_value_setter = self.normalizer.extreme_value_setter
             extreme_value_setter.find_extreme_values( function_model=single_function.function_model,list_of_discontinuity_borders=single_function.list_of_discontinuity_borders )
@@ -353,7 +527,10 @@ class Dependency_functions:   # the class containing the dependency functions ca
         if isinstance(self.normalizer.extreme_value_setter, _functionmaker_extreme_values.Extreme_value_setter_solo_dimensionmax):
             self.gridsearch_extreme_values()
         
-    def _determine_and_set_absolute_extreme_values(self):# here 
+    def _determine_and_set_absolute_extreme_values(self):
+        """
+        Determines and sets the absolute extreme values (maximum and minimum) across all functions.
+        """
         absolute_maximum = self.functions[0].maximum_local.value
         absolute_minimum = self.functions[0].minimum_local.value
         for function in self.functions[1:]:
@@ -365,6 +542,12 @@ class Dependency_functions:   # the class containing the dependency functions ca
         self.minimum_absolute = absolute_minimum
 
     def gridsearch_extreme_values(self, resolution=3):
+        """
+        Performs a grid search to find extreme values across all functions. This method to do a rough check of the actual used strategy.
+
+        Args:
+            resolution (int, optional): Resolution for the grid search. Defaults to 3.
+        """
         check_inputs = _inputloader.make_grid_for_hypercube(dimensions=self.functions[0].function_model.return_kernel_dimensions(), lower_bound= self.range_of_output[0], upper_bound=self.range_of_output[1], resolution=resolution)
         check_inputs.tolist()
         predictions = self.make_predicitions_for_multiple_points_raw(x_inputs=check_inputs)
@@ -380,15 +563,55 @@ class Dependency_functions:   # the class containing the dependency functions ca
 
 
 class IFunction_maker(metaclass=ABCMeta):
+    """
+    Abstract base class defining the interface for function makers. 
+    Function makers are responsible for creating dependency functions based on specified criteria.
+    Dependency_functions are a crucial class to represent dependencies of nodes from its parent nodes. 
+    They represent a determenistic approach in modeling a function with gaussian processes.
+    """
     @abstractmethod
     def load_inputs(self, dimensions, lower, upper):
-     """Interface Method"""
-    def make_functions(self, kernel, errorterm_tolerance:float,  range_of_output: Tuple[float, float]):
-     """Interface Method"""
+     """
+        Loads input data for generating/training the models for dependency functions.
+        
+        Args:
+            dimensions (int): The number of dimensions for the input data.
+            lower (float): The lower bound of the input data range.
+            upper (float): The upper bound of the input data range.
+        """
+    def make_functions(self, kernel, errorterm_tolerance:float,  range_of_output: Tuple[float, float])-> Dependency_functions:
+     """
+        Creates and returns dependency functions based on the provided kernel and error term tolerance.
+        
+        Args:
+            kernel: The kernel to be used in the Gaussian Process model.
+            errorterm_tolerance (float): The tolerance level of the error term is taken into consideration in the output range.
+            range_of_output (Tuple[float, float]): The range of output values.
+        
+        Returns:
+            Dependency_functions(Dependency_functions): An object encapsulating the created dependency functions.
+        """
     
 
 
-class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): # new discontinuity borders can appear only in the same dimensions used in the first discontinuity 
+class Function_maker_evenly_discontinuity_in_one_dimension(IFunction_maker): 
+    """
+    Implementation of the IFunction_maker interface. Generates functions with discontinuities
+    evenly distributed in one dimension. The input space of one dimension is seperated into regions.
+
+    First, it is determined whether there are any discontinuities and how many. If a discontinuity occurs, the input space in one dimension is divided into several regions.
+    For each region, a separate Gaussian process model is generated, which represents a function, and then saved along with the information for the valid input ranges.
+    When resolving the dependency later, it depends on the input value which function is responsible.
+
+    Args:
+            discontinuity_frequency (float): The frequency of introducing discontinuities.
+            maximum_discontinuities (int): The maximum number of discontinuities allowed in one dependency representation.
+            discontinuity_reappearance_frequency (float): The frequency of reappearing discontinuities in subsequent functions.
+            sampling_resolution (int): The resolution of the sampling grid.
+            normalizer (INormalizer): The normalizer to be used for value normalization.
+            gp_model (IGaussianProcessModel): The Gaussian Process model to be used.
+            inputloader (IInputloader): The input loader for loading training data.
+    """
         
     def __init__(self, discontinuity_frequency:float = 0.2 ,  maximum_discontinuities:int = 2, discontinuity_reappearance_frequency:float = 0.4,sampling_resolution:int = 4, normalizer:_functionmaker_extreme_values.INormalizer = _functionmaker_extreme_values.Normalizer_minmax_stretch(), gp_model= GPyModel(),inputloader= _inputloader.Inputloader_for_solo_random_values()):
         self.discontinuity_frequency = discontinuity_frequency

@@ -15,40 +15,48 @@ from typing import Any, List, Type
 
 
 class IKernel_selector(metaclass=ABCMeta):
-    """_summary_
-
-    Args:
-        metaclass (_type_, optional): _description_. Defaults to ABCMeta.
     """
+    Interface for selecting a kernel depending on dimension compatibility requirements."""
+
     @abstractmethod
     def select_kernels(self, free_dimensions:int, active_dimension_counter):
-        """selects appropriate kernels regarding on its dimensioncompability
+       """
+        Selects a kernel based on the current free dimensions and the active dimension counter.
+
         Args:
-            free_dimensions (int): the number of dimensions left which are free to occupy, relevant for setting the kernel and for selecting the kernel
-            active_dimension_counter (_type_): the current dimension which is active at this point in the loop, starting from 0. relevant for setting the kernel parameters
-
-    
+            free_dimensions (int): The number of dimensions that are yet to be assigned.
+            active_dimension_counter (int): The current count of active dimensions.
         """
-    
-class Kernel_selector_random(IKernel_selector):
-    """Implementation which is selecting kernel randomly from a kernel colelction as long as the requirements fit
+        
+# class Kernel_selector_matchmaking(IKernel_selector):  """possible implementation for prefering kernels with the exact free capacity, so that possibly only one kernel is used """
 
-    Args:
-        kernel_collection (_kernel_collection.IKernel_collection):  setting the kernel colelction from which the selector can choose from
-        max_dimensions_per_kernel (int): setting the maximum allowed dimensions per kernel
+
+class Kernel_selector_random(IKernel_selector):
     """
+         Randomly selects a kernel from a specified collection, adhering to dimension coverage requirements.
+
+        Args:
+            kernel_collection (IKernel_collection): The collection of available kernels.
+            max_dimensions_per_kernel (int): The maximum number of dimensions a kernel can cover.
+        """
+
     def __init__(self, kernel_collection:_kernel_collection.IKernel_collection, max_dimensions_per_kernel:int =1):
         self.kernel_list = kernel_collection.get_kernel_list()
         self.max_dimensions_per_kernel = max_dimensions_per_kernel
     
     def select_kernels(self, free_dimensions:int, active_dimension_counter):
-        """selects a kernel and 
-        
-        :returns: 
-            - kernel - Description of the returned kernel.
-            - dimensionality_kernel - Description of the dimensionality_kernel.
-        :rtype: (Type of kernel, Type of dimensionality_kernel)
         """
+        Selects a random kernel from the available list, ensuring it meets dimension coverage requirements.
+
+        Args:
+            free_dimensions (int): The number of dimensions that are yet to be assigned to a kernel.
+            active_dimension_counter (int): The current count of active dimensions already assigned.
+
+        Returns:
+            GPy.kern.Kern: The selected GPy kernel object, maybe another object if we implement other kernels and GPs.
+            int: The number of dimensions assigned to the selected kernel.
+        """
+
         active_dimension_counter = active_dimension_counter
         limit_used_dimensions = min(free_dimensions,self.max_dimensions_per_kernel) # setting actual limit to the dimensions
         list_kernels_matching = self._make_matching_kernel_list(limit_used_dimensions=limit_used_dimensions) 
@@ -68,48 +76,62 @@ class Kernel_selector_random(IKernel_selector):
         return neuer_kernel, dimensionality_kernel
     
     def _make_matching_kernel_list(self, limit_used_dimensions)->List[_kernel_collection.IKernels]:
-        """filters the kernel_list so that only kernelserving the dimension limits will lremain"""
+        """
+        Filters the kernel list to include only those kernels that match the dimension limits.
+
+        Args:
+            limit_used_dimensions (int): The maximum number of dimensions that can be assigned to a kernel.
+
+        Returns:
+            List[_kernel_collection.IKernels]: A list of kernels that match the given dimension limit.
+        """
         list_kernels_matching = []
         for kernel in self.kernel_list:
             if kernel.min_dimensions <= limit_used_dimensions:
                 list_kernels_matching.append(kernel)
         return list_kernels_matching
       
-class Kernel_selector_matchmaking(IKernel_selector):
-    """possible implementation for prefering kernels with the exact free capacity, so that possibly only one kernel is used """
-    def __init__(self, kernel_collection:_kernel_collection.IKernel_collection, max_dimensions_per_kernel:int ):
-        pass
-
-    def select_kernels(self, free_dimension:int ):
-        pass
-
-
            
 class IKernelcombinator(metaclass=ABCMeta):
-    """Interface for Implementations that create combined kernels"""
+    """
+        Generates a combined kernel by selecting kernels for the given number of dimensions.
+
+        Args:
+            dimensions (int): The total number of dimensions to be covered by the combined kernel.
+        """
+
     @abstractmethod
     def combinate_kernels(self, dimensions:int):
-     """Interface Method"""
+        """
+        Generates a combined kernel for the given number of dimensions.
+
+        Args:
+            dimensions (int): The total number of dimensions to be covered by the combined kernel.
+        """
     
 class Kernelcombinator_random_picking(IKernelcombinator):
-    """randomly picks kernel from a list of kernels and combines them using various operations
+    """
+    Combines kernels randomly to cover all input parameters, producing a single composite kernel.
 
     Args:
-        kernel_operator_collection (_kernel_collection.IKernel_operator_collection): a collection providing the operations for combination of kernels
-        kernel_selector (IKernel_selector): selecting 
+        kernel_operator_collection (IKernel_operator_collection): The collection of kernel combination operators.
+        kernel_selector (IKernel_selector): The selector for choosing individual kernels.
     """
+
     def __init__(self , kernel_operator_collection: _kernel_collection.IKernel_operator_collection = _kernel_collection.Kernel__operator_collection_default(), kernel_selector: IKernel_selector = Kernel_selector_random(max_dimensions_per_kernel= 2,kernel_collection= _kernel_collection.Kernel_collection_general_full())):
 
         self.kernel_selector = kernel_selector
         self.kernel_operator_collection = kernel_operator_collection
     def combinate_kernels(self, dimensions:int):
-        """_summary_
+        """
+        Combines kernels to cover the specified number of dimensions. 
+        It selects kernels randomly and combines them using random operators.
 
         Args:
-            dimensions (int): _description_
+            dimensions (int): The total number of dimensions to be covered by the combined kernel.
 
         Returns:
-            _type_: _description_
+            GPy.kern.Kern: The final combined GPy kernel object covering all dimensions.
         """
         list_of_kernels = self._make_kernel_list(dimensions= dimensions)
 
@@ -126,6 +148,15 @@ class Kernelcombinator_random_picking(IKernelcombinator):
         return final_kernel
 
     def _make_kernel_list(self, dimensions):
+        """
+        Creates a list of kernels that collectively cover the specified number of dimensions.
+
+        Args:
+            dimensions (int): The number of dimensions to be covered by the kernels.
+
+        Returns:
+            List[GPy.kern.Kern]: A list of GPy kernel objects.
+        """
         free_dimension_counter = dimensions
         active_dimension_counter = 0
         list_of_kernels = []
@@ -135,14 +166,4 @@ class Kernelcombinator_random_picking(IKernelcombinator):
             active_dimension_counter = active_dimension_counter + dimensionality
             free_dimension_counter = free_dimension_counter - dimensionality
         return list_of_kernels
-
-class Kernelcombinator_linear(IKernelcombinator):
-    def __init__(self , kernel_operator_collection: _kernel_collection.IKernel_operator_collection, kernel_selector: IKernel_selector):
-    
-        self.kernel_selector = kernel_selector
-        self.kernel_operator_collection = kernel_operator_collection
-
-    def combinate_kernels(self, dimensions:int):
-        pass
-
 

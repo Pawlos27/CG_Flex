@@ -1,4 +1,6 @@
 
+"""this module  contains a set of functions and classes provides utilities for generating and loading input data for various GP models or for plots,
+ they offer flexibility in creating input data arrays, either by generating them based on specific criteria or by loading external data."""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -9,7 +11,20 @@ import matplotlib.pyplot as plt
 import cgflex_project.Shared_Classes.distributions as distributions
 
 
-def make_2d_array_for_x_inputs_sparse(dimensions,filled_dimension,resolution=1000,lower_bound=0,upper_bound=1): # resolution lower limit=2 for drawing purposes
+def make_2d_array_for_x_inputs_sparse(dimensions,filled_dimension,resolution=1000,lower_bound=0,upper_bound=1):
+    """
+    Generates a 2D array for input data with only one dimension filled and the rest sparse (filled with zeros).
+
+    Args:
+        dimensions (int): Total number of dimensions.
+        filled_dimension (int): Index of the dimension to be filled with data.
+        resolution (int, optional): Number of points to generate. Defaults to 1000.
+        lower_bound (int, optional): Lower bound of the data range. Defaults to 0.
+        upper_bound (int, optional): Upper bound of the data range. Defaults to 1.
+
+    Returns:
+        np.ndarray: A 2D numpy array with one dimension filled and the rest sparse.
+    """
     new_resolution = resolution*(upper_bound - lower_bound)
     new_resolution = round(new_resolution)
     if new_resolution < 2:
@@ -24,6 +39,17 @@ def make_2d_array_for_x_inputs_sparse(dimensions,filled_dimension,resolution=100
     return x
 
 def make_flat_array_for_x_inputs_as_reference(resolution,lower_bound=0,upper_bound=1):
+    """
+    Creates a flat (1D) array of input values within a specified range.
+
+    Args:
+        resolution (int): The number of points to generate.
+        lower_bound (int, optional): Lower bound of the range. Defaults to 0.
+        upper_bound (int, optional): Upper bound of the range. Defaults to 1.
+
+    Returns:
+        np.ndarray: A 1D numpy array of input values.
+    """
     new_resolution = resolution*(upper_bound - lower_bound)
     new_resolution = round(new_resolution)
     if new_resolution < 2:
@@ -32,6 +58,18 @@ def make_flat_array_for_x_inputs_as_reference(resolution,lower_bound=0,upper_bou
     return x
 
 def make_2d_array_for_x_inputs_full(dimensions,resolution=1000,lower_bound=0,upper_bound=1):
+    """
+    Generates a 2D array where each dimension is uniformly filled with data.
+
+    Args:
+        dimensions (int): Total number of dimensions.
+        resolution (int, optional): Number of points in each dimension. Defaults to 1000.
+        lower_bound (int, optional): Lower bound of the data range. Defaults to 0.
+        upper_bound (int, optional): Upper bound of the data range. Defaults to 1.
+
+    Returns:
+        np.ndarray: A 2D numpy array with all dimensions uniformly filled.
+    """
     new_resolution = resolution*(upper_bound - lower_bound)
     new_resolution = round(new_resolution)
     if new_resolution < 2:
@@ -42,6 +80,17 @@ def make_2d_array_for_x_inputs_full(dimensions,resolution=1000,lower_bound=0,upp
     return x
 
 def make_2d_array_for_inputs_full_randomly_distributed(dimensions, distribution: distributions.IDistributions, number_of_points=1):
+    """
+    Creates a 2D array with values randomly distributed across multiple dimensions.
+
+    Args:
+        dimensions (int): The number of dimensions.
+        distribution (distributions.IDistributions): The distribution to use for generating random values.
+        number_of_points (int, optional): The number of points to generate. Defaults to 1.
+
+    Returns:
+        np.ndarray: A 2D numpy array with randomly distributed values.
+    """
     list_to_cocatenate=[]
     for i in range (dimensions):
         y = np.random.uniform(low=0,high=1,size=number_of_points)[:, np.newaxis] 
@@ -52,27 +101,50 @@ def make_2d_array_for_inputs_full_randomly_distributed(dimensions, distribution:
 
 
 def make_grid_for_hypercube(dimensions, resolution, lower_bound=0, upper_bound=1):
-    # Erzeugt eine gleichmäßige Verteilung von Punkten über den Hyperwürfel
+    """
+    Generates a grid of points uniformly distributed over a hypercube.
+
+    Args:
+        dimensions (int): The number of dimensions of the hypercube.
+        resolution (int): The number of points along each dimension.
+        lower_bound (float, optional): The lower bound of the hypercube. Defaults to 0.
+        upper_bound (float, optional): The upper bound of the hypercube. Defaults to 1.
+
+    Returns:
+        np.ndarray: A numpy array representing points in the hypercube.
+    """
     axes = np.linspace(lower_bound, upper_bound, resolution)
-    grid = np.meshgrid(*[axes]*dimensions)  # Erstellt ein Gitter für jede Dimension
-    grid = np.array(grid).T.reshape(-1, dimensions)  # Umformen in eine Liste von Punkten
+    grid = np.meshgrid(*[axes]*dimensions)  # grid for each dimension
+    grid = np.array(grid).T.reshape(-1, dimensions)  # reshaping
     return grid
 
 
 class IInputloader(metaclass=ABCMeta):
+    """
+    An abstract base class defining the interface for loading training input data, this data is then reused for training GP models to generate random functions.
+    """
     @abstractmethod
     def load_x_training_data(self):
-        """Interface Method"""
+        """Loads the input features (X) for training."""
     
     @abstractmethod
     def set_input_loader(self,dimensions:int, lower:int, upper:int):
-        """Interface Method"""
+        """
+        Sets up the input loader with specified dimensions and value range.
+
+        Args:
+            dimensions (int): Number of dimensions for the input data.
+            lower (int): Lower bound for input values.
+            upper (int): Upper bound for input values.
+        """
     
     @abstractmethod
     def load_y_training_data(self):
-        """Interface Method"""
+        """Loads the target/output values (Y) for training."""
+      
     
 class Inputloader_for_solo_random_values(IInputloader):
+    """Implements the Interface and functions to generate the data, focuses on generating a single datapoint for model training"""
      
     def __init__(self):
         pass

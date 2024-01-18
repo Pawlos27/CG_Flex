@@ -1,4 +1,4 @@
-
+""" this module contains classes related to normalization tasks, but also a predictions container class """
 import numpy as np
 from typing import Any, List, Type, Optional
 import random
@@ -7,41 +7,77 @@ from dataclasses import dataclass, field
 import matplotlib.pyplot as plt
 import numpy as np
 import GPy
-
 import matplotlib.pyplot as plt
 import cgflex_project.Module_Dependencymaker._inputloader as _inputloader
 from  cgflex_project.Module_Dependencymaker._functionmaker_gaussian_process_models import IGaussianProcessModel
 
 
 
-
-
 @dataclass
 class Extreme_value_with_coordinates:
+    """Represents an extreme value along with its corresponding coordinates."""
+
     value: float
+    """The extreme value."""
     coordinates : np.ndarray
+    """The coordinates at which the extreme value is found."""
     
 @dataclass
 class Predictions: # predictions may be filled with only 1d-inputs despite being a multidimensional function, in case we have sparse inputs
+    """
+    Encapsulates predictions, potentially in a multi-dimensional space, including the dimension,
+    predicted values, input values, and additional details. """
+
     dimension:int
+    """The dimension of the prediction space."""
     predicted_values: np.ndarray
+    """Array of predicted values."""
     input_values : np.ndarray
+    """Array of input values corresponding to the predictions."""
     function_nr: Optional[int] = None
+    """Identifier for the function, if applicable."""
     normalized: bool = False
+    """Indicates whether the predictions are normalized."""
     
 
-class IExtreme_value_setter(metaclass=ABCMeta): # interface for strategies for setting extreme values currently only solo_dimension_max.   extreme_value_empty might be usable if extreme value setter is not needed due to already "normalized kernels"
+class IExtreme_value_setter(metaclass=ABCMeta): 
+    """ An abstract base class for strategies to determine extreme values in a function model, extreme_value_empty might be usable if extreme value setter is not neded due to already "normalized kernels". """
     @abstractmethod
     def find_extreme_values(self,function_model,list_of_discontinuity_borders ):
-     """Interface Method"""
-    def get_maximum(self)-> Extreme_value_with_coordinates:
-     """Interface Method"""    
-    def get_minimum(self)-> Extreme_value_with_coordinates:
-     """Interface Method"""
-    def get_predictions(self):
-     """Interface Method"""
+     """
+        Finds extreme values for the given function model.
 
-class Extreme_value_setter_empty(IExtreme_value_setter):  # when using already normalized kernels
+        Args:
+            function_model: The function model to analyze for extreme values.
+            list_of_discontinuity_borders: A list of borders, defining the relevant input space for the function.
+        """
+    def get_maximum(self)-> Extreme_value_with_coordinates:
+     """
+        Retrieves the maximum extreme value along with its coordinates.
+
+        Returns:
+            Extreme_value_with_coordinates: An object representing the maximum extreme value and its coordinates.
+        """    
+    def get_minimum(self)-> Extreme_value_with_coordinates:
+     """
+        Retrieves the minimum extreme value along with its coordinates.
+
+        Returns:
+            Extreme_value_with_coordinates: An object representing the minimum extreme value and its coordinates.
+        """
+    def get_predictions(self):
+     """
+        Some strategies produce predictions as a byproduct, we can use them for later visualizations
+
+        Returns:
+            A list of Predictions objects.
+        """
+
+class Extreme_value_setter_empty(IExtreme_value_setter):
+    """
+    A basic implementation of IExtreme_value_setter that does not perform any extreme value setting.
+    Suitable for scenarios where normalized kernels are used and no explicit extreme value setting is needed.
+    """
     def __init__(self):
         pass
 
@@ -59,6 +95,18 @@ class Extreme_value_setter_empty(IExtreme_value_setter):  # when using already n
         return predictions_list
     
 class Extreme_value_setter_solo_dimensionmax(IExtreme_value_setter): 
+    """
+    Implementation of IExtreme_value_setter that finds extreme values in a function model and is not too resource heavy.
+    It seaches each dimension individually and fixes the others. It calculates the maximum and minimum values along 
+    each dimension, stores them along with their coordinates and then merges the coordinates per checked dimension. 
+    This method has several weakneses and should be checked with a sparse grid search( full grid search is resource heavy ).
+
+    Attributes:
+        resolution (int): The resolution used for calculating extreme values.
+        maximum (Extreme_value_with_coordinates): The calculated maximum extreme value.
+        minimum (Extreme_value_with_coordinates): The calculated minimum extreme value.
+        predictions (Predictions): A list of predictions made during extreme value calculation.
+    """
     def __init__(self, resolution=1000):
        self.resolution = resolution
 
@@ -127,15 +175,46 @@ class Extreme_value_setter_solo_dimensionmax(IExtreme_value_setter):
     
 
 class INormalizer(metaclass=ABCMeta): # interface for strategies for setting extreme values currently only solo_dimension_max.   extreme_value_empty might be usable if extreme value setter is not needed due to already "normalized kernels"
+    """
+    An abstract base class defining the interface for normalization strategies.
+    Normalizers adjust values to fit within a specified range based on predefined criteria.
+    """
     extreme_value_setter : IExtreme_value_setter
+    """There must be an extreme value setter defined for each implementation, it might also be an empty one"""
     @abstractmethod
     def normalize_value(self,input_value:float ):
-     """Interface Method"""
+     """
+        Normalizes a given input value.
+
+        Args:
+            input_value (float): The value to be normalized.
+
+        Returns:
+            float: The normalized value.
+        """
     @abstractmethod
     def set_normalizer(self, output_minimum, output_maximum,input_max, input_min):
-     """Interface Method"""
+     """
+        Sets up the normalizer with specified input and output ranges.
+
+        Args:
+            output_minimum (float): The minimum value of the output range.
+            output_maximum (float): The maximum value of the output range.
+            input_max (float): The maximum value of the input range.
+            input_min (float): The minimum value of the input range.
+        """
          
-class Normalizer_minmax_stretch(INormalizer): 
+class Normalizer_minmax_stretch(INormalizer):
+    """
+    Implements the INormalizer interface to provide normalization by shifting and stretching the input value range 
+    to fit within a specified output range. Uses the Extreme_value_setter_solo_dimensionmax.
+     
+    Arguments:
+        -extreme_value_setter (IExtreme_value_setter): extreme value setetr and finder to find the actual input range
+     
+      
+    """
+ 
     def __init__(self, extreme_value_setter: IExtreme_value_setter = Extreme_value_setter_solo_dimensionmax()):
         self.extreme_value_setter = extreme_value_setter
         self.output_minimum = 0
@@ -160,6 +239,10 @@ class Normalizer_minmax_stretch(INormalizer):
         return normalized_value 
 
 class Normalizer_minmax_stretch_random(INormalizer): 
+    """
+    Extends the Normalizer_minmax_stretch to include a random stretch factor in normalization,
+    adding variability in the normalization process."""
+
     def __init__(self, extreme_value_setter: IExtreme_value_setter = Extreme_value_setter_solo_dimensionmax()):
         self.extreme_value_setter = extreme_value_setter
         self.output_minimum = 0
@@ -189,6 +272,10 @@ class Normalizer_minmax_stretch_random(INormalizer):
         return normalized_value 
 
 class Normalizer_empty(INormalizer): 
+    """
+    A basic implementation of INormalizer that does not perform any normalization.
+    Suitable for scenarios where no normalization is required.
+    """
     def __init__(self, extreme_value_setter= Extreme_value_setter_empty()):
         self.extreme_value_setter = extreme_value_setter
 
