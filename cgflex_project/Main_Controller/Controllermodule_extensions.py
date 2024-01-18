@@ -10,21 +10,53 @@ from cgflex_project.Shared_Classes.blueprints import Blueprint_graph, Blueprint_
 
 
 class IObject_serializer(metaclass=ABCMeta):
+    """
+    Interface for object serialization.
+
+    This interface defines methods for saving and loading objects, typically used for data persistence.
+    """
     @abstractmethod
     def safe_object(self, file_path:Optional[str], file_name="test"):
-     """Interface Method"""
+     """
+        Saves the object to a specified file path.
+
+        Args:
+            file_path (Optional[str]): The file path where the object is to be saved. If None, a default path is used.
+            file_name (str, optional): The name of the file. Defaults to "test".
+        """
     @abstractmethod
     def load_object(self,file_path:Optional[str], file_name="test"):
-     """Interface Method"""
+     """
+        Loads an object from a specified file path.
+
+        Args:
+            file_path (Optional[str]): The file path from which the object is to be loaded. If None, a default path is used.
+            file_name (str, optional): The name of the file. Defaults to "test".
+        """
     @abstractmethod
     def set_object(self, object):
-     """Interface Method"""
+     """
+        Sets the object to be serialized.
+
+        Args:
+            object: The object to be set for serialization.
+        """
     @abstractmethod
     def return_object(self):
-     """Interface Method"""
+     """
+        Returns the currently set object.
+
+        Returns:
+            The object that was set for serialization.
+        """
 
 
 class Object_serializer_pickle(IObject_serializer):
+    """
+    Implementation of IObject_serializer using Python's pickle module.
+
+    This class provides methods to serialize and deserialize objects using pickle.
+    """
     def __init__(self):
         self.object = None
 
@@ -53,14 +85,38 @@ class Object_serializer_pickle(IObject_serializer):
 
 
 class IController_coordinator(metaclass=ABCMeta):
+    """
+    Abstract base class defining the interface for controller coordinators which are creating instantaions of the Graph_controller and the Dependency_controller to be used in the Main Controller
+      The Idea is that we want to use a variable number of graph components and we would like for each component to be able to use different configuration objects to be different in size and properties.
+    """
     
     def make_list_graph_controller(self, size:int) ->List[Type[Graph_controller]]:
-     """Interface Method"""
+     """
+        Creates a list of graph controller instances.
+
+        Args:
+            size (int): The number of graph controllers to create.
+
+        Returns:
+            List[Type[Graph_controller]]: A list of graph controller instances.
+        """
     def make_list_dependency_controller(self, size:int)->  List[Type[Dependency_controller]]:
-     """Interface Method"""
+     """
+        Creates a list of dependency controller instances.
+
+        Args:
+            size (int): The number of dependency controllers to create.
+
+        Returns:
+            List[Type[Dependency_controller]]: A list of dependency controller instances.
+        """
 
 
 class Controller_coordinator_random(IController_coordinator):
+    """
+    Implementation of IController_coordinator that randomly selects configurations 
+    to create graph and dependency controller instances.
+    """
 
     def __init__(self, list_of_graph_configs: List[Blueprint_graph], list_of_dependency_configs:List[Blueprint_dependency]):
         self.list_of_graph_configs = list_of_graph_configs
@@ -86,6 +142,9 @@ class Controller_coordinator_random(IController_coordinator):
     
 
 class Controller_coordinator_exact_order(IController_coordinator):
+    """
+    Implementation of IController_coordinator that creates controller instances in the exact order of given configurations.
+    """
 
     def __init__(self, list_of_graph_configs: List[Blueprint_graph], list_of_dependency_configs:List[Blueprint_dependency]):
         self.list_of_graph_configs = list_of_graph_configs

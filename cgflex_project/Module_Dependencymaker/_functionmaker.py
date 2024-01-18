@@ -34,14 +34,13 @@ class discontinuity_borders_per_dimension:
     Data class representing borders for a partial space for a specific dimension.
     Functions have assigned subregions for which they are valid, allowing for the implementation of discontinuity..
 
-    Attributes:
-        dimension (int): The specific dimension the borders apply to.
-        lower_border (float): The lower boundary value of the discontinuity.
-        upper_border (float): The upper boundary value of the discontinuity.
     """
     dimension: int
+    """The specific dimension the borders apply to."""
     lower_border : float
+    """The lower boundary value of the discontinuity."""
     upper_border :float
+    """The upper boundary value of the discontinuity."""
 
     def __post_init__(self):    
         pass

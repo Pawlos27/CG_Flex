@@ -169,7 +169,7 @@ class Graph_controller:
 
 
 
-    def get_verticelist(self):
+    def get_edgelist(self):
         """
         Generates and returns a list of vertices in the graph, creating a list of node pairs.
 

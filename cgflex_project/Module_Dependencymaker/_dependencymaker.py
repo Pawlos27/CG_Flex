@@ -57,7 +57,7 @@ class Dependencies:
         """
 
         value_function = self.function_model.calculate_value(x_inputs=x_values)
-        value_errorterm = self.errorterm_model.errorterm_distribution.calc_from_distribution(x_inputs=x_values)
+        value_errorterm = self.errorterm_model.calc_from_distribution(x_inputs=x_values)
         value_combined = value_function + value_errorterm
         return value_combined
     
