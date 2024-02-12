@@ -553,10 +553,8 @@ class Dependency_functions:
         max_prediction = max(predictions)
         min_prediction = min(predictions)
         if max_prediction > self.maximum_absolute:
-            print(f"{max_prediction} is bigger {self.maximum_absolute}")
             self.maximum_absolute = max_prediction
         if min_prediction < self.minimum_absolute:
-            print(f"{min_prediction} is smaller {self.minimum_absolute}")
             self.minimum_absolute = min_prediction
 
 
