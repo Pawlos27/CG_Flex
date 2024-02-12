@@ -1,11 +1,16 @@
-from config_objects import blueprint_controller_test, blueprint_test
+"""This script allows for the calculation of metrics for graphs. How graphs are selected or generated is determined in the function make_graph.
+For this, there are 3 modes controlled by a variable:
+Mode = "random" generates random DAG graphs based on the provided function from networkx
+Mode = "fixed" loads the graphs stored in the data folder from the literature, there are currently 5 of them, they can be manually adjusted, one simply has to place graphs in bif files in the folder and change the desired graphs in the script.
+Mode = any , generates random DAG graphs with our framework, adjustable per config objects
+
+The variables edge_probability and edge_probability are only relevant for "random" mode
+"""
+
+
+from config_objects import config_graph_default_simple
 from cgflex_project.Main_Controller.Controllermodule import Cg_flex_controller, Graph_controller
 import random
-
-
-
-
-
 import os
 import networkx as nx
 from pgmpy.readwrite import BIFReader
@@ -53,8 +58,8 @@ def generate_random_dag(num_nodes, edge_probability, counter, Modus):
         G.add_nodes_from(nodes)
         G.add_edges_from(edges)
     
-    else :
-        Graph_generator = Graph_controller(config=blueprint_test)
+    else:
+        Graph_generator = Graph_controller(config=config_graph_default_simple)
         Graph_generator.make_graph()
         edges = Graph_generator.get_edgelist()
         G = nx.DiGraph()
@@ -90,7 +95,7 @@ def average_metrics(metrics_list):
 
 
 # Parameters
-Modus = "cg_flex"
+Modus = "fix"
 
 
 num_graphs = 5  # Number of random DAGs to generate
@@ -116,11 +121,8 @@ average_of_metrics = average_metrics(all_metrics)
 for metric, value in average_of_metrics.items():
     print(f"Average {metric}: {value}")
 
-Test = "a"
 
-
-
-graph= Graph_controller(config=blueprint_test)
+#graph= Graph_controller(config=config_graph_default_simple)
 #graph.make_graph()
 #graph.showgraph()
 
